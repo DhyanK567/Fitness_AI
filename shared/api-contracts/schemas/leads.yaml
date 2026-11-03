@@ -1,0 +1,44 @@
+Lead:
+  type: object
+  required: [id, full_name, phone, source, status, created_at]
+  properties:
+    id: {type: string, readOnly: true, example: LEAD-00001}
+    full_name: {type: string, minLength: 1, example: Rahul Kumar}
+    phone: {type: string, example: '9876543210'}
+    email: {type: string, format: email, nullable: true, example: rahul@gmail.com}
+    source: {type: string, enum: [walk-in, website, referral, ad], example: website}
+    status: {type: string, enum: [new, contacted, trial-scheduled, converted, lost], example: new}
+    assigned_to: {type: string, nullable: true, example: STF-00002}
+    notes: {type: string, nullable: true}
+    created_at: {type: string, format: date-time, readOnly: true, example: '2026-09-18T09:00:00Z'}
+    member_id: {type: string, nullable: true, readOnly: true, example: MEM-00005}
+
+CreateLeadRequest:
+  type: object
+  required: [full_name, phone, source, status]
+  properties:
+    full_name: {type: string, minLength: 1, example: Rahul Kumar}
+    phone: {type: string, example: '9876543210'}
+    email: {type: string, format: email, nullable: true}
+    source: {type: string, enum: [walk-in, website, referral, ad], example: website}
+    status: {type: string, enum: [new, contacted, trial-scheduled, converted, lost], example: new}
+    assigned_to: {type: string, nullable: true}
+    notes: {type: string, nullable: true}
+
+UpdateLeadRequest:
+  type: object
+  properties:
+    full_name: {type: string, minLength: 1}
+    phone: {type: string}
+    email: {type: string, format: email, nullable: true}
+    status: {type: string, enum: [new, contacted, trial-scheduled, converted, lost]}
+    assigned_to: {type: string, nullable: true}
+    notes: {type: string, nullable: true}
+PublicEnquiryRequest:
+  type: object
+  additionalProperties: false
+  required: [full_name, phone]
+  properties:
+    full_name: {type: string, minLength: 1, maxLength: 140}
+    phone: {type: string, description: Phone number accepted by the API phone validator}
+    email: {type: string, format: email}

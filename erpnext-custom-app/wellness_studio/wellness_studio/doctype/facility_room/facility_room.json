@@ -1,0 +1,42 @@
+{
+    "name": "Facility Room",
+    "module": "Wellness Studio",
+    "custom": 1,
+    "istable": 0,
+    "issingle": 0,
+    "quick_entry": 0,
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 1,
+    "allow_rename": 1,
+    "allow_import": 1,
+    "allow_export": 1,
+    "allow_print": 1,
+    "allow_email": 1,
+    "allow_copy": 1,
+    "allow_delete": 1,
+    "allow_cancel": 1,
+    "allow_amend": 1,
+    "allow_submit": 0,
+    "allow_incomplete": 0,
+    "engine": "InnoDB",
+    "fields": [
+        {"fieldname": "tenant_id", "fieldtype": "Link", "label": "Tenant", "options": "Studio Tenant", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+        {"fieldname": "branch_id", "fieldtype": "Link", "label": "Branch", "options": "Branch", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+        {"fieldname": "room_name", "fieldtype": "Data", "label": "Room Name", "reqd": 1, "in_list_view": 1},
+        {"fieldname": "room_type", "fieldtype": "Select", "label": "Room Type", "options": "Studio\nGym\nPool\nSauna/Steam\nOffice\nReception\nLocker Room\nOther", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+        {"fieldname": "capacity", "fieldtype": "Int", "label": "Capacity", "default": 1, "in_list_view": 1},
+        {"fieldname": "equipment", "fieldtype": "Table MultiSelect", "label": "Equipment", "options": "Equipment"},
+        {"fieldname": "is_active", "fieldtype": "Check", "label": "Active", "default": 1, "in_list_view": 1, "in_standard_filter": 1},
+        {"fieldname": "metadata", "fieldtype": "JSON", "label": "Metadata", "hidden": 1}
+    ],
+    "permissions": [
+        {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "report": 1, "export": 1},
+        {"role": "Studio Admin", "read": 1, "write": 1, "create": 1, "delete": 1, "report": 1, "export": 1},
+        {"role": "Studio Front Desk", "read": 1, "write": 1, "report": 1}
+    ],
+    "index_web_pages_for_search": 0,
+    "is_submittable": 0,
+    "title_field": "room_name",
+    "search_fields": "room_name,room_type,branch_id"
+}

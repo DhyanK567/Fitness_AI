@@ -1,0 +1,41 @@
+Payment:
+  type: object
+  required: [id, member_id, amount, currency, payment_method, status]
+  properties:
+    id: {type: string, readOnly: true, example: PAY-00001}
+    member_id: {type: string, example: MEM-00001}
+    membership_id: {type: string, nullable: true, example: MSHP-00012}
+    booking_id: {type: string, nullable: true, example: BKG-00001}
+    amount: {type: number, minimum: 0.01, example: 1500}
+    currency: {type: string, default: INR, example: INR}
+    payment_method: {type: string, enum: [razorpay, cash, upi], example: razorpay}
+    razorpay_order_id: {type: string, nullable: true, readOnly: true, example: order_ABC123}
+    razorpay_payment_id: {type: string, nullable: true, readOnly: true, example: pay_XYZ789}
+    erp_payment_id: {type: string, nullable: true, readOnly: true}
+    mode: {type: string, enum: [mock, test], nullable: true, readOnly: true}
+    status: {type: string, enum: [pending, success, failed, refunded], example: pending}
+    paid_at: {type: string, format: date-time, nullable: true, readOnly: true}
+
+CreatePaymentRequest:
+  type: object
+  required: [amount, currency, payment_method]
+  oneOf:
+    - required: [membership_id]
+    - required: [booking_id]
+  properties:
+    member_id: {type: string, nullable: true, description: Staff supplies the target member; member requests use the authenticated member link}
+    membership_id: {type: string, nullable: true, example: MSHP-00012}
+    booking_id: {type: string, nullable: true, example: BKG-00001}
+    amount: {type: number, minimum: 0.01, example: 1500}
+    currency: {type: string, default: INR, example: INR}
+    payment_method: {type: string, enum: [razorpay, cash, upi], example: razorpay}
+
+RazorpayWebhook:
+  type: object
+  required: [event, payment_id, order_id, amount, currency]
+  properties:
+    event: {type: string, example: payment.captured}
+    payment_id: {type: string, example: pay_XYZ789}
+    order_id: {type: string, example: order_ABC123}
+    amount: {type: integer, example: 150000}
+    currency: {type: string, example: INR}

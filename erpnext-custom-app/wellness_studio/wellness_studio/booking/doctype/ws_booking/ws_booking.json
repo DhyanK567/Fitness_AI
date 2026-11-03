@@ -1,0 +1,35 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant","studio","branch","member","session","membership","booking_source","idempotency_key","booking_date",
+  "section_status","status","qr_code","cancellation_reason","cancelled_on"
+ ],
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"member","fieldtype":"Link","label":"Member","options":"WS Member","reqd":1,"in_list_view":1},
+  {"fieldname":"session","fieldtype":"Link","label":"Class Session","options":"WS Class Session","reqd":1,"in_list_view":1},
+  {"fieldname":"membership","fieldtype":"Link","label":"Membership","options":"WS Membership","reqd":1},
+  {"fieldname":"booking_source","fieldtype":"Select","label":"Booking Source","options":"Self\nOn Behalf\nTrainer Assisted\nAI Flow","default":"Self","reqd":1},
+  {"fieldname":"idempotency_key","fieldtype":"Data","label":"Idempotency Key"},
+  {"fieldname":"booking_date","fieldtype":"Datetime","label":"Booking Date","reqd":1,"default":"Now"},
+  {"fieldname":"section_status","fieldtype":"Section Break","label":"Status"},
+  {"fieldname":"status","fieldtype":"Select","label":"Status","options":"Confirmed\nWaitlisted\nCancelled\nAttended\nNo Show","default":"Confirmed","reqd":1,"in_list_view":1},
+  {"fieldname":"qr_code","fieldtype":"Attach Image","label":"QR Code","read_only":1},
+  {"fieldname":"cancellation_reason","fieldtype":"Small Text","label":"Cancellation Reason"},
+  {"fieldname":"cancelled_on","fieldtype":"Datetime","label":"Cancelled On"}
+ ],
+ "module": "Booking",
+ "name": "WS Booking",
+ "autoname": "WS-BK-.####",
+ "permissions": [
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Admin"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Front Desk"},
+  {"create":0,"delete":0,"read":1,"write":0,"role":"WS Trainer"},
+  {"create":0,"delete":0,"read":1,"write":0,"role":"WS Member"}
+ ],
+ "track_changes": 1
+}

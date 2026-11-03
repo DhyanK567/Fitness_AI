@@ -1,0 +1,19 @@
+{
+ "doctype":"DocType","engine":"InnoDB","module":"Classes","name":"WS Class Schedule","autoname":"WS-SCH-.#####","track_changes":1,
+ "field_order":["tenant","studio","branch","class_type","trainer","start_time","duration_minutes","recurrence_rule","valid_from","valid_to","capacity","is_active"],
+ "fields":[
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"class_type","fieldtype":"Link","label":"Class Type","options":"WS Class Type","reqd":1,"in_list_view":1},
+  {"fieldname":"trainer","fieldtype":"Link","label":"Trainer","options":"WS Wellness Staff"},
+  {"fieldname":"start_time","fieldtype":"Time","label":"Start Time","reqd":1},
+  {"fieldname":"duration_minutes","fieldtype":"Int","label":"Duration Minutes","reqd":1,"non_negative":1},
+  {"fieldname":"recurrence_rule","fieldtype":"Data","label":"Recurrence Rule"},
+  {"fieldname":"valid_from","fieldtype":"Date","label":"Valid From","reqd":1},
+  {"fieldname":"valid_to","fieldtype":"Date","label":"Valid To"},
+  {"fieldname":"capacity","fieldtype":"Int","label":"Capacity","non_negative":1},
+  {"fieldname":"is_active","fieldtype":"Check","label":"Is Active","default":1,"reqd":1}
+ ],
+ "permissions":[{"create":1,"read":1,"write":1,"role":"WS Owner"},{"create":1,"read":1,"write":1,"role":"WS Admin"},{"read":1,"role":"WS Front Desk"},{"read":1,"role":"WS Trainer"}]
+}

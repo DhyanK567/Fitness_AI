@@ -1,0 +1,113 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"schedule_details",
+		"class_type",
+		"day_of_week",
+		"start_time",
+		"end_time",
+		"capacity",
+		"effective_from",
+		"effective_to",
+		"is_active",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "schedule_details",
+			"fieldtype": "Section Break",
+			"label": "Schedule Details"
+		},
+		{
+			"fieldname": "class_type",
+			"fieldtype": "Link",
+			"label": "Class Type",
+			"options": "WS Class Type",
+			"reqd": 1
+		},
+		{
+			"fieldname": "day_of_week",
+			"fieldtype": "Select",
+			"label": "Day of Week",
+			"options": "Mon\nTue\nWed\nThu\nFri\nSat\nSun",
+			"reqd": 1
+		},
+		{
+			"fieldname": "start_time",
+			"fieldtype": "Time",
+			"label": "Start Time",
+			"reqd": 1
+		},
+		{
+			"fieldname": "end_time",
+			"fieldtype": "Time",
+			"label": "End Time",
+			"reqd": 1
+		},
+		{
+			"fieldname": "capacity",
+			"fieldtype": "Int",
+			"label": "Capacity",
+			"reqd": 1
+		},
+		{
+			"fieldname": "effective_from",
+			"fieldtype": "Date",
+			"label": "Effective From",
+			"reqd": 1,
+			"default": "Today"
+		},
+		{
+			"fieldname": "effective_to",
+			"fieldtype": "Date",
+			"label": "Effective To"
+		},
+		{
+			"fieldname": "is_active",
+			"fieldtype": "Check",
+			"label": "Is Active",
+			"default": 1
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Class Schedule",
+	"naming_series": "SCH-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "class_type",
+	"track_changes": 1
+}

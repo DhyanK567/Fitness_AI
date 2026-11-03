@@ -1,0 +1,102 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"registration_details",
+		"event",
+		"member",
+		"registration_date",
+		"status",
+		"payment",
+		"attended",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "registration_details",
+			"fieldtype": "Section Break",
+			"label": "Registration Details"
+		},
+		{
+			"fieldname": "event",
+			"fieldtype": "Link",
+			"label": "Event",
+			"options": "WS Event",
+			"reqd": 1
+		},
+		{
+			"fieldname": "member",
+			"fieldtype": "Link",
+			"label": "Member",
+			"options": "WS Member",
+			"reqd": 1
+		},
+		{
+			"fieldname": "registration_date",
+			"fieldtype": "Datetime",
+			"label": "Registration Date",
+			"default": "Now",
+			"reqd": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Registered\nCancelled\nAttended",
+			"default": "Registered",
+			"reqd": 1
+		},
+		{
+			"fieldname": "payment",
+			"fieldtype": "Link",
+			"label": "Payment",
+			"options": "WS Payment Record"
+		},
+		{
+			"fieldname": "attended",
+			"fieldtype": "Check",
+			"label": "Attended",
+			"default": 0
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Event Registration",
+	"naming_series": "EVTR-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "event",
+	"track_changes": 1
+}

@@ -1,0 +1,49 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant","studio","branch","full_name","email","phone","date_of_birth",
+  "gender","section_emergency","emergency_contact_name",
+  "emergency_contact_phone","section_health","health_notes",
+  "whatsapp_opt_in","email_opt_in","section_onboarding","onboarding_source","activation_status","section_status","status",
+  "member_since","profile_photo","frappe_user"
+ ],
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1,"in_list_view":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"full_name","fieldtype":"Data","label":"Full Name","reqd":1,"in_list_view":1},
+  {"fieldname":"email","fieldtype":"Data","label":"Email","options":"Email"},
+  {"fieldname":"phone","fieldtype":"Data","label":"Phone","options":"Phone","reqd":1},
+  {"fieldname":"date_of_birth","fieldtype":"Date","label":"Date of Birth"},
+  {"fieldname":"gender","fieldtype":"Select","label":"Gender","options":"\nMale\nFemale\nOther\nPrefer not to say"},
+  {"fieldname":"section_emergency","fieldtype":"Section Break","label":"Emergency Contact"},
+  {"fieldname":"emergency_contact_name","fieldtype":"Data","label":"Emergency Contact Name"},
+  {"fieldname":"emergency_contact_phone","fieldtype":"Data","label":"Emergency Contact Phone","options":"Phone"},
+  {"fieldname":"section_health","fieldtype":"Section Break","label":"Health Info"},
+  {"fieldname":"health_notes","fieldtype":"Small Text","label":"Health / Medical Notes"},
+  {"fieldname":"whatsapp_opt_in","fieldtype":"Check","label":"WhatsApp Opt In","default":0},
+  {"fieldname":"email_opt_in","fieldtype":"Check","label":"Email Opt In","default":0},
+  {"fieldname":"section_onboarding","fieldtype":"Section Break","label":"Onboarding"},
+  {"fieldname":"onboarding_source","fieldtype":"Select","label":"Onboarding Source","options":"Studio Assigned\nDirect B2C\nMarketplace","default":"Studio Assigned","in_list_view":1},
+  {"fieldname":"activation_status","fieldtype":"Select","label":"Activation Status","options":"Pending\nInvited\nActive\nSuspended","default":"Active","in_list_view":1},
+  {"fieldname":"section_status","fieldtype":"Section Break","label":"Status"},
+  {"fieldname":"status","fieldtype":"Select","label":"Member Status","options":"Active\nExpired\nSuspended\nPending Approval","default":"Pending Approval","reqd":1,"in_list_view":1},
+  {"fieldname":"member_since","fieldtype":"Date","label":"Member Since"},
+  {"fieldname":"profile_photo","fieldtype":"Attach Image","label":"Profile Photo"},
+  {"fieldname":"frappe_user","fieldtype":"Link","label":"Frappe User","options":"User"}
+ ],
+ "module": "Members",
+ "name": "WS Member",
+ "naming_rule": "Expression",
+ "autoname": "WS-MEM-.####",
+ "permissions": [
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Admin"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Front Desk"},
+  {"create":0,"delete":0,"read":1,"write":0,"role":"WS Trainer"},
+  {"create":0,"delete":0,"read":1,"write":1,"role":"WS Member","permlevel":1}
+ ],
+ "track_changes": 1,
+ "search_fields": "full_name,email,phone"
+}

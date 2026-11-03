@@ -1,0 +1,15 @@
+# Replace the handles with real GitHub usernames.
+* @SL-github-handle
+/.github/ @DBE-github-handle @SL-github-handle
+/infrastructure/ @DBE-github-handle
+/automation-n8n/ @DBE-github-handle
+/backend-worker/ @DBE-github-handle
+/shared/api-contracts/ @SL-github-handle
+/backend-nestjs-gateway/src/common/ @SL-github-handle
+/backend-nestjs-gateway/src/platform/ @SL-github-handle
+/backend-nestjs-gateway/src/integrations/erp/ @SL-github-handle
+/backend-nestjs-gateway/prisma/ @SL-github-handle
+/backend-nestjs-gateway/src/ai/ @AIP-github-handle @AIQ-github-handle
+/shared/ai-tool-definitions/ @AIP-github-handle
+/erpnext-custom-app/ @ERPE-github-handle
+/frontend-nextjs/ @FEL-github-handle

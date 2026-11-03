@@ -1,0 +1,117 @@
+/classes:
+  post:
+    tags:
+      - Classes
+    summary: Create a new class
+    operationId: createClass
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/classes.yaml#/CreateClassRequest'
+    responses:
+      '201':
+        description: Class created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/classes.yaml#/Class'
+      '400':
+        description: Invalid input
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+
+  get:
+    tags:
+      - Classes
+    summary: Get all classes
+    operationId: getClasses
+    security: []
+    responses:
+      '200':
+        description: Classes retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/classes.yaml#/Class'
+      '401':
+        description: Reserved for authenticated routes
+      '403':
+        description: Not used for the public tenant-scoped read
+
+'/classes/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique class ID
+      schema:
+        type: string
+        example: CLS-00001
+
+  get:
+    tags:
+      - Classes
+    summary: Get class by ID
+    operationId: getClassById
+    security: []
+    responses:
+      '200':
+        description: Class retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/classes.yaml#/Class'
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+      '404':
+        description: Class not found
+
+  put:
+    tags:
+      - Classes
+    summary: Update class
+    operationId: updateClass
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/classes.yaml#/UpdateClassRequest'
+    responses:
+      '200':
+        description: Class updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/classes.yaml#/Class'
+      '400':
+        description: Invalid input
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+      '404':
+        description: Class not found
+
+  delete:
+    tags:
+      - Classes
+    summary: Delete class
+    operationId: deleteClass
+    responses:
+      '200':
+        description: Class deleted successfully
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+      '404':
+        description: Class not found

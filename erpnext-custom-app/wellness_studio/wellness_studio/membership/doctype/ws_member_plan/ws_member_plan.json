@@ -1,0 +1,33 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant","studio","branch","plan_name","plan_type","price","validity_days",
+  "section_entitlements","allowed_bookings_per_week","eligible_class_types",
+  "section_status","is_active","description"
+ ],
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"plan_name","fieldtype":"Data","label":"Plan Name","reqd":1,"in_list_view":1},
+  {"fieldname":"plan_type","fieldtype":"Select","label":"Plan Type","options":"Basic\nPremium\nCustom","default":"Basic","reqd":1,"in_list_view":1},
+  {"fieldname":"price","fieldtype":"Currency","label":"Price","reqd":1,"in_list_view":1},
+  {"fieldname":"validity_days","fieldtype":"Int","label":"Validity (Days)","reqd":1,"default":30},
+  {"fieldname":"section_entitlements","fieldtype":"Section Break","label":"Entitlements"},
+  {"fieldname":"allowed_bookings_per_week","fieldtype":"Int","label":"Bookings Allowed Per Week","default":0,"description":"0 = unlimited"},
+  {"fieldname":"eligible_class_types","fieldtype":"Table MultiSelect","label":"Eligible Class Types","options":"WS Plan Class Entitlement","description":"Leave empty for all class types"},
+  {"fieldname":"section_status","fieldtype":"Section Break","label":"Status"},
+  {"fieldname":"is_active","fieldtype":"Check","label":"Is Active","default":1},
+  {"fieldname":"description","fieldtype":"Small Text","label":"Description"}
+ ],
+ "module": "Membership",
+ "name": "WS Member Plan",
+ "autoname": "WS-PLAN-.####",
+ "permissions": [
+  {"create":1,"delete":1,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Admin"},
+  {"read":1,"role":"WS Member"}
+ ],
+ "track_changes": 1
+}

@@ -1,0 +1,114 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"lead_details",
+		"full_name",
+		"phone",
+		"email",
+		"source",
+		"status",
+		"assigned_to",
+		"notes",
+		"member_id",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "lead_details",
+			"fieldtype": "Section Break",
+			"label": "Lead Details"
+		},
+		{
+			"fieldname": "full_name",
+			"fieldtype": "Data",
+			"label": "Full Name",
+			"reqd": 1
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Phone",
+			"label": "Phone",
+			"reqd": 1
+		},
+		{
+			"fieldname": "email",
+			"fieldtype": "Data",
+			"label": "Email",
+			"options": "Email"
+		},
+		{
+			"fieldname": "source",
+			"fieldtype": "Select",
+			"label": "Source",
+			"options": "Walk-in\nWebsite\nReferral\nAd",
+			"reqd": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "New\nContacted\nTrial Scheduled\nConverted\nLost",
+			"default": "New",
+			"reqd": 1
+		},
+		{
+			"fieldname": "assigned_to",
+			"fieldtype": "Link",
+			"label": "Assigned To",
+			"options": "WS Member"
+		},
+		{
+			"fieldname": "notes",
+			"fieldtype": "Text",
+			"label": "Notes"
+		},
+		{
+			"fieldname": "member_id",
+			"fieldtype": "Link",
+			"label": "Converted Member",
+			"options": "WS Member",
+			"read_only": 1
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Lead",
+	"naming_series": "LEAD-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "full_name",
+	"track_changes": 1
+}

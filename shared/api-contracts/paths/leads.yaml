@@ -1,0 +1,160 @@
+'/leads/public':
+  post:
+    tags: [CRM Leads]
+    summary: Submit a public studio enquiry
+    operationId: submitPublicEnquiry
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/leads.yaml#/PublicEnquiryRequest'
+    responses:
+      '201':
+        description: Enquiry received
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/leads.yaml#/Lead'
+      '400': {description: Invalid enquiry details}
+      '429': {description: Too many enquiries from this address}
+
+'/leads':
+  post:
+    tags:
+      - CRM Leads
+    summary: Create a new lead
+    operationId: createLead
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/leads.yaml#/CreateLeadRequest'
+
+    responses:
+      '201':
+        description: Lead created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/leads.yaml#/Lead'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+  get:
+    tags:
+      - CRM Leads
+    summary: Get all leads
+    operationId: getLeads
+
+    responses:
+      '200':
+        description: Leads retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/leads.yaml#/Lead'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+
+'/leads/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique lead ID
+      schema:
+        type: string
+        example: LEAD-00001
+
+  get:
+    tags:
+      - CRM Leads
+    summary: Get lead by ID
+    operationId: getLeadById
+
+    responses:
+      '200':
+        description: Lead retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/leads.yaml#/Lead'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Lead not found
+
+  put:
+    tags:
+      - CRM Leads
+    summary: Update lead
+    operationId: updateLead
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/leads.yaml#/UpdateLeadRequest'
+
+    responses:
+      '200':
+        description: Lead updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/leads.yaml#/Lead'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Lead not found
+
+  delete:
+    tags:
+      - CRM Leads
+    summary: Delete lead
+    operationId: deleteLead
+
+    responses:
+      '200':
+        description: Lead deleted successfully
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Lead not found

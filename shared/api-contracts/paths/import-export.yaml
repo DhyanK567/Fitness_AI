@@ -1,0 +1,384 @@
+/import-export/import/members:
+  post:
+    tags:
+      - Import / Export
+    summary: Import member records from CSV/Excel or JSON rows
+    operationId: importMembers
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - rows
+            properties:
+              rows:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Divya Krishnan
+                    email:
+                      type: string
+                      format: email
+                      example: divya.k@example.com
+                    phone:
+                      type: string
+                      example: 9845091122
+                    plan:
+                      type: string
+                      enum: [Basic, Premium, Ultra Premium]
+                      example: Premium
+                    status:
+                      type: string
+                      enum: [Active, Review, Paused, Frozen, Inactive]
+                      example: Active
+                    joined:
+                      type: string
+                      example: 3/20/2026
+                    expiry:
+                      type: string
+                      example: 12/20/2026
+                    coach:
+                      type: string
+                      example: Ananya Sharma
+              dryRun:
+                type: boolean
+                example: false
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - file
+            properties:
+              file:
+                type: string
+                format: binary
+              dryRun:
+                type: boolean
+    responses:
+      '200':
+        description: Import completed
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                created:
+                  type: integer
+                  example: 2
+                updated:
+                  type: integer
+                  example: 0
+                skipped:
+                  type: integer
+                  example: 0
+                failed:
+                  type: integer
+                  example: 0
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      row:
+                        type: integer
+                      field:
+                        type: string
+                      message:
+                        type: string
+      '400':
+        description: Invalid input or validation errors
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+      '413':
+        description: File too large
+
+/import-export/import/leads:
+  post:
+    tags:
+      - Import / Export
+    summary: Import CRM lead records from CSV/Excel or JSON rows
+    operationId: importLeads
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - rows
+            properties:
+              rows:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Neha Kapoor
+                    email:
+                      type: string
+                      format: email
+                      example: neha.k@example.com
+                    phone:
+                      type: string
+                      example: 9845122334
+                    source:
+                      type: string
+                      enum: [Instagram, Walk-in, Website enquiry, Referral, Google Search, Facebook, Corporate]
+                      example: Instagram
+                    stage:
+                      type: string
+                      enum: [New enquiry, Trial booked, Trial completed, Follow-up, Converted]
+                      example: New enquiry
+                    followUpDate:
+                      type: string
+                      example: 10/20/2026
+                    assigned:
+                      type: string
+                      example: Meera Nair
+                    plan:
+                      type: string
+                      enum: [Basic, Premium, Ultra Premium]
+                      example: Premium
+                    notes:
+                      type: string
+                      example: Interested in evening reformer classes
+              dryRun:
+                type: boolean
+                example: false
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - file
+            properties:
+              file:
+                type: string
+                format: binary
+              dryRun:
+                type: boolean
+    responses:
+      '200':
+        description: Import completed
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                created:
+                  type: integer
+                  example: 1
+                updated:
+                  type: integer
+                  example: 0
+                skipped:
+                  type: integer
+                  example: 0
+                failed:
+                  type: integer
+                  example: 0
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      row:
+                        type: integer
+                      field:
+                        type: string
+                      message:
+                        type: string
+      '400':
+        description: Invalid input or validation errors
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+
+/import-export/import/classes:
+  post:
+    tags:
+      - Import / Export
+    summary: Import class session records from CSV/Excel or JSON rows
+    operationId: importClasses
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - rows
+            properties:
+              rows:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Evening Core & Mobility
+                    category:
+                      type: string
+                      enum: [Pilates, Strength, Yoga, HIIT, Wellness, Mobility, Recovery, Cardio]
+                      example: Pilates
+                    date:
+                      type: string
+                      example: 10/19/2026
+                    startTime:
+                      type: string
+                      example: 18:00
+                    endTime:
+                      type: string
+                      example: 18:50
+                    trainer:
+                      type: string
+                      example: Ananya Sharma
+                    room:
+                      type: string
+                      example: Studio A
+                    capacity:
+                      type: integer
+                      example: 14
+                    status:
+                      type: string
+                      enum: [Scheduled, Cancelled]
+                      example: Scheduled
+              dryRun:
+                type: boolean
+                example: false
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - file
+            properties:
+              file:
+                type: string
+                format: binary
+              dryRun:
+                type: boolean
+    responses:
+      '200':
+        description: Import completed
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                created:
+                  type: integer
+                  example: 1
+                updated:
+                  type: integer
+                  example: 0
+                skipped:
+                  type: integer
+                  example: 0
+                failed:
+                  type: integer
+                  example: 0
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      row:
+                        type: integer
+                      field:
+                        type: string
+                      message:
+                        type: string
+      '400':
+        description: Invalid input or validation errors
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+
+/import-export/export/{dataset}:
+  get:
+    tags:
+      - Import / Export
+    summary: Export a dataset as JSON or CSV
+    operationId: exportDataset
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: dataset
+        in: path
+        required: true
+        schema:
+          type: string
+          enum: [members, leads, classes, memberships, bookings, attendance, payments, events]
+      - name: format
+        in: query
+        schema:
+          type: string
+          enum: [json, csv, xlsx]
+          default: json
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 5000
+          default: 100
+      - name: from
+        in: query
+        schema:
+          type: string
+          example: 2026-01-01
+      - name: to
+        in: query
+        schema:
+          type: string
+          example: 2026-12-31
+      - name: status
+        in: query
+        schema:
+          type: string
+          example: Active
+    responses:
+      '200':
+        description: Exported dataset
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                count:
+                  type: integer
+                format:
+                  type: string
+      '400':
+        description: Invalid parameters
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+      '404':
+        description: Dataset not supported

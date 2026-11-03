@@ -1,0 +1,110 @@
+/**
+ * Standardized error codes for the fitness-ai platform.
+ * Used by backend, OpenAPI spec, and frontend client.
+ */
+export enum ErrorCode {
+  // Auth
+  AUTH_EXPIRED = 'AUTH_EXPIRED',
+  AUTH_INVALID = 'AUTH_INVALID',
+  AUTH_REQUIRED = 'AUTH_REQUIRED',
+  // Auth - MFA / TOTP
+  MFA_REQUIRED = 'MFA_REQUIRED',
+  MFA_INVALID = 'MFA_INVALID',
+  MFA_ENROLLMENT_REQUIRED = 'MFA_ENROLLMENT_REQUIRED',
+  RECOVERY_CODE_INVALID = 'RECOVERY_CODE_INVALID',
+  // Auth - account state
+  ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
+  TOKEN_REUSED = 'TOKEN_REUSED',
+  // Auth - single-use tokens
+  INVITE_INVALID = 'INVITE_INVALID',
+  INVITE_EXPIRED = 'INVITE_EXPIRED',
+  RESET_TOKEN_INVALID = 'RESET_TOKEN_INVALID',
+  RESET_TOKEN_EXPIRED = 'RESET_TOKEN_EXPIRED',
+  // Auth - OTP (member flow)
+  OTP_INVALID = 'OTP_INVALID',
+  OTP_EXPIRED = 'OTP_EXPIRED',
+  OTP_TOO_MANY_ATTEMPTS = 'OTP_TOO_MANY_ATTEMPTS',
+
+  // Authorization
+  FORBIDDEN = 'FORBIDDEN',
+  TENANT_INACTIVE = 'TENANT_INACTIVE',
+  FEATURE_DISABLED = 'FEATURE_DISABLED',
+
+  // Validation
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+
+  // Resources
+  NOT_FOUND = 'NOT_FOUND',
+  CONFLICT = 'CONFLICT',
+
+  // Rate limiting
+  RATE_LIMITED = 'RATE_LIMITED',
+
+  // LLM
+  LLM_UNAVAILABLE = 'LLM_UNAVAILABLE',
+  LLM_BUDGET_EXCEEDED = 'LLM_BUDGET_EXCEEDED',
+
+  // ERP
+  ERP_UNAVAILABLE = 'ERP_UNAVAILABLE',
+  ERP_TIMEOUT = 'ERP_TIMEOUT',
+
+  // Actions
+  NOT_AVAILABLE = 'NOT_AVAILABLE',
+  ACTION_EXPIRED = 'ACTION_EXPIRED',
+  ACTION_REJECTED = 'ACTION_REJECTED',
+  IDEMPOTENCY_CONFLICT = 'IDEMPOTENCY_CONFLICT',
+
+  // Generic
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
+  SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE',
+}
+
+export const ERROR_CODE_HTTP_STATUS: Record<ErrorCode, number> = {
+  [ErrorCode.AUTH_EXPIRED]: 401,
+  [ErrorCode.AUTH_INVALID]: 401,
+  [ErrorCode.AUTH_REQUIRED]: 401,
+  [ErrorCode.MFA_REQUIRED]: 401,
+  [ErrorCode.MFA_INVALID]: 401,
+  [ErrorCode.MFA_ENROLLMENT_REQUIRED]: 403,
+  [ErrorCode.RECOVERY_CODE_INVALID]: 401,
+  [ErrorCode.ACCOUNT_LOCKED]: 423,
+  [ErrorCode.TOKEN_REUSED]: 401,
+  [ErrorCode.INVITE_INVALID]: 400,
+  [ErrorCode.INVITE_EXPIRED]: 410,
+  [ErrorCode.RESET_TOKEN_INVALID]: 400,
+  [ErrorCode.RESET_TOKEN_EXPIRED]: 410,
+  [ErrorCode.OTP_INVALID]: 400,
+  [ErrorCode.OTP_EXPIRED]: 410,
+  [ErrorCode.OTP_TOO_MANY_ATTEMPTS]: 429,
+  [ErrorCode.FORBIDDEN]: 403,
+  [ErrorCode.TENANT_INACTIVE]: 403,
+  [ErrorCode.FEATURE_DISABLED]: 403,
+  [ErrorCode.VALIDATION_ERROR]: 400,
+  [ErrorCode.NOT_FOUND]: 404,
+  [ErrorCode.CONFLICT]: 409,
+  [ErrorCode.RATE_LIMITED]: 429,
+  [ErrorCode.LLM_UNAVAILABLE]: 503,
+  [ErrorCode.LLM_BUDGET_EXCEEDED]: 429,
+  [ErrorCode.ERP_UNAVAILABLE]: 502,
+  [ErrorCode.ERP_TIMEOUT]: 504,
+  [ErrorCode.NOT_AVAILABLE]: 501,
+  [ErrorCode.ACTION_EXPIRED]: 410,
+  [ErrorCode.ACTION_REJECTED]: 403,
+  [ErrorCode.IDEMPOTENCY_CONFLICT]: 409,
+  [ErrorCode.INTERNAL_ERROR]: 500,
+  [ErrorCode.SERVICE_UNAVAILABLE]: 503,
+};
+
+export function getHttpStatus(code: ErrorCode): number {
+  return ERROR_CODE_HTTP_STATUS[code] ?? 500;
+}
+
+export function isRetryableError(code: ErrorCode): boolean {
+  return [
+    ErrorCode.LLM_UNAVAILABLE,
+    ErrorCode.ERP_UNAVAILABLE,
+    ErrorCode.ERP_TIMEOUT,
+    ErrorCode.RATE_LIMITED,
+    ErrorCode.SERVICE_UNAVAILABLE,
+  ].includes(code);
+}

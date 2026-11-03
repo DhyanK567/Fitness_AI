@@ -1,0 +1,2 @@
+# Database patches are appended here as dotted Python paths. Existing entries are never reordered.
+

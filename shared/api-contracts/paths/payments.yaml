@@ -1,0 +1,98 @@
+/payments:
+  post:
+    tags:
+      - Payments
+    summary: Create a new payment
+    operationId: createPayment
+
+    parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        description: UUID used to safely retry this payment creation request.
+        schema:
+          type: string
+          format: uuid
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/payments.yaml#/CreatePaymentRequest'
+
+    responses:
+      '201':
+        description: Payment created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/payments.yaml#/Payment'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '409':
+        description: Idempotency key conflict or request still processing
+
+  get:
+    tags:
+      - Payments
+    summary: Get all payments
+    operationId: getPayments
+
+    responses:
+      '200':
+        description: Payments retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/payments.yaml#/Payment'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+
+'/payments/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique payment ID
+      schema:
+        type: string
+        example: PAY-00001
+
+  get:
+    tags:
+      - Payments
+    summary: Get payment by ID
+    operationId: getPaymentById
+
+    responses:
+      '200':
+        description: Payment retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/payments.yaml#/Payment'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Payment not found

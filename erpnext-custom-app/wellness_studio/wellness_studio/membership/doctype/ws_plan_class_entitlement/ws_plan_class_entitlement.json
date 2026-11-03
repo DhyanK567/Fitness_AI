@@ -1,0 +1,8 @@
+{
+ "doctype":"DocType","engine":"InnoDB","module":"Membership","name":"WS Plan Class Entitlement","istable":1,
+ "field_order":["class_type","sessions_per_period"],
+ "fields":[
+  {"fieldname":"class_type","fieldtype":"Link","label":"Class Type","options":"WS Class Type","reqd":1,"in_list_view":1},
+  {"fieldname":"sessions_per_period","fieldtype":"Int","label":"Sessions Per Period","non_negative":1}
+ ]
+}

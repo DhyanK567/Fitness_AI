@@ -1,0 +1,107 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"booking_details",
+		"member",
+		"session",
+		"booking_date",
+		"status",
+		"payment",
+		"waitlist_position",
+		"cancellation_reason",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "booking_details",
+			"fieldtype": "Section Break",
+			"label": "Booking Details"
+		},
+		{
+			"fieldname": "member",
+			"fieldtype": "Link",
+			"label": "Member",
+			"options": "WS Member",
+			"reqd": 1
+		},
+		{
+			"fieldname": "session",
+			"fieldtype": "Link",
+			"label": "Class Session",
+			"options": "WS Class Session",
+			"reqd": 1
+		},
+		{
+			"fieldname": "booking_date",
+			"fieldtype": "Date",
+			"label": "Booking Date",
+			"reqd": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Confirmed\nWaitlisted\nCancelled\nAttended",
+			"default": "Confirmed",
+			"reqd": 1
+		},
+		{
+			"fieldname": "payment",
+			"fieldtype": "Link",
+			"label": "Payment",
+			"options": "WS Payment Record"
+		},
+		{
+			"fieldname": "waitlist_position",
+			"fieldtype": "Int",
+			"label": "Waitlist Position",
+			"read_only": 1
+		},
+		{
+			"fieldname": "cancellation_reason",
+			"fieldtype": "Text",
+			"label": "Cancellation Reason"
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Booking",
+	"naming_series": "BKG-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "member",
+	"track_changes": 1
+}

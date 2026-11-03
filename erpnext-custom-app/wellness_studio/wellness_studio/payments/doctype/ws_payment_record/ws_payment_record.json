@@ -1,0 +1,36 @@
+{
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "module": "Payments",
+  "name": "WS Payment Record",
+  "autoname": "WS-PAY-.######",
+  "field_order": ["tenant", "studio", "branch", "member", "lead", "purpose", "membership", "booking", "event_registration", "provider", "provider_order_reference", "provider_reference", "amount", "currency", "status", "paid_on", "recorded_by", "manual_reference", "erp_invoice", "idempotency_key"],
+  "fields": [
+    {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+    {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+    {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+    {"fieldname":"member","fieldtype":"Link","label":"Member","options":"WS Member","in_list_view":1},
+    {"fieldname":"lead","fieldtype":"Link","label":"Lead","options":"WS Lead"},
+    {"fieldname":"purpose","fieldtype":"Select","label":"Purpose","options":"membership\nevent\nother","reqd":1,"in_list_view":1},
+    {"fieldname":"membership","fieldtype":"Link","label":"Membership","options":"WS Membership"},
+    {"fieldname":"booking","fieldtype":"Link","label":"Booking","options":"WS Booking"},
+    {"fieldname":"event_registration","fieldtype":"Link","label":"Event Registration","options":"WS Event Registration"},
+    {"fieldname":"provider","fieldtype":"Select","label":"Provider","options":"razorpay\nmanual_cash\nmanual_upi\nmanual_other","reqd":1},
+    {"fieldname":"provider_order_reference","fieldtype":"Data","label":"Provider Order Reference"},
+    {"fieldname":"provider_reference","fieldtype":"Data","label":"Provider Reference"},
+    {"fieldname":"amount","fieldtype":"Currency","label":"Amount","reqd":1,"in_list_view":1},
+    {"fieldname":"currency","fieldtype":"Link","label":"Currency","options":"Currency","default":"INR","reqd":1},
+    {"fieldname":"status","fieldtype":"Select","label":"Status","options":"Created\nPending\nPaid\nFailed\nRefunded","default":"Created","reqd":1,"in_list_view":1},
+    {"fieldname":"paid_on","fieldtype":"Datetime","label":"Paid On"},
+    {"fieldname":"recorded_by","fieldtype":"Link","label":"Recorded By","options":"User"},
+    {"fieldname":"manual_reference","fieldtype":"Data","label":"Manual Reference"},
+    {"fieldname":"erp_invoice","fieldtype":"Link","label":"ERP Invoice","options":"Sales Invoice"},
+    {"fieldname":"idempotency_key","fieldtype":"Data","label":"Idempotency Key","reqd":1}
+  ],
+  "permissions": [
+    {"create":1,"read":1,"write":1,"role":"WS Owner"},
+    {"create":1,"read":1,"write":1,"role":"WS Admin"},
+    {"read":1,"role":"WS Member"}
+  ],
+  "track_changes": 1
+}

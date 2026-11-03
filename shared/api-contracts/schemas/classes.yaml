@@ -1,0 +1,122 @@
+Class:
+  type: object
+  required:
+    - id
+    - name
+    - trainer_id
+    - category
+    - duration_mins
+    - capacity
+  properties:
+    id:
+      type: string
+      readOnly: true
+      description: Unique class identifier generated automatically by ERPNext
+      example: CLS-00001
+
+    name:
+      type: string
+      minLength: 1
+      description: Name of the class
+      example: Morning Yoga
+
+    trainer_id:
+      type: string
+      description: ID of the trainer assigned to the class
+      example: STF-0003
+
+    category:
+      type: string
+      minLength: 1
+      description: Class category
+      example: yoga
+
+    duration_mins:
+      type: integer
+      minimum: 1
+      description: Class duration in minutes
+      example: 60
+
+    capacity:
+      type: integer
+      minimum: 1
+      description: Maximum number of members allowed
+      example: 20
+
+    location:
+      type: string
+      nullable: true
+      description: Room or area where the class is conducted
+      example: Studio A
+
+
+CreateClassRequest:
+  type: object
+  required:
+    - name
+    - trainer_id
+    - category
+    - duration_mins
+    - capacity
+  properties:
+    name:
+      type: string
+      minLength: 1
+      example: Morning Yoga
+
+    trainer_id:
+      type: string
+      example: STF-0003
+
+    category:
+      type: string
+      minLength: 1
+      example: yoga
+
+    duration_mins:
+      type: integer
+      minimum: 1
+      example: 60
+
+    capacity:
+      type: integer
+      minimum: 1
+      example: 20
+
+    location:
+      type: string
+      nullable: true
+      example: Studio A
+
+
+UpdateClassRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      minLength: 1
+      example: Morning Yoga
+
+    trainer_id:
+      type: string
+      example: STF-0003
+
+    category:
+      type: string
+      minLength: 1
+      example: yoga
+
+    duration_mins:
+      type: integer
+      minimum: 1
+      example: 60
+
+    capacity:
+      type: integer
+      minimum: 1
+      example: 20
+
+    location:
+      type: string
+      nullable: true
+      example: Studio A

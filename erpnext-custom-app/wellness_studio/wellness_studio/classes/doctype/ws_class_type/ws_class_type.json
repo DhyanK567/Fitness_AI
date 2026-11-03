@@ -1,0 +1,28 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["tenant","studio","branch","class_name","category","trainer","duration_minutes","location","color","default_capacity","description","is_active"],
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"class_name","fieldtype":"Data","label":"Class Name","reqd":1,"in_list_view":1},
+  {"fieldname":"category","fieldtype":"Data","label":"Category","in_list_view":1},
+  {"fieldname":"trainer","fieldtype":"Link","label":"Default Trainer","options":"WS Wellness Staff"},
+  {"fieldname":"duration_minutes","fieldtype":"Int","label":"Default Duration (Minutes)","default":60,"reqd":1},
+  {"fieldname":"location","fieldtype":"Data","label":"Location"},
+  {"fieldname":"color","fieldtype":"Color","label":"Color Code","default":"#4F46E5"},
+  {"fieldname":"default_capacity","fieldtype":"Int","label":"Default Capacity","non_negative":1},
+  {"fieldname":"description","fieldtype":"Small Text","label":"Description"},
+  {"fieldname":"is_active","fieldtype":"Check","label":"Is Active","default":1}
+ ],
+ "module": "Classes",
+ "name": "WS Class Type",
+ "autoname": "WS-CLASS-.####",
+ "permissions": [
+  {"create":1,"delete":1,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"delete":1,"read":1,"write":1,"role":"WS Admin"},
+  {"read":1,"role":"WS Member"},
+  {"read":1,"role":"WS Trainer"}
+ ]
+}

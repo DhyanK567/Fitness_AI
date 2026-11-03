@@ -1,0 +1,98 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"plan_details",
+		"plan_name",
+		"plan_type",
+		"duration_days",
+		"price",
+		"features",
+		"is_active",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "plan_details",
+			"fieldtype": "Section Break",
+			"label": "Plan Details"
+		},
+		{
+			"fieldname": "plan_name",
+			"fieldtype": "Data",
+			"label": "Plan Name",
+			"reqd": 1
+		},
+		{
+			"fieldname": "plan_type",
+			"fieldtype": "Select",
+			"label": "Plan Type",
+			"options": "Monthly\nQuarterly\nAnnual",
+			"reqd": 1
+		},
+		{
+			"fieldname": "duration_days",
+			"fieldtype": "Int",
+			"label": "Duration (Days)",
+			"reqd": 1
+		},
+		{
+			"fieldname": "price",
+			"fieldtype": "Currency",
+			"label": "Price",
+			"reqd": 1,
+			"options": "currency"
+		},
+		{
+			"fieldname": "features",
+			"fieldtype": "Text Editor",
+			"label": "Features"
+		},
+		{
+			"fieldname": "is_active",
+			"fieldtype": "Check",
+			"label": "Is Active",
+			"default": 1
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Member Plan",
+	"naming_series": "PLAN-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "plan_name",
+	"track_changes": 1
+}

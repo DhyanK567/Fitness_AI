@@ -1,0 +1,1 @@
+"""Wellness tenant mirror DocType."""

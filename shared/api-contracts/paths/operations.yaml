@@ -1,0 +1,209 @@
+/dashboard/summary:
+  get:
+    tags: [Reports]
+    summary: Read the tenant dashboard summary
+    operationId: getDashboardSummary
+    responses:
+      '200':
+        description: Summary calculated from ERP business records
+        content:
+          application/json:
+            schema: {type: object, additionalProperties: true}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have permission}
+
+/reports:
+  get:
+    tags: [Reports]
+    summary: List supported report codes
+    operationId: listReports
+    responses:
+      '200':
+        description: Report catalog
+        content:
+          application/json:
+            schema: {type: array, items: {type: object, additionalProperties: true}}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have permission}
+
+'/reports/{code}':
+  parameters:
+    - {name: code, in: path, required: true, schema: {type: string}}
+  get:
+    tags: [Reports]
+    summary: Run a tenant-scoped report
+    operationId: runReport
+    parameters:
+      - {name: from, in: query, required: false, schema: {type: string, format: date}}
+      - {name: to, in: query, required: false, schema: {type: string, format: date}}
+    responses:
+      '200':
+        description: Report rows and totals
+        content:
+          application/json:
+            schema: {$ref: '../schemas/operations.yaml#/ReportResult'}
+      '400': {description: Invalid date range}
+      '404': {description: Unknown report code}
+
+/staff:
+  get:
+    tags: [Staff]
+    summary: List tenant staff and assigned roles
+    operationId: listStaff
+    responses:
+      '200':
+        description: Staff list
+        content:
+          application/json:
+            schema: {type: array, items: {$ref: '../schemas/operations.yaml#/Staff'}}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have permission}
+  post:
+    tags: [Staff]
+    summary: Invite a tenant staff member
+    operationId: inviteStaff
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/operations.yaml#/CreateStaffRequest'}
+    responses:
+      '201': {description: Invitation created}
+      '400': {description: Invalid staff or role input}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have permission}
+
+'/staff/{id}/deactivate':
+  parameters:
+    - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+  post:
+    tags: [Staff]
+    summary: Deactivate a staff account and revoke active sessions
+    operationId: deactivateStaff
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/operations.yaml#/StaffStatusRequest'}
+    responses:
+      '200': {description: Staff account deactivated}
+      '404': {description: Staff account not found}
+      '409': {description: Owner-only rule or last-owner invariant rejected operation}
+
+'/staff/{id}/reactivate':
+  parameters:
+    - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+  post:
+    tags: [Staff]
+    summary: Reactivate a staff account
+    operationId: reactivateStaff
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/operations.yaml#/StaffStatusRequest'}
+    responses:
+      '200': {description: Staff account reactivated}
+      '404': {description: Staff account not found}
+      '409': {description: Owner-only rule rejected operation}
+
+/settings:
+  get:
+    tags: [Settings]
+    summary: List the current tenant's configuration values
+    operationId: listSettings
+    responses:
+      '200':
+        description: Tenant settings without internal database identifiers
+        content:
+          application/json:
+            schema: {type: array, items: {$ref: '../schemas/operations.yaml#/TenantSetting'}}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have settings read permission}
+
+'/settings/{key}':
+  parameters:
+    - {name: key, in: path, required: true, schema: {type: string, pattern: '^[a-z][a-z0-9_.-]{1,99}$'}}
+  get:
+    tags: [Settings]
+    summary: Read a tenant configuration value
+    operationId: getSetting
+    responses:
+      '200':
+        description: Tenant setting
+        content:
+          application/json:
+            schema: {$ref: '../schemas/operations.yaml#/TenantSetting'}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have settings read permission}
+      '404': {description: Setting not found}
+  put:
+    tags: [Settings]
+    summary: Create or update a tenant configuration value
+    operationId: upsertSetting
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/operations.yaml#/UpsertTenantSettingRequest'}
+    responses:
+      '200':
+        description: Setting saved and change audited
+        content:
+          application/json:
+            schema: {$ref: '../schemas/operations.yaml#/TenantSetting'}
+      '400': {description: Invalid key or JSON value exceeding 16 KiB}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have settings write permission}
+
+/webhooks/erp-events:
+  post:
+    tags: [Integrations]
+    summary: Receive an idempotent, HMAC-signed ERP event callback
+    operationId: receiveErpEvent
+    security: []
+    parameters:
+      - {name: X-Tenant-ID, in: header, required: true, schema: {type: string, pattern: '^[a-z0-9][a-z0-9-]{1,38}$'}, description: Tenant code; accepted only on this signed callback route}
+      - {name: X-ERP-Signature, in: header, required: true, schema: {type: string, pattern: '^[a-f0-9]{64}$'}, description: HMAC-SHA256 hex digest of the exact raw request body}
+      - {name: X-Correlation-ID, in: header, required: false, schema: {type: string, format: uuid}}
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/operations.yaml#/ErpEventCallback'}
+    responses:
+      '200': {description: Callback accepted or previously processed event returned idempotently}
+      '400': {description: Missing event identity or tenant mismatch}
+      '401': {description: Invalid callback HMAC}
+
+/erpnext/health:
+  get:
+    tags: [ERP Adapter]
+    summary: Verify tenant-scoped connectivity to the Frappe custom app
+    operationId: getErpHealth
+    responses:
+      '200':
+        description: ERP custom app is reachable
+        content:
+          application/json:
+            schema: {$ref: '../schemas/operations.yaml#/ErpHealth'}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have report-read permission}
+      '502': {description: ERP rejected the health request}
+      '503': {description: ERP is unavailable}
+
+/erpnext/version:
+  get:
+    tags: [ERP Adapter]
+    summary: Read the installed Frappe custom-app version for compatibility checks
+    operationId: getErpVersion
+    responses:
+      '200':
+        description: Installed custom-app identity and version
+        content:
+          application/json:
+            schema: {$ref: '../schemas/operations.yaml#/ErpVersion'}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have report-read permission}
+      '502': {description: ERP rejected the version request}
+      '503': {description: ERP is unavailable}

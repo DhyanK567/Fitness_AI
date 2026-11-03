@@ -1,0 +1,56 @@
+ref,date,memberId,type,method,status,amount,refundedAmount,notes
+QA-IMPORT-PAY-001,2026-10-18,97731247-ca15-46f8-8ee9-a941518235c7,Membership,UPI,Paid,2500,0,synthetic import verification
+QA-IMPORT-PAY-002,2026-10-18,4b7f3239-9211-4012-aadc-9ac536c026c6,Membership,Card,Pending,6800,0,synthetic import verification
+QA-IMPORT-PAY-003,2026-10-18,ad4965d4-3c90-461e-9606-1b7f256890ad,Drop-in,Cash,Paid,500,0,synthetic import verification
+QA-IMPORT-PAY-004,2026-08-03,d98d4098-3795-487b-888d-ebe904b2bee4,Drop-in,Net Banking,Paid,500,0,Class pack top-up
+QA-IMPORT-PAY-005,2026-08-05,078e2649-8425-4d88-b8d3-b1862bbf2273,Membership,UPI,Paid,10400,0,Online checkout
+QA-IMPORT-PAY-006,2026-08-06,ddba7481-a674-4fca-89ba-f21c8d903c66,Class Pack,UPI,Paid,3600,0,Monthly renewal
+QA-IMPORT-PAY-007,2026-08-06,8234efdd-addc-4401-b8ca-6b4af85e9bea,Membership,Card,Paid,62200,0,Auto-renewal
+QA-IMPORT-PAY-008,2026-08-06,a98a33d1-97bc-4f31-bcc1-a9360aa58cd0,Class Pack,Cash,Paid,3600,0,Event registration
+QA-IMPORT-PAY-009,2026-08-06,e74c3167-ffb2-48ea-99ca-da68bd513018,Membership,Card,Paid,24000,0,Event registration
+QA-IMPORT-PAY-010,2026-08-06,f8993660-f690-4f31-89fa-a7fb616dd027,Membership,UPI,Paid,24000,0,Monthly renewal
+QA-IMPORT-PAY-011,2026-08-07,a969bd91-a4e0-4f97-8fe2-4ae2843fa185,Membership,Card,Pending,2500,0,Plan upgrade
+QA-IMPORT-PAY-012,2026-08-07,5b0c691d-6c32-4b0d-b070-8bb17ae212b5,Drop-in,Card,Pending,700,0,Monthly renewal
+QA-IMPORT-PAY-013,2026-08-08,69190876-a0c5-420c-a885-f868301a5d12,Event,UPI,Pending,300,0,New joining
+QA-IMPORT-PAY-014,2026-08-09,4e8494fb-9517-45da-b212-db56d9452ba0,Class Pack,UPI,Paid,2400,0,Auto-renewal
+QA-IMPORT-PAY-015,2026-08-10,d7879ce4-0082-47e2-844d-e1c6a4b62e0d,Membership,UPI,Paid,2500,0,Counter payment
+QA-IMPORT-PAY-016,2026-08-11,a5d50dd0-9b1f-4d08-98e9-3ef6026b3d02,Drop-in,Card,Paid,500,0,Plan upgrade
+QA-IMPORT-PAY-017,2026-08-12,f49b8c8d-d052-4fff-9abc-12f8f35031ce,Drop-in,Cash,Paid,700,0,Drop-in session
+QA-IMPORT-PAY-018,2026-08-12,d96f39b4-56fb-44c5-91d1-a06ec0f74427,Event,Cash,Paid,1000,0,Event registration
+QA-IMPORT-PAY-019,2026-08-13,e64b91b0-6b30-4a49-95ef-bd750da7fdd8,Membership,Card,Paid,4800,0,Event registration
+QA-IMPORT-PAY-020,2026-08-15,8bf6237b-5f6f-4b2c-8c8d-a302158e9c4b,Membership,UPI,Paid,9300,0,Auto-renewal
+QA-IMPORT-PAY-021,2026-08-16,431685ff-ea77-4263-a396-e8ac1064a439,Membership,Net Banking,Paid,47200,0,Online checkout
+QA-IMPORT-PAY-022,2026-08-17,899147e0-ff2e-4417-a080-0498faa13ee6,Membership,UPI,Pending,11500,0,Annual plan payment
+QA-IMPORT-PAY-023,2026-08-18,e61f1bf9-2986-4329-b095-35bec988cfd5,Event,UPI,Pending,300,0,Counter payment
+QA-IMPORT-PAY-024,2026-08-18,68881c56-b3cd-4e1c-85f2-3fa0d5c67ee3,Membership,Cash,Paid,44600,0,Counter payment
+QA-IMPORT-PAY-025,2026-08-18,015c1d5c-e4cf-4d0e-bc1f-9183275e1a38,Membership,UPI,Paid,2100,0,Online checkout
+QA-IMPORT-PAY-026,2026-08-18,a0bb4fcd-02eb-48d8-9734-fc4aa86a04d1,Drop-in,Cash,Paid,500,0,Monthly renewal
+QA-IMPORT-PAY-027,2026-08-18,250e0c17-8a02-4907-908e-5b362dfbc7b2,Drop-in,Net Banking,Paid,600,0,Plan upgrade
+QA-IMPORT-PAY-028,2026-08-18,cc0c82e4-e8d0-48df-8d98-cd1d27366923,Membership,UPI,Pending,6800,0,Counter payment
+QA-IMPORT-PAY-029,2026-08-18,bec4f31c-ed5e-4b81-a69d-e5d1dcb30d7d,Membership,UPI,Refunded,17400,8700,Drop-in session
+QA-IMPORT-PAY-030,2026-08-18,1b5ffe72-f4d5-41db-9d1f-4cb9d05b04bd,Membership,Cash,Paid,10800,0,Annual plan payment
+QA-IMPORT-PAY-031,2026-08-19,b6f7b3d0-2351-428d-83d8-03afbb235be2,Membership,Cash,Failed,6100,0,Event registration
+QA-IMPORT-PAY-032,2026-08-21,c6c715bf-e6f1-4f5f-85ba-0cf1cfe7a42a,Event,UPI,Pending,800,0,Class pack top-up
+QA-IMPORT-PAY-033,2026-08-21,ca482b40-f374-4ac6-9c24-72e5f9e65abf,Membership,Card,Pending,6800,0,New joining
+QA-IMPORT-PAY-034,2026-08-22,763b0d52-ccda-4111-a832-af1976a5a085,Membership,Cash,Paid,9300,0,Annual plan payment
+QA-IMPORT-PAY-035,2026-08-23,ff6ea491-240a-46c2-aaf4-1f5feea8da33,Membership,UPI,Paid,13800,0,Monthly renewal
+QA-IMPORT-PAY-036,2026-08-25,0d131efd-a1d0-4f39-a2b6-e3dc8417d9f8,Event,UPI,Paid,800,0,Monthly renewal
+QA-IMPORT-PAY-037,2026-08-25,1e0805e1-bab6-4ac3-aba6-fe6a39bd78c0,Membership,UPI,Paid,8800,0,Class pack top-up
+QA-IMPORT-PAY-038,2026-08-26,5fee13c8-3373-42d7-9c78-752d57fbeeeb,Membership,Card,Paid,91700,0,Monthly renewal
+QA-IMPORT-PAY-039,2026-08-26,4714b94e-a87b-4ffc-813b-012fd4cd039b,Class Pack,UPI,Paid,3600,0,Class pack top-up
+QA-IMPORT-PAY-040,2026-08-27,b2db2f6b-c94a-49ce-9a4c-91bc9ecebf50,Class Pack,Net Banking,Paid,3600,0,Counter payment
+QA-IMPORT-PAY-041,2026-08-27,a9295474-1735-4f19-b4c4-0c464c772106,Membership,Card,Paid,2500,0,Class pack top-up
+QA-IMPORT-PAY-042,2026-08-27,6e6e293e-9461-475b-afa4-51f91d633cb9,Membership,UPI,Paid,10200,0,Event registration
+QA-IMPORT-PAY-043,2026-08-29,4a20d662-5a30-4da4-9efd-a195bee93ed1,Event,Net Banking,Paid,300,0,Event registration
+QA-IMPORT-PAY-044,2026-08-29,f88943b3-e81c-4624-9a0d-8458b4bd51be,Drop-in,Card,Failed,600,0,Auto-renewal
+QA-IMPORT-PAY-045,2026-08-29,a57f5c0c-ed4c-46c9-86c8-da407d8e90b7,Membership,UPI,Paid,11900,0,Drop-in session
+QA-IMPORT-PAY-046,2026-08-31,d1e29034-8398-40cd-92e3-8779f6181e7c,Membership,UPI,Pending,4400,0,Monthly renewal
+QA-IMPORT-PAY-047,2026-09-01,853c2409-a20c-47ac-9738-f7c743e5a40a,Membership,Net Banking,Paid,6800,0,Annual plan payment
+QA-IMPORT-PAY-048,2026-09-02,398a18c4-fd96-423f-97bd-bcf1ac866786,Membership,Cash,Paid,26800,0,Event registration
+QA-IMPORT-PAY-049,2026-09-04,a34ae36f-0786-41b5-88da-6442e4509193,Event,Card,Paid,800,0,Event registration
+QA-IMPORT-PAY-050,2026-09-06,17a4b77e-a970-4cdc-b05f-26c370602146,Membership,Net Banking,Paid,62200,0,Class pack top-up
+QA-IMPORT-PAY-051,2026-09-07,e5a34078-795c-4b9b-8fba-5e788c7ddcd4,Drop-in,UPI,Paid,700,0,Counter payment
+QA-IMPORT-PAY-052,2026-09-07,53956b19-ff5d-4c12-808c-813f7f6f6d22,Event,Cash,Paid,800,0,Event registration
+QA-IMPORT-PAY-053,2026-09-08,8947af09-a32e-494b-86af-8953e5417a03,Membership,Card,Paid,25700,0,Class pack top-up
+QA-IMPORT-PAY-054,2026-09-08,48b33e91-4342-4702-9fc7-81ab4c59ced4,Drop-in,Net Banking,Paid,600,0,Online checkout
+QA-IMPORT-PAY-055,2026-09-09,1ddfe2b6-e31f-4b44-8746-681429f7d734,Class Pack,UPI,Failed,3600,0,Auto-renewal

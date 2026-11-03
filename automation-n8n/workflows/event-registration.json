@@ -1,0 +1,365 @@
+{
+  "name": "Event Registration",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "event-registration",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e0000007-0001-4000-8000-000000000001",
+      "name": "Webhook Trigger (/event-registration)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e0000007-0001-4000-8000-000000000002",
+      "name": "Sub-Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\nconst uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;\n\nfor (const item of items) {\n  const payload = item.json.body || item.json;\n  const data = payload.data || payload;\n  \n  const rawTo = String(payload.to || data.member_id || data.phone || '').trim();\n  const explicitPhone = String(data.phone || data.member_phone || '').trim();\n  const isUuid = uuidPattern.test(rawTo);\n  const hasExplicitValidPhone = !uuidPattern.test(explicitPhone) && explicitPhone.replace(/[^0-9]/g, '').length >= 10;\n  \n  const memberId = isUuid ? rawTo : (data.member_id || '');\n  const needsLookup = isUuid && !hasExplicitValidPhone;\n  const initialPhone = hasExplicitValidPhone ? explicitPhone : (!isUuid ? rawTo : '');\n  \n  results.push({\n    json: {\n      rawPayload: payload,\n      data,\n      memberId,\n      needsLookup,\n      phone: initialPhone,\n      rawRecipient: rawTo,\n      tenantId: payload.tenantId || payload.tenant_id || 'default-tenant',\n      eventId: payload.eventId || payload.event_id || `evt_${Date.now()}`,\n      correlationId: payload.correlationId || payload.correlation_id || `corr_${Date.now()}`,\n      template: 'event-registration'\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000007-0001-4000-8000-000000000003",
+      "name": "Parse Event Registration & Check Recipient",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Boolean($json.needsLookup) }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e0000007-0001-4000-8000-000000000004",
+      "name": "Needs Member Phone Lookup?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        600,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ ($env.API_BASE_URL || 'http://api:3000') + '/api/v1/members/' + $json.memberId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WSOS_SERVICE_TOKEN || ''}}"
+            },
+            {
+              "name": "X-Tenant-Id",
+              "value": "={{$json.tenantId}}"
+            },
+            {
+              "name": "Host",
+              "value": "={{$json.tenantId}}.{{$env.TENANT_BASE_DOMAIN || 'fitness.local'}}"
+            },
+            {
+              "name": "X-Correlation-Id",
+              "value": "={{$json.correlationId}}"
+            }
+          ]
+        },
+        "options": {
+          "retryOnFail": false
+        }
+      },
+      "id": "e0000007-0001-4000-8000-000000000005",
+      "name": "Fetch Member From API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        820,
+        280
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\nconst uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;\n\nfor (const item of items) {\n  const d = item.json;\n  const apiRes = d.data || d;\n  const fetchedPhone = apiRes.phone || apiRes.mobile || (apiRes.member && apiRes.member.phone) || '';\n  \n  const candidatePhone = String(fetchedPhone || d.phone || '').trim();\n  const cleanDigits = candidatePhone.replace(/[^0-9]/g, '');\n  const isUuid = uuidPattern.test(candidatePhone);\n  const isValidPhone = !isUuid && cleanDigits.length >= 10 && cleanDigits.length <= 15;\n  const resolvedPhone = cleanDigits.length >= 10 ? (candidatePhone.startsWith('+') ? candidatePhone.replace(/[^0-9+]/g, '') : `+${cleanDigits}`) : '';\n  const memberName = apiRes.full_name || apiRes.name || d.data?.member_name || 'Valued Guest';\n\n  results.push({\n    json: {\n      ...d,\n      phone: resolvedPhone,\n      resolvedPhone,\n      memberName,\n      isValidPhone\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000007-0001-4000-8000-000000000006",
+      "name": "Extract & Validate Member Phone",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Boolean($json.isValidPhone) }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e0000007-0001-4000-8000-000000000007",
+      "name": "Is Phone Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const d = item.json;\n  const payload = d.rawPayload || d;\n  const data = d.data || payload.data || {};\n  \n  const memberName = d.memberName || data.member_name || data.name || 'Valued Guest';\n  const eventName = data.event_name || data.eventName || 'Studio Workshop / Special Event';\n  const date = data.date || data.event_date || data.eventDate || new Date().toISOString().split('T')[0];\n  const time = data.time || data.startTime || '10:00 AM';\n  const location = data.location || data.venue || 'Wellness Studio Main Hall';\n  const price = data.amount || data.price || 0;\n  const amountPaidOrFree = price > 0 ? `₹${price}` : 'Free / Included with Membership';\n  const eventId = data.event_id || data.id || payload.subjectRef || `evt_${Date.now()}`;\n  const registrationId = data.registration_id || `reg_${Date.now()}`;\n  \n  results.push({\n    json: {\n      to: d.phone,\n      phone: d.phone,\n      template: 'event-registration-confirmation',\n      template_name: 'event-registration-confirmation',\n      tenantId: d.tenantId,\n      eventId: d.eventId,\n      correlationId: d.correlationId,\n      idempotencyKey: `event_reg_${registrationId}`,\n      isDirectDelivery: true,\n      source: 'domain_workflow',\n      workflow_name: 'event-registration',\n      data: {\n        member_name: memberName,\n        event_name: eventName,\n        date,\n        time,\n        location,\n        amount_paid_or_free: amountPaidOrFree\n      }\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000007-0001-4000-8000-000000000008",
+      "name": "Format Event Confirmation Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "send-message"
+      },
+      "id": "e0000007-0001-4000-8000-000000000009",
+      "name": "Call send-message Sub-Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const d = item.json;\n  results.push({\n    json: {\n      alertType: 'notification_failure',\n      severity: 'high',\n      workflow_name: 'event-registration',\n      eventId: d.eventId,\n      recipient: d.rawRecipient || d.memberId || 'unknown',\n      template: 'event-registration-confirmation',\n      error_code: 'RECIPIENT_PHONE_UNRESOLVABLE',\n      error_message: `Recipient member ID '${d.memberId}' could not be resolved to a valid phone number. API lookup failed or member phone missing.`,\n      tenantId: d.tenantId,\n      correlationId: d.correlationId,\n      timestamp: new Date().toISOString()\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000007-0001-4000-8000-000000000010",
+      "name": "Handle Phone Resolution Failure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "failure-alert"
+      },
+      "id": "e0000007-0001-4000-8000-000000000011",
+      "name": "Trigger Failure Alert",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  success: true,\n  workflow: 'event-registration',\n  status: 'dispatched',\n  recipient: $json.to || $json.recipient,\n  eventId: $json.eventId\n}) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "e0000007-0001-4000-8000-000000000012",
+      "name": "Respond to Webhook (200)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  success: false,\n  workflow: 'event-registration',\n  status: 'failed',\n  error: 'Recipient phone could not be resolved from member ID',\n  recipient: $json.recipient,\n  eventId: $json.eventId\n}) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "e0000007-0001-4000-8000-000000000013",
+      "name": "Respond Error (400)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (/event-registration)": {
+      "main": [
+        [
+          {
+            "node": "Parse Event Registration & Check Recipient",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sub-Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Event Registration & Check Recipient",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Event Registration & Check Recipient": {
+      "main": [
+        [
+          {
+            "node": "Needs Member Phone Lookup?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Member Phone Lookup?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Member From API",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Phone Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Member From API": {
+      "main": [
+        [
+          {
+            "node": "Extract & Validate Member Phone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract & Validate Member Phone": {
+      "main": [
+        [
+          {
+            "node": "Is Phone Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Phone Valid?": {
+      "main": [
+        [
+          {
+            "node": "Format Event Confirmation Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Phone Resolution Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Event Confirmation Message": {
+      "main": [
+        [
+          {
+            "node": "Call send-message Sub-Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call send-message Sub-Workflow": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook (200)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Phone Resolution Failure": {
+      "main": [
+        [
+          {
+            "node": "Trigger Failure Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond Error (400)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e0000007-0000-4000-8000-000000000002",
+  "id": "event-registration",
+  "tags": [
+    "notifications",
+    "events",
+    "outbox"
+  ]
+}

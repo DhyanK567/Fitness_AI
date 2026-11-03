@@ -1,0 +1,205 @@
+/classes/{class_id}/schedules:
+  parameters:
+    - $ref: '#/parameters/ClassId'
+  post:
+    tags: [Class Schedule]
+    summary: Add a recurring schedule to a class
+    operationId: createClassSchedule
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/class-schedules.yaml#/CreateClassScheduleRequest'}
+    responses:
+      '201':
+        description: Class schedule created
+        content:
+          application/json:
+            schema: {$ref: '../schemas/class-schedules.yaml#/ClassSchedule'}
+      '400': {description: Invalid schedule input}
+      '403': {description: Caller cannot manage this class schedule}
+  get:
+    tags: [Class Schedule]
+    summary: Get schedules for a class
+    operationId: getClassSchedules
+    security: []
+    responses:
+      '200':
+        description: Class schedules
+        content:
+          application/json:
+            schema:
+              type: array
+              items: {$ref: '../schemas/class-schedules.yaml#/ClassSchedule'}
+      '404': {description: Class not found}
+
+/classes/{class_id}/schedules/{schedule_id}:
+  parameters:
+    - $ref: '#/parameters/ClassId'
+    - $ref: '#/parameters/ScheduleId'
+  put:
+    tags: [Class Schedule]
+    summary: Update a recurring class schedule
+    operationId: updateClassSchedule
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/class-schedules.yaml#/UpdateClassScheduleRequest'}
+    responses:
+      '200':
+        description: Class schedule updated
+        content:
+          application/json:
+            schema: {$ref: '../schemas/class-schedules.yaml#/ClassSchedule'}
+      '400': {description: Invalid schedule input}
+      '403': {description: Caller cannot manage this class schedule}
+      '404': {description: Class or schedule not found}
+  delete:
+    tags: [Class Schedule]
+    summary: Delete a recurring class schedule
+    operationId: deleteClassSchedule
+    responses:
+      '200': {description: Class schedule deleted}
+      '403': {description: Caller cannot manage this class schedule}
+      '404': {description: Class or schedule not found}
+
+/bookings/{id}/cancel:
+  parameters:
+    - $ref: '#/parameters/BookingId'
+  post:
+    tags: [Bookings]
+    summary: Cancel a booking
+    operationId: cancelBooking
+    responses:
+      '200':
+        description: Booking cancelled
+        content:
+          application/json:
+            schema: {$ref: '../schemas/bookings.yaml#/Booking'}
+      '403': {description: Caller cannot cancel this booking}
+      '404': {description: Booking not found}
+      '409': {description: Booking cannot be cancelled under the cancellation rule}
+
+/attendance/class/{class_id}:
+  parameters:
+    - $ref: '#/parameters/ClassId'
+  get:
+    tags: [Attendance]
+    summary: Get attendance for a class
+    operationId: getAttendanceByClass
+    responses:
+      '200':
+        description: Attendance records
+        content:
+          application/json:
+            schema:
+              type: array
+              items: {$ref: '../schemas/attendance.yaml#/Attendance'}
+      '403': {description: Caller cannot view this class attendance}
+      '404': {description: Class not found}
+
+/attendance/member/{member_id}:
+  parameters:
+    - $ref: '#/parameters/MemberId'
+  get:
+    tags: [Attendance]
+    summary: Get attendance for a member
+    operationId: getAttendanceByMember
+    responses:
+      '200':
+        description: Attendance records
+        content:
+          application/json:
+            schema:
+              type: array
+              items: {$ref: '../schemas/attendance.yaml#/Attendance'}
+      '403': {description: Caller cannot view this member attendance}
+      '404': {description: Member not found}
+
+/leads/{id}/convert:
+  parameters:
+    - $ref: '#/parameters/LeadId'
+  post:
+    tags: [CRM Leads]
+    summary: Convert a lead to a member
+    operationId: convertLead
+    responses:
+      '200':
+        description: Lead converted
+        content:
+          application/json:
+            schema: {$ref: '../schemas/leads.yaml#/Lead'}
+      '403': {description: Caller cannot convert leads}
+      '404': {description: Lead not found}
+      '409': {description: Lead is already converted or cannot be converted}
+
+/payments/webhook:
+  post:
+    tags: [Payments]
+    summary: Receive Razorpay payment events
+    operationId: receiveRazorpayWebhook
+    security: []
+    parameters:
+      - name: X-Razorpay-Signature
+        in: header
+        required: true
+        schema: {type: string}
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/payments.yaml#/RazorpayWebhook'}
+    responses:
+      '200': {description: Webhook accepted}
+      '401': {description: Invalid webhook signature}
+      '409': {description: Duplicate webhook event}
+
+/payments/{id}/refund:
+  parameters:
+    - $ref: '#/parameters/PaymentId'
+  post:
+    tags: [Payments]
+    summary: Refund a successful payment
+    operationId: refundPayment
+    responses:
+      '200':
+        description: Payment refunded
+        content:
+          application/json:
+            schema: {$ref: '../schemas/payments.yaml#/Payment'}
+      '403': {description: Caller cannot refund payments}
+      '404': {description: Payment not found}
+      '409': {description: Payment cannot be refunded}
+
+parameters:
+  ClassId:
+    name: class_id
+    in: path
+    required: true
+    schema: {type: string, example: CLS-00001}
+  ScheduleId:
+    name: schedule_id
+    in: path
+    required: true
+    schema: {type: string, example: SCH-00001}
+  BookingId:
+    name: id
+    in: path
+    required: true
+    schema: {type: string, example: BKG-00001}
+  MemberId:
+    name: member_id
+    in: path
+    required: true
+    schema: {type: string, example: MEM-00001}
+  LeadId:
+    name: id
+    in: path
+    required: true
+    schema: {type: string, example: LEAD-00001}
+  PaymentId:
+    name: id
+    in: path
+    required: true
+    schema: {type: string, example: PAY-00001}

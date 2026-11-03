@@ -1,0 +1,230 @@
+/auth/staff/login:
+  post:
+    tags: [Authentication]
+    operationId: staffLogin
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/StaffLoginRequest'
+    responses:
+      '200':
+        description: Staff session created
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/AuthTokenResponse'
+      '401': { description: Invalid credentials or inactive account }
+      '429': { description: Rate limit exceeded }
+
+/auth/staff/invite:
+  post:
+    tags: [Authentication]
+    operationId: inviteStaff
+    security: [{ bearerAuth: [] }]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/StaffInviteRequest'
+    responses:
+      '201': { description: Staff invite created }
+      '401': { description: Authentication required }
+      '403': { description: Missing staff-management permission }
+
+/auth/staff/reset-password:
+  post:
+    tags: [Authentication]
+    operationId: adminResetStaffPassword
+    security: [{ bearerAuth: [] }]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/AdminResetPasswordRequest'
+    responses:
+      '200': { description: Staff password reset and sessions revoked }
+      '401': { description: Authentication required }
+      '403': { description: Missing staff-management permission }
+
+/auth/register/staff-invite:
+  post:
+    tags: [Authentication]
+    operationId: acceptStaffInvite
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/AcceptStaffInviteRequest'
+    responses:
+      '200':
+        description: Invite accepted and session issued
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/AuthTokenResponse'
+      '400': { description: Invalid invite or password }
+
+/auth/password/forgot:
+  post:
+    tags: [Authentication]
+    operationId: requestPasswordReset
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/ForgotPasswordRequest'
+    responses:
+      '202': { description: Reset request accepted without disclosing account existence }
+      '503': { description: Delivery is not configured }
+
+/auth/password/reset:
+  post:
+    tags: [Authentication]
+    operationId: completePasswordReset
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/CompletePasswordResetRequest'
+    responses:
+      '200': { description: Password reset completed; existing sessions revoked }
+      '410': { description: Reset token expired or already consumed }
+
+/auth/password/change:
+  post:
+    tags: [Authentication]
+    operationId: changeStaffPassword
+    security: [{ bearerAuth: [] }]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/ChangePasswordRequest'
+    responses:
+      '200': { description: Password changed and a new session issued }
+      '401': { description: Authentication required }
+
+/auth/refresh:
+  post:
+    tags: [Authentication]
+    operationId: rotateRefreshToken
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/RefreshTokenRequest'
+    responses:
+      '200': { description: Refresh token rotated }
+      '401': { description: Invalid, expired, or reused refresh token }
+
+/auth/logout:
+  post:
+    tags: [Authentication]
+    operationId: logout
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/LogoutRequest'
+    responses:
+      '200': { description: Session revoked }
+
+/auth/me:
+  get:
+    tags: [Authentication]
+    operationId: getCurrentIdentity
+    security: [{ bearerAuth: [] }]
+    responses:
+      '200': { description: Current user, roles, permissions, and tenant }
+      '401': { description: Authentication required }
+
+/auth/member/otp/request:
+  post:
+    tags: [Authentication]
+    operationId: requestMemberOtp
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/MemberOtpRequest'
+    responses:
+      '201': { description: OTP challenge issued }
+      '429': { description: Rate limit exceeded }
+
+/auth/member/otp/verify:
+  post:
+    tags: [Authentication]
+    operationId: verifyMemberOtp
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/MemberOtpVerifyRequest'
+    responses:
+      '200':
+        description: Member authenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/AuthTokenResponse'
+      '401': { description: Invalid OTP }
+      '410': { description: OTP expired }
+      '429': { description: Attempt or request rate limit exceeded }
+
+/auth/member/google:
+  post:
+    tags: [Authentication]
+    operationId: googleMemberSignIn
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/GoogleIdTokenRequest'
+    responses:
+      '200':
+        description: Session issued for an already-linked active member
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/auth.yaml#/AuthTokenResponse'
+      '401': { description: Invalid Google token or identity not linked }
+      '503': { description: Google sign-in is not configured }
+
+/auth/member/google/link:
+  post:
+    tags: [Authentication]
+    operationId: linkGoogleMemberAccount
+    security: [{ bearerAuth: [] }]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/auth.yaml#/GoogleIdTokenRequest'
+    responses:
+      '200': { description: Google identity linked to the authenticated member }
+      '401': { description: Authentication required or invalid Google token }
+      '403': { description: Persisted session authentication is older than five minutes or caller is not an active ERP member }
+      '409': { description: Google identity is already linked }

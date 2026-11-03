@@ -1,0 +1,55 @@
+Wellness Studio OS - System & Production Requirements
+=====================================================
+This document lists the aggregated requirements necessary to build, deploy, and run the entire Fitness AI monorepo.
+
+1. SYSTEM & INFRASTRUCTURE REQUIREMENTS
+---------------------------------------
+- Operating System: Ubuntu 22.04 LTS (Production) / Windows 11 / macOS (Development)
+- Node.js: v22.17.0+ (Required for backend-nestjs-gateway, frontend-nextjs, backend-worker)
+- Package Manager: pnpm v12.6.0+ (Mandatory for monorepo workspaces)
+- Python: v3.12+ (Required for ERPNext custom app and pip dependencies)
+- Containerization: Docker v24+ and Docker Compose v2+
+- Memory: Minimum 8GB RAM (16GB recommended for running all services locally)
+
+2. DATABASE REQUIREMENTS
+---------------------------------------
+- PostgreSQL: v16+
+- Postgres Extension: pgvector (Mandatory for Phase 2 AI RAG and vector embeddings)
+- Redis: v7+ (Optional but recommended for caching and worker queues)
+
+3. PYTHON DEPENDENCIES (erpnext-custom-app)
+---------------------------------------
+# Run `pip install -r requirements.txt` inside erpnext-custom-app/
+qrcode>=7.4,<9
+razorpay>=1.4,<2
+requests>=2.31,<3
+
+4. CORE NODE.JS DEPENDENCIES (Global Monorepo)
+---------------------------------------
+- @nestjs/core (v10.4.0)
+- @prisma/client (v5.22.0)
+- next (v14+)
+- react & react-dom (v18+)
+- zustand (State Management)
+- tailwindcss (Styling)
+- zod (Validation)
+
+5. EXTERNAL API & SAAS REQUIREMENTS
+---------------------------------------
+- Google Gemini API Key (For Admin AI / Studio Copilot)
+- Razorpay API Credentials (For payment webhooks and processing)
+- WhatsApp Business API / Meta Developer Account (For automated messaging via n8n)
+- N8N Cloud or Self-Hosted Instance
+
+6. NETWORK & SECURITY REQUIREMENTS
+---------------------------------------
+- TLS/SSL Certificates (HTTPS is strictly required for Webhooks/N8N)
+- Reverse Proxy: Nginx or Traefik (To route traffic between Next.js, NestJS, and ERPNext)
+- Minimum 256kb request body limits for JSON payloads
+- Isolated Tenant Subdomains (e.g., tenant1.fitness.local)
+
+7. BUILD & DEPLOYMENT PIPELINE
+---------------------------------------
+- TurboRepo for CI/CD caching (`npx turbo run build`)
+- GitHub Actions or GitLab CI (Must support multi-container deployments)
+- Prisma Migrate (Must run `npx prisma migrate deploy` on release)

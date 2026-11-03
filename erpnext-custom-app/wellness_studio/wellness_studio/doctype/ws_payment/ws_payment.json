@@ -1,0 +1,140 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"payment_details",
+		"member",
+		"membership",
+		"booking",
+		"amount",
+		"currency",
+		"payment_method",
+		"razorpay_order_id",
+		"razorpay_payment_id",
+		"status",
+		"paid_at",
+		"idempotency_key",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "payment_details",
+			"fieldtype": "Section Break",
+			"label": "Payment Details"
+		},
+		{
+			"fieldname": "member",
+			"fieldtype": "Link",
+			"label": "Member",
+			"options": "WS Member",
+			"reqd": 1
+		},
+		{
+			"fieldname": "membership",
+			"fieldtype": "Link",
+			"label": "Membership",
+			"options": "WS Membership"
+		},
+		{
+			"fieldname": "booking",
+			"fieldtype": "Link",
+			"label": "Booking",
+			"options": "WS Booking"
+		},
+		{
+			"fieldname": "amount",
+			"fieldtype": "Currency",
+			"label": "Amount",
+			"reqd": 1,
+			"options": "currency"
+		},
+		{
+			"fieldname": "currency",
+			"fieldtype": "Select",
+			"label": "Currency",
+			"options": "INR\nUSD\nEUR",
+			"default": "INR",
+			"reqd": 1
+		},
+		{
+			"fieldname": "payment_method",
+			"fieldtype": "Select",
+			"label": "Payment Method",
+			"options": "Razorpay\nCash\nUPI",
+			"reqd": 1
+		},
+		{
+			"fieldname": "razorpay_order_id",
+			"fieldtype": "Data",
+			"label": "Razorpay Order ID",
+			"read_only": 1
+		},
+		{
+			"fieldname": "razorpay_payment_id",
+			"fieldtype": "Data",
+			"label": "Razorpay Payment ID",
+			"read_only": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Pending\nPaid\nFailed\nRefunded",
+			"default": "Pending",
+			"reqd": 1
+		},
+		{
+			"fieldname": "paid_at",
+			"fieldtype": "Datetime",
+			"label": "Paid At",
+			"read_only": 1
+		},
+		{
+			"fieldname": "idempotency_key",
+			"fieldtype": "Data",
+			"label": "Idempotency Key",
+			"read_only": 1,
+			"unique": 1
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Payment Record",
+	"naming_series": "PAY-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "member",
+	"track_changes": 1
+}

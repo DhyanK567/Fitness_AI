@@ -1,0 +1,229 @@
+{
+  "name": "Lead Confirmation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-confirmation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e0000002-0001-4000-8000-000000000001",
+      "name": "Webhook Trigger (/lead-confirmation)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e0000002-0001-4000-8000-000000000002",
+      "name": "Sub-Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\nconst uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;\n\nfor (const item of items) {\n  const payload = item.json.body || item.json;\n  const data = payload.data || payload;\n  \n  const leadName = data.name || data.lead_name || payload.name || 'Valued Prospect';\n  const rawPhone = String(data.phone || payload.to || payload.phone || '').trim();\n  const studioName = data.studio_name || payload.studio_name || 'Wellness Studio';\n  const leadId = data.lead_id || data.id || payload.subjectRef || `lead_${Date.now()}`;\n  const eventId = payload.eventId || payload.event_id || `evt_${Date.now()}`;\n  const tenantId = payload.tenantId || payload.tenant_id || 'default-tenant';\n  const correlationId = payload.correlationId || payload.correlation_id || `corr_${Date.now()}`;\n\n  const cleanDigits = rawPhone.replace(/[^0-9]/g, '');\n  const isUuid = uuidPattern.test(rawPhone);\n  const isValidPhone = !isUuid && cleanDigits.length >= 10 && cleanDigits.length <= 15;\n  const formattedPhone = cleanDigits.length >= 10 ? (rawPhone.startsWith('+') ? rawPhone.replace(/[^0-9+]/g, '') : `+${cleanDigits}`) : '';\n\n  results.push({\n    json: {\n      to: formattedPhone || rawPhone,\n      phone: formattedPhone || rawPhone,\n      rawRecipient: rawPhone,\n      isValidPhone,\n      isDirectDelivery: true,\n      source: 'domain_workflow',\n      workflow_name: 'lead-confirmation',\n      template: 'lead-registration-confirmation',\n      template_name: 'lead-registration-confirmation',\n      tenantId,\n      eventId,\n      correlationId,\n      idempotencyKey: `lead_confirm_${leadId}`,\n      data: {\n        lead_name: leadName,\n        studio_name: studioName,\n        lead_id: leadId\n      }\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000002-0001-4000-8000-000000000003",
+      "name": "Extract & Validate Lead Details",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Boolean($json.isValidPhone) }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e0000002-0001-4000-8000-000000000004",
+      "name": "Check Lead Phone Validity",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        700,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "send-message"
+      },
+      "id": "e0000002-0001-4000-8000-000000000005",
+      "name": "Call send-message Sub-Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        940,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const d = item.json;\n  results.push({\n    json: {\n      alertType: 'notification_failure',\n      severity: 'high',\n      workflow_name: 'lead-confirmation',\n      eventId: d.eventId,\n      recipient: d.rawRecipient || d.to,\n      template: d.template,\n      error_code: 'INVALID_LEAD_PHONE',\n      error_message: `Lead phone '${d.rawRecipient}' is missing or invalid. Expected E.164 phone format.`,\n      tenantId: d.tenantId,\n      correlationId: d.correlationId,\n      timestamp: new Date().toISOString()\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000002-0001-4000-8000-000000000006",
+      "name": "Handle Lead Phone Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "failure-alert"
+      },
+      "id": "e0000002-0001-4000-8000-000000000007",
+      "name": "Trigger Failure Alert",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  success: true,\n  workflow: 'lead-confirmation',\n  status: 'dispatched',\n  recipient: $json.to || $json.recipient,\n  eventId: $json.eventId\n}) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "e0000002-0001-4000-8000-000000000008",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1160,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  success: false,\n  workflow: 'lead-confirmation',\n  status: 'failed',\n  error: 'Invalid or missing lead phone number',\n  recipient: $json.recipient,\n  eventId: $json.eventId\n}) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "e0000002-0001-4000-8000-000000000009",
+      "name": "Respond Error (400)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1380,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (/lead-confirmation)": {
+      "main": [
+        [
+          {
+            "node": "Extract & Validate Lead Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sub-Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract & Validate Lead Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract & Validate Lead Details": {
+      "main": [
+        [
+          {
+            "node": "Check Lead Phone Validity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Lead Phone Validity": {
+      "main": [
+        [
+          {
+            "node": "Call send-message Sub-Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Lead Phone Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call send-message Sub-Workflow": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Lead Phone Error": {
+      "main": [
+        [
+          {
+            "node": "Trigger Failure Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond Error (400)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e0000002-0000-4000-8000-000000000002",
+  "id": "lead-confirmation",
+  "tags": [
+    "notifications",
+    "leads",
+    "outbox"
+  ]
+}

@@ -1,0 +1,10 @@
+with open('C:\\dev\\fitness-ai\\shared\\erp-methods\\index.ts', 'r') as f:
+    content = f.read()
+
+old = "GET: 'wellness_studio.api.recommendation.get',\n\n  } as const;\n\nexport "
+new = "GET: 'wellness_studio.api.recommendation.get',\n\n  // ============================================\n  // CRM (Phase 3)\n  // ============================================\n  PIPELINE_STAGE_LIST: 'wellness_studio.api.pipeline_stage.list',\n  PIPELINE_STAGE_GET: 'wellness_studio.api.pipeline_stage.get',\n  PIPELINE_STAGE_CREATE: 'wellness_studio.api.pipeline_stage.create',\n  PIPELINE_STAGE_UPDATE: 'wellness_studio.api.pipeline_stage.update',\n  PIPELINE_STAGE_DELETE: 'wellness_studio.api.pipeline_stage.delete',\n  PIPELINE_ENTRY_LIST: 'wellness_studio.api.pipeline_entry.list',\n  PIPELINE_ENTRY_GET: 'wellness_studio.api.pipeline_entry.get',\n  PIPELINE_ENTRY_CREATE: 'wellness_studio.api.pipeline_entry.create',\n  PIPELINE_ENTRY_MOVE: 'wellness_studio.api.pipeline_entry.move',\n  CRM_CAMPAIGN_LIST: 'wellness_studio.api.crm_campaign.list',\n  CRM_CAMPAIGN_GET: 'wellness_studio.api.crm_campaign.get',\n  CRM_CAMPAIGN_CREATE: 'wellness_studio.api.crm_campaign.create',\n  CRM_CAMPAIGN_UPDATE: 'wellness_studio.api.crm_campaign.update',\n  CRM_CAMPAIGN_ENROLL: 'wellness_studio.api.crm_campaign.enroll',\n  CRM_CAMPAIGN_METRICS: 'wellness_studio.api.crm_campaign.metrics',\n\n  // ============================================\n  // Retention (Phase 4)\n  // ============================================\n  WINBACK_CAMPAIGN_CREATE: 'wellness_studio.api.winback_campaign.create',\n  WINBACK_CAMPAIGN_SEND: 'wellness_studio.api.winback_campaign.send',\n  RETENTION_ACTION_CREATE: 'wellness_studio.api.retention_action.create',\n  RETENTION_ACTION_LIST: 'wellness_studio.api.retention_action.list',\n  RETENTION_METRICS: 'wellness_studio.api.retention.metrics',\n} as const;\nexport "
+
+content = content.replace(old, new)
+with open('C:\\dev\\fitness-ai\\shared\\erp-methods\\index.ts', 'w') as f:
+    f.write(content)
+print('Done')

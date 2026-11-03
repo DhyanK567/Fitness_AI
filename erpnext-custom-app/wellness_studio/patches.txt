@@ -1,0 +1,38 @@
+# Wellness Studio Database Patches
+# Run with: bench migrate
+
+# ============================================
+# Phase 5: Operations Agent Tables
+# ============================================
+
+execute:wellness_studio.patches.create_operations_tables
+
+# ============================================
+# Phase 5: Growth Agent Tables
+# ============================================
+
+execute:wellness_studio.patches.create_growth_tables
+
+# ============================================
+# Phase 5: Marketing Agent Tables
+# ============================================
+
+execute:wellness_studio.patches.create_marketing_tables
+
+# ============================================
+# Permissions & Roles
+# ============================================
+
+execute:wellness_studio.patches.setup_roles_and_permissions
+
+# ============================================
+# Notification Templates
+# ============================================
+
+execute:wellness_studio.patches.create_notification_templates
+
+# ============================================
+# Workflow States
+# ============================================
+
+execute:wellness_studio.patches.create_workflow_states

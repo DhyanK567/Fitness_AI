@@ -1,0 +1,352 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-page: #FAFAF9;
+    --surface-card: #FFFFFF;
+    --border-subtle: #E7E5E4;
+    --text-primary: #1C1917;
+    --text-secondary: #78716C;
+    --brand-primary: #0D9488;
+    --brand-secondary: #EA580C;
+    --focus-ring: #0D9488;
+  }
+
+  .b2c-portal.dark {
+    --bg-page: #070B13;
+    --surface-card: #151E2E;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --brand-primary: #14B8A6;
+    --brand-secondary: #F97316;
+    --focus-ring: #14B8A6;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    min-height: 100vh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.6) 0%,
+    rgba(241, 245, 249, 0.9) 50%,
+    rgba(226, 232, 240, 0.6) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+.b2c-portal.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.5) 0%,
+    rgba(51, 65, 85, 0.8) 50%,
+    rgba(30, 41, 59, 0.5) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+nextjs-portal,
+[data-nextjs-toast-wrapper],
+[data-nextjs-dialog-overlay],
+#nextjs-dev-tools-button {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.staff-theme {
+  --staff-page: #f7f8fa;
+  --staff-surface: #ffffff;
+  --staff-surface-muted: #f8fafc;
+  --staff-border: #e2e8f0;
+  --staff-text: #0f172a;
+  --staff-text-muted: #64748b;
+  min-height: 100vh;
+  background: var(--staff-page);
+  color: var(--staff-text);
+}
+
+.staff-theme[data-theme='dark'] {
+  --staff-page: #070b13;
+  --staff-surface: #151e2e;
+  --staff-surface-muted: #0f172a;
+  --staff-border: #334155;
+  --staff-text: #f1f5f9;
+  --staff-text-muted: #a6b3c3;
+  color-scheme: dark;
+  background: var(--staff-page);
+  color: var(--staff-text);
+}
+
+.staff-theme[data-theme='dark'] .bg-white { background-color: var(--staff-surface); }
+.staff-theme[data-theme='dark'] .bg-white\/95 { background-color: rgba(21, 30, 46, 0.96); }
+.staff-theme[data-theme='dark'] .bg-slate-50,
+.staff-theme[data-theme='dark'] .bg-sand-50,
+.staff-theme[data-theme='dark'] .bg-slate-50\/70,
+.staff-theme[data-theme='dark'] .bg-slate-50\/80 { background-color: #0f172a; }
+.staff-theme[data-theme='dark'] .bg-rose-50\/40 { background-color: rgba(74, 29, 44, 0.38); }
+.staff-theme[data-theme='dark'] .bg-slate-100 { background-color: #1e293b; }
+.staff-theme[data-theme='dark'] .bg-slate-200 { background-color: #334155; }
+.staff-theme[data-theme='dark'] .bg-slate-300 { background-color: #475569; }
+.staff-theme[data-theme='dark'] .bg-slate-800 { background-color: #253247; }
+.staff-theme[data-theme='dark'] .bg-slate-900 { background-color: #253247; }
+.staff-theme[data-theme='dark'] .bg-slate-950 { background-color: var(--staff-surface); }
+.staff-theme[data-theme='dark'] .text-slate-950,
+.staff-theme[data-theme='dark'] .text-slate-900 { color: #f8fafc; }
+.staff-theme[data-theme='dark'] .text-slate-800 { color: #e2e8f0; }
+.staff-theme[data-theme='dark'] .text-slate-700 { color: #cbd5e1; }
+.staff-theme[data-theme='dark'] .text-slate-600 { color: #b8c4d2; }
+.staff-theme[data-theme='dark'] .text-slate-500 { color: #9aa9bb; }
+.staff-theme[data-theme='dark'] .text-slate-400 { color: #8b9bb0; }
+.staff-theme[data-theme='dark'] .text-slate-300 { color: #b8c4d2; }
+.staff-theme[data-theme='dark'] .border-slate-100,
+.staff-theme[data-theme='dark'] .border-slate-200 { border-color: #2c394c; }
+.staff-theme[data-theme='dark'] .border-slate-300 { border-color: #475569; }
+.staff-theme[data-theme='dark'] .border-slate-800 { border-color: #2c394c; }
+.staff-theme[data-theme='dark'] .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.staff-theme[data-theme='dark'] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: #2c394c; }
+.staff-theme[data-theme='dark'] .hover\:bg-slate-50:hover { background-color: #1e293b; }
+.staff-theme[data-theme='dark'] .hover\:bg-slate-100:hover { background-color: #27364a; }
+.staff-theme[data-theme='dark'] .placeholder\:text-slate-500::placeholder,
+.staff-theme[data-theme='dark'] .placeholder\:text-slate-400::placeholder { color: #8b9bb0; }
+.staff-theme[data-theme='dark'] .bg-rose-50 { background-color: #4a1d2c; }
+.staff-theme[data-theme='dark'] .text-rose-700,
+.staff-theme[data-theme='dark'] .text-rose-800 { color: #fda4af; }
+.staff-theme[data-theme='dark'] .border-rose-200,
+.staff-theme[data-theme='dark'] .border-rose-300 { border-color: #9f3151; }
+.staff-theme[data-theme='dark'] .bg-emerald-50 { background-color: #123b31; }
+.staff-theme[data-theme='dark'] .text-emerald-700 { color: #6ee7b7; }
+.staff-theme[data-theme='dark'] .border-emerald-200 { border-color: #1e6250; }
+.staff-theme[data-theme='dark'] .bg-amber-50 { background-color: #422c13; }
+.staff-theme[data-theme='dark'] .text-amber-700,
+.staff-theme[data-theme='dark'] .text-amber-800,
+.staff-theme[data-theme='dark'] .text-amber-950 { color: #fcd38d; }
+.staff-theme[data-theme='dark'] .border-amber-200 { border-color: #8b5d20; }
+.staff-theme[data-theme='dark'] .bg-sky-100 { background-color: #183a55; }
+.staff-theme[data-theme='dark'] .bg-sky-50 { background-color: #122c43; }
+.staff-theme[data-theme='dark'] .text-sky-700 { color: #7dd3fc; }
+.staff-theme[data-theme='dark'] .border-sky-200 { border-color: #285374; }
+.staff-theme[data-theme='dark'] .bg-blue-50 { background-color: #172d50; }
+.staff-theme[data-theme='dark'] .text-blue-700 { color: #93c5fd; }
+.staff-theme[data-theme='dark'] .border-blue-200 { border-color: #294f80; }
+.staff-theme[data-theme='dark'] input,
+.staff-theme[data-theme='dark'] select,
+.staff-theme[data-theme='dark'] textarea { background-color: #0f172a; color: #f1f5f9; border-color: #475569; }
+.staff-theme[data-theme='dark'] input:disabled,
+.staff-theme[data-theme='dark'] button:disabled { opacity: 0.72; }
+.staff-theme[data-theme='dark'] table thead { background-color: #0f172a; }
+.staff-theme[data-theme='dark'] table tbody tr:hover { background-color: #1b293b; }
+.staff-theme[data-theme='dark'] .shadow-subtle,
+.staff-theme[data-theme='dark'] .shadow-elevated { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28); }
+
+/* ─────────────────────────────────────────────────────────────
+   B2C Dark Mode System (.b2c-portal.dark)
+   Ensures cards, surfaces, borders, typography, inputs, badges
+   seamlessly switch between light and crisp, luxurious dark mode.
+   STRICTLY scoped to .b2c-portal so staff, admin, and marketing
+   pages remain purely in their intended light design.
+   ───────────────────────────────────────────────────────────── */
+.b2c-portal.dark {
+  color-scheme: dark;
+}
+
+.b2c-portal.dark .bg-white {
+  background-color: #0f172a !important;
+}
+
+.b2c-portal.dark .bg-white\/80,
+.b2c-portal.dark .bg-white\/90,
+.b2c-portal.dark .bg-white\/95 {
+  background-color: rgba(15, 23, 42, 0.94) !important;
+}
+
+.b2c-portal.dark .bg-\[\#FCFAF8\],
+.b2c-portal.dark .bg-\[\#FAF8F5\],
+.b2c-portal.dark .bg-\[\#FBF7F4\],
+.b2c-portal.dark .bg-\[\#F8FAFC\] {
+  background-color: #020617 !important;
+}
+
+.b2c-portal.dark .bg-slate-50,
+.b2c-portal.dark .bg-sand-50,
+.b2c-portal.dark .bg-stone-50,
+.b2c-portal.dark .bg-slate-50\/50,
+.b2c-portal.dark .bg-slate-50\/60,
+.b2c-portal.dark .bg-slate-50\/70,
+.b2c-portal.dark .bg-slate-50\/80 {
+  background-color: #1e293b !important;
+}
+
+.b2c-portal.dark .bg-slate-100,
+.b2c-portal.dark .bg-slate-100\/70,
+.b2c-portal.dark .bg-slate-100\/80 {
+  background-color: #1e293b !important;
+}
+
+.b2c-portal.dark .bg-slate-200 {
+  background-color: #334155 !important;
+}
+
+.b2c-portal.dark .bg-slate-300 {
+  background-color: #475569 !important;
+}
+
+.b2c-portal.dark .text-slate-950,
+.b2c-portal.dark .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+.b2c-portal.dark .text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+.b2c-portal.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+.b2c-portal.dark .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.b2c-portal.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.b2c-portal.dark .border-slate-100,
+.b2c-portal.dark .border-slate-200,
+.b2c-portal.dark .border-slate-200\/70,
+.b2c-portal.dark .border-slate-200\/80,
+.b2c-portal.dark .border-slate-200\/90,
+.b2c-portal.dark .border-stone-200 {
+  border-color: #1e293b !important;
+}
+
+.b2c-portal.dark .border-slate-300 {
+  border-color: #334155 !important;
+}
+
+.b2c-portal.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.b2c-portal.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e293b !important;
+}
+
+.b2c-portal.dark .hover\:bg-slate-50:hover {
+  background-color: #1e293b !important;
+}
+
+.b2c-portal.dark .hover\:bg-slate-100:hover {
+  background-color: #27364a !important;
+}
+
+.b2c-portal.dark input:not([type="checkbox"]):not([type="radio"]),
+.b2c-portal.dark select,
+.b2c-portal.dark textarea {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+.b2c-portal.dark input:disabled,
+.b2c-portal.dark textarea:disabled {
+  background-color: #0f172a !important;
+  color: #64748b !important;
+  border-color: #1e293b !important;
+}
+
+.b2c-portal.dark input::placeholder,
+.b2c-portal.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+.b2c-portal.dark .bg-rose-50,
+.b2c-portal.dark .bg-rose-50\/40,
+.b2c-portal.dark .bg-rose-50\/50,
+.b2c-portal.dark .bg-rose-50\/60,
+.b2c-portal.dark .bg-rose-50\/70 {
+  background-color: rgba(74, 29, 44, 0.4) !important;
+}
+
+.b2c-portal.dark .border-rose-100,
+.b2c-portal.dark .border-rose-200,
+.b2c-portal.dark .border-rose-200\/80 {
+  border-color: rgba(225, 29, 72, 0.3) !important;
+}
+
+.b2c-portal.dark .bg-emerald-50,
+.b2c-portal.dark .bg-emerald-500\/10 {
+  background-color: rgba(18, 59, 49, 0.4) !important;
+}
+
+.b2c-portal.dark .text-emerald-700 {
+  color: #6ee7b7 !important;
+}
+
+.b2c-portal.dark .border-emerald-200,
+.b2c-portal.dark .border-emerald-200\/80 {
+  border-color: #1e6250 !important;
+}
+
+.b2c-portal.dark .bg-amber-50 {
+  background-color: #422c13 !important;
+}
+
+.b2c-portal.dark .text-amber-700,
+.b2c-portal.dark .text-amber-800 {
+  color: #fcd38d !important;
+}
+
+.b2c-portal.dark .border-amber-200 {
+  border-color: #8b5d20 !important;
+}
+
+.b2c-portal.dark .shadow-xs,
+.b2c-portal.dark .shadow-sm,
+.b2c-portal.dark .shadow-md,
+.b2c-portal.dark .shadow-lg,
+.b2c-portal.dark .shadow-xl {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Always keep optical QR code surface white for camera/turnstile scanning */
+.b2c-portal.dark .qr-code-surface {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+.b2c-portal.dark .qr-code-surface svg {
+  color: #0f172a !important;
+  fill: #0f172a !important;
+}

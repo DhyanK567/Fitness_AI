@@ -1,0 +1,38 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant","studio","branch","member","plan","plan_snapshot","start_date","end_date",
+  "section_payment","payment_status","payment_reference","amount_paid",
+  "section_status","status","approved_by","approved_on","notes"
+ ],
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"member","fieldtype":"Link","label":"Member","options":"WS Member","reqd":1,"in_list_view":1},
+  {"fieldname":"plan","fieldtype":"Link","label":"Plan","options":"WS Member Plan","reqd":1,"in_list_view":1},
+  {"fieldname":"plan_snapshot","fieldtype":"JSON","label":"Plan Snapshot","reqd":1},
+  {"fieldname":"start_date","fieldtype":"Date","label":"Start Date","reqd":1},
+  {"fieldname":"end_date","fieldtype":"Date","label":"End Date","reqd":1,"in_list_view":1},
+  {"fieldname":"section_payment","fieldtype":"Section Break","label":"Payment"},
+  {"fieldname":"payment_status","fieldtype":"Select","label":"Payment Status","options":"Pending\nPaid\nFailed\nRefunded","default":"Pending","reqd":1,"in_list_view":1},
+  {"fieldname":"payment_reference","fieldtype":"Data","label":"Payment Reference (Razorpay)"},
+  {"fieldname":"amount_paid","fieldtype":"Currency","label":"Amount Paid"},
+  {"fieldname":"section_status","fieldtype":"Section Break","label":"Approval"},
+  {"fieldname":"status","fieldtype":"Select","label":"Membership Status","options":"Pending Approval\nActive\nExpired\nSuspended\nCancelled","default":"Pending Approval","reqd":1,"in_list_view":1},
+  {"fieldname":"approved_by","fieldtype":"Link","label":"Approved By","options":"User"},
+  {"fieldname":"approved_on","fieldtype":"Datetime","label":"Approved On"},
+  {"fieldname":"notes","fieldtype":"Small Text","label":"Notes"}
+ ],
+ "module": "Membership",
+ "name": "WS Membership",
+ "autoname": "WS-MSHIP-.####",
+ "permissions": [
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Admin"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Front Desk"},
+  {"read":1,"role":"WS Member"}
+ ],
+ "track_changes": 1
+}

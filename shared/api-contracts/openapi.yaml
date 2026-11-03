@@ -1,0 +1,285 @@
+openapi: 3.0.3
+
+info:
+  title: Fitness & Wellness ERP API
+  description: API contract for the fitness and wellness ERP platform
+  version: 1.0.0
+
+servers:
+  - url: https://api.example.com
+    description: API Server
+
+tags:
+  - name: Authentication
+    description: Staff and member authentication and account linking
+
+  - name: Members
+    description: Member management APIs
+
+  - name: Memberships
+    description: Membership plan and subscription APIs
+
+  - name: Classes
+    description: Class management APIs
+
+  - name: Class Schedule
+    description: Recurring class schedule APIs
+
+  - name: Bookings
+    description: Class booking APIs
+
+  - name: Attendance
+    description: Member attendance APIs
+
+  - name: CRM Leads
+    description: Lead management and conversion APIs
+
+  - name: Payments
+    description: Payment order creation, status, and webhook APIs
+
+  - name: Events
+    description: Studio event and registration APIs
+
+  - name: Reports
+    description: Tenant-scoped dashboard and reporting APIs
+
+  - name: Settings
+    description: Tenant-scoped configuration values
+
+  - name: Integrations
+    description: Signed service-to-service callbacks
+
+  - name: ERP Adapter
+    description: Tenant-scoped ERP readiness and compatibility checks
+
+  - name: Import / Export
+    description: Bulk import and export of studio datasets via CSV/Excel
+
+  - name: Staff
+    description: Staff invitations and lifecycle management
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/staff/login:
+    $ref: './paths/auth.yaml#/~1auth~1staff~1login'
+
+  /auth/staff/invite:
+    $ref: './paths/auth.yaml#/~1auth~1staff~1invite'
+
+  /auth/staff/reset-password:
+    $ref: './paths/auth.yaml#/~1auth~1staff~1reset-password'
+
+  /auth/register/staff-invite:
+    $ref: './paths/auth.yaml#/~1auth~1register~1staff-invite'
+
+  /auth/password/forgot:
+    $ref: './paths/auth.yaml#/~1auth~1password~1forgot'
+
+  /auth/password/reset:
+    $ref: './paths/auth.yaml#/~1auth~1password~1reset'
+
+  /auth/password/change:
+    $ref: './paths/auth.yaml#/~1auth~1password~1change'
+
+  /auth/refresh:
+    $ref: './paths/auth.yaml#/~1auth~1refresh'
+
+  /auth/logout:
+    $ref: './paths/auth.yaml#/~1auth~1logout'
+
+  /auth/me:
+    $ref: './paths/auth.yaml#/~1auth~1me'
+
+  /auth/member/otp/request:
+    $ref: './paths/auth.yaml#/~1auth~1member~1otp~1request'
+
+  /auth/member/otp/verify:
+    $ref: './paths/auth.yaml#/~1auth~1member~1otp~1verify'
+
+  /auth/member/google:
+    $ref: './paths/auth.yaml#/~1auth~1member~1google'
+
+  /auth/member/google/link:
+    $ref: './paths/auth.yaml#/~1auth~1member~1google~1link'
+
+  /members:
+    $ref: './paths/members.yaml#/~1members'
+
+  /members/me:
+    $ref: './paths/members.yaml#/~1members~1me'
+
+  /members/{id}:
+    $ref: './paths/members.yaml#/~1members~1{id}'
+
+  /memberships:
+    $ref: './paths/memberships.yaml#/~1memberships'
+
+  /memberships/plans:
+    $ref: './paths/memberships.yaml#/~1memberships~1plans'
+
+  /memberships/me:
+    $ref: './paths/memberships.yaml#/~1memberships~1me'
+
+  /memberships/{id}:
+    $ref: './paths/memberships.yaml#/~1memberships~1{id}'
+
+  /memberships/{id}/cancel:
+    $ref: './paths/memberships.yaml#/~1memberships~1{id}~1cancel'
+
+  /classes:
+    $ref: './paths/classes.yaml#/~1classes'
+
+  /classes/{id}:
+    $ref: './paths/classes.yaml#/~1classes~1{id}'
+
+  /classes/{class_id}/schedules:
+    $ref: './paths/actions.yaml#/~1classes~1{class_id}~1schedules'
+
+  /classes/{class_id}/schedules/{schedule_id}:
+    $ref: './paths/actions.yaml#/~1classes~1{class_id}~1schedules~1{schedule_id}'
+
+  /leads:
+    $ref: './paths/leads.yaml#/~1leads'
+
+  /leads/public:
+    $ref: './paths/leads.yaml#/~1leads~1public'
+
+  /leads/{id}:
+    $ref: './paths/leads.yaml#/~1leads~1{id}'
+
+  /leads/{id}/convert:
+    $ref: './paths/actions.yaml#/~1leads~1{id}~1convert'
+
+  /payments:
+    $ref: './paths/payments.yaml#/~1payments'
+
+  /payments/{id}:
+    $ref: './paths/payments.yaml#/~1payments~1{id}'
+
+  /payments/webhook:
+    $ref: './paths/actions.yaml#/~1payments~1webhook'
+
+  /attendance:
+    $ref: './paths/attendance.yaml#/~1attendance'
+
+  /attendance/{id}:
+    $ref: './paths/attendance.yaml#/~1attendance~1{id}'
+
+  /attendance/class/{class_id}:
+    $ref: './paths/actions.yaml#/~1attendance~1class~1{class_id}'
+
+  /attendance/member/{member_id}:
+    $ref: './paths/actions.yaml#/~1attendance~1member~1{member_id}'
+
+  /bookings:
+    $ref: './paths/bookings.yaml#/~1bookings'
+
+  /bookings/{id}:
+    $ref: './paths/bookings.yaml#/~1bookings~1{id}'
+
+  /bookings/{id}/cancel:
+    $ref: './paths/actions.yaml#/~1bookings~1{id}~1cancel'
+
+  /events:
+    $ref: './paths/events.yaml#/~1events'
+
+  /events/{id}:
+    $ref: './paths/events.yaml#/~1events~1{id}'
+
+  /events/{id}/registrations:
+    $ref: './paths/events.yaml#/~1events~1{id}~1registrations'
+
+  /events/public:
+    $ref: './paths/events.yaml#/~1events~1public'
+
+  /events/public/{id}/registrations:
+    $ref: './paths/events.yaml#/~1events~1public~1{id}~1registrations'
+
+  /dashboard/summary:
+    $ref: './paths/operations.yaml#/~1dashboard~1summary'
+
+  /reports:
+    $ref: './paths/operations.yaml#/~1reports'
+
+  /reports/{code}:
+    $ref: './paths/operations.yaml#/~1reports~1{code}'
+
+  /staff:
+    $ref: './paths/operations.yaml#/~1staff'
+
+  /staff/{id}/deactivate:
+    $ref: './paths/operations.yaml#/~1staff~1{id}~1deactivate'
+
+  /staff/{id}/reactivate:
+    $ref: './paths/operations.yaml#/~1staff~1{id}~1reactivate'
+
+  /settings:
+    $ref: './paths/operations.yaml#/~1settings'
+
+  /settings/{key}:
+    $ref: './paths/operations.yaml#/~1settings~1{key}'
+
+  /webhooks/erp-events:
+    $ref: './paths/operations.yaml#/~1webhooks~1erp-events'
+
+  /erpnext/health:
+    $ref: './paths/operations.yaml#/~1erpnext~1health'
+
+  /erpnext/version:
+    $ref: './paths/operations.yaml#/~1erpnext~1version'
+
+  /import-export/import/members:
+    $ref: './paths/import-export.yaml#/~1import-export~1import~1members'
+
+  /import-export/import/leads:
+    $ref: './paths/import-export.yaml#/~1import-export~1import~1leads'
+
+  /import-export/import/classes:
+    $ref: './paths/import-export.yaml#/~1import-export~1import~1classes'
+
+  /import-export/export/{dataset}:
+    $ref: './paths/import-export.yaml#/~1import-export~1export~1{dataset}'
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    StaffLoginRequest:
+      $ref: './schemas/auth.yaml#/StaffLoginRequest'
+
+    GoogleIdTokenRequest:
+      $ref: './schemas/auth.yaml#/GoogleIdTokenRequest'
+
+    MemberOtpRequest:
+      $ref: './schemas/auth.yaml#/MemberOtpRequest'
+
+    MemberOtpVerifyRequest:
+      $ref: './schemas/auth.yaml#/MemberOtpVerifyRequest'
+
+    AuthTokenResponse:
+      $ref: './schemas/auth.yaml#/AuthTokenResponse'
+
+    CreateMemberRequest:
+      $ref: './schemas/members.yaml#/CreateMemberRequest'
+
+    UpdateMemberRequest:
+      $ref: './schemas/members.yaml#/UpdateMemberRequest'
+
+    MemberResponse:
+      $ref: './schemas/members.yaml#/MemberResponse'
+
+    CreateMembershipRequest:
+      $ref: './schemas/memberships.yaml#/CreateMembershipRequest'
+
+    UpdateMembershipRequest:
+      $ref: './schemas/memberships.yaml#/UpdateMembershipRequest'
+
+    MembershipResponse:
+      $ref: './schemas/memberships.yaml#/MembershipResponse'

@@ -1,0 +1,130 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"session_details",
+		"class_type",
+		"session_date",
+		"start_time",
+		"end_time",
+		"capacity",
+		"confirmed_count",
+		"waitlist_count",
+		"status",
+		"trainer",
+		"location",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "session_details",
+			"fieldtype": "Section Break",
+			"label": "Session Details"
+		},
+		{
+			"fieldname": "class_type",
+			"fieldtype": "Link",
+			"label": "Class Type",
+			"options": "WS Class Type",
+			"reqd": 1
+		},
+		{
+			"fieldname": "session_date",
+			"fieldtype": "Date",
+			"label": "Session Date",
+			"reqd": 1
+		},
+		{
+			"fieldname": "start_time",
+			"fieldtype": "Time",
+			"label": "Start Time",
+			"reqd": 1
+		},
+		{
+			"fieldname": "end_time",
+			"fieldtype": "Time",
+			"label": "End Time",
+			"reqd": 1
+		},
+		{
+			"fieldname": "capacity",
+			"fieldtype": "Int",
+			"label": "Capacity",
+			"reqd": 1
+		},
+		{
+			"fieldname": "confirmed_count",
+			"fieldtype": "Int",
+			"label": "Confirmed Count",
+			"default": 0,
+			"read_only": 1
+		},
+		{
+			"fieldname": "waitlist_count",
+			"fieldtype": "Int",
+			"label": "Waitlist Count",
+			"default": 0,
+			"read_only": 1
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Scheduled\nCancelled\nCompleted",
+			"default": "Scheduled",
+			"reqd": 1
+		},
+		{
+			"fieldname": "trainer",
+			"fieldtype": "Link",
+			"label": "Trainer",
+			"options": "WS Member",
+			"reqd": 0
+		},
+		{
+			"fieldname": "location",
+			"fieldtype": "Data",
+			"label": "Location"
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Class Session",
+	"naming_series": "SES-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "class_type",
+	"track_changes": 1
+}

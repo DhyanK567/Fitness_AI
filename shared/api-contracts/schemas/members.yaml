@@ -1,0 +1,54 @@
+MemberResponse:
+  type: object
+  required: [id, full_name, email, phone, date_of_birth, gender, join_date, status, emergency_contact]
+  properties:
+    id: {type: string, readOnly: true, example: MEM-00001}
+    full_name: {type: string, minLength: 1, example: Rahul Kumar}
+    email: {type: string, format: email, example: rahul@gmail.com}
+    phone: {type: string, example: '9876543210'}
+    date_of_birth: {type: string, format: date, example: '2000-05-15'}
+    gender: {type: string, enum: [male, female, other, prefer not to say], example: male}
+    join_date: {type: string, format: date, example: '2026-09-18'}
+    status: {type: string, enum: [active, inactive, frozen], example: active}
+    membership_id: {type: string, nullable: true, example: MSHP-00001}
+    profile_photo_url: {type: string, nullable: true, example: /uploads/MEM-00001.jpg}
+    emergency_contact: {type: string, example: '9876500000'}
+
+CreateMemberRequest:
+  type: object
+  required: [full_name, email, phone, date_of_birth, gender, join_date, status, emergency_contact]
+  properties:
+    full_name: {type: string, minLength: 1, example: Rahul Kumar}
+    email: {type: string, format: email, example: rahul@gmail.com}
+    phone: {type: string, example: '9876543210'}
+    date_of_birth: {type: string, format: date, example: '1998-05-10'}
+    gender: {type: string, enum: [male, female, other], example: male}
+    join_date: {type: string, format: date, example: '2026-09-18'}
+    status: {type: string, enum: [active, inactive, frozen], example: active}
+    membership_id: {type: string, nullable: true, example: MSHP-00012}
+    profile_photo_url: {type: string, nullable: true, example: https://example.com/profile/MEM-00001.jpg}
+    emergency_contact: {type: string, example: '9876500000'}
+
+UpdateMemberRequest:
+  type: object
+  properties:
+    full_name: {type: string, minLength: 1}
+    email: {type: string, format: email}
+    phone: {type: string}
+    date_of_birth: {type: string, format: date}
+    gender: {type: string, enum: [male, female, other]}
+    join_date: {type: string, format: date}
+    status: {type: string, enum: [active, inactive, frozen]}
+    membership_id: {type: string, nullable: true}
+    profile_photo_url: {type: string, nullable: true}
+    emergency_contact: {type: string}
+UpdateMyMemberProfileRequest:
+  type: object
+  additionalProperties: false
+  properties:
+    full_name: {type: string, minLength: 1, maxLength: 140}
+    email: {type: string, format: email, maxLength: 140}
+    date_of_birth: {type: string, format: date}
+    gender: {type: string, enum: [male, female, other, prefer not to say]}
+    profile_photo_url: {type: string, maxLength: 2048, nullable: true}
+    emergency_contact: {type: string, maxLength: 32}

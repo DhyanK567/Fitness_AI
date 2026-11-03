@@ -1,0 +1,246 @@
+{
+  "name": "Failure Alert",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e0000008-0001-4000-8000-000000000001",
+      "name": "Sub-Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "failure-alert",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e0000008-0001-4000-8000-000000000002",
+      "name": "Webhook Trigger (/failure-alert)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const payload = item.json.body || item.json;\n  \n  const workflowName = payload.workflow_name || payload.workflow || 'notification-system';\n  const eventId = payload.event_id || payload.eventId || `err_${Date.now()}`;\n  const recipient = payload.recipient || payload.to || 'unknown-recipient';\n  const template = payload.template || payload.template_name || 'unknown-template';\n  const errorCode = payload.error_code || payload.errorCode || payload.status || 'NOTIFICATION_DELIVERY_FAILED';\n  const errorMessage = payload.error_message || payload.errorMessage || payload.error || payload.message || 'WhatsApp Cloud API retry limit exceeded';\n  const tenantId = payload.tenant_id || payload.tenantId || 'default-tenant';\n  const correlationId = payload.correlation_id || payload.correlationId || `corr_${Date.now()}`;\n  const timestamp = payload.timestamp || new Date().toISOString();\n  \n  results.push({\n    json: {\n      eventType: 'notification.delivery_failed',\n      alertType: 'notification_failure',\n      severity: 'high',\n      workflow: workflowName,\n      workflowName,\n      eventId,\n      recipient,\n      template,\n      errorCode,\n      errorMessage,\n      errorDetails: errorMessage,\n      tenantId,\n      correlationId,\n      timestamp,\n      adminAlertSummary: `[CRITICAL ALERT] Notification failure in workflow '${workflowName}' for recipient ${recipient} using template '${template}': ${errorMessage}`\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000008-0001-4000-8000-000000000003",
+      "name": "Format Failure Alert Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.API_BASE_URL || 'http://api:3000') + '/api/v1/webhooks/n8n/callback' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WSOS_SERVICE_TOKEN || ''}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Tenant-Id",
+              "value": "={{$json.tenantId}}"
+            },
+            {
+              "name": "Host",
+              "value": "={{$json.tenantId}}.{{$env.TENANT_BASE_DOMAIN || 'fitness.local'}}"
+            },
+            {
+              "name": "X-Correlation-Id",
+              "value": "={{$json.correlationId}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 1000
+        }
+      },
+      "id": "e0000008-0001-4000-8000-000000000004",
+      "name": "Post Alert to Admin Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        640,
+        380
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const res = item.json;\n  // Check if httpRequest succeeded (returns 2xx body)\n  const isAcknowledged = Boolean(res.success === true || res.message === 'Callback received' || (res.statusCode >= 200 && res.statusCode < 300));\n  \n  if (isAcknowledged) {\n    results.push({\n      json: {\n        success: true,\n        status: 'alert_dispatched',\n        acknowledged: true,\n        acknowledgedBy: 'backend-n8n-callback',\n        alertSummary: res.adminAlertSummary || 'Notification failure acknowledged by admin backend',\n        eventId: res.eventId,\n        tenantId: res.tenantId,\n        dispatchedAt: new Date().toISOString()\n      }\n    });\n  } else {\n    results.push({\n      json: {\n        success: false,\n        status: 'alert_delivery_failed',\n        acknowledged: false,\n        error: res.error || res.message || 'Failed to deliver failure alert to Admin Notification Panel (HTTP error)',\n        eventId: res.eventId,\n        tenantId: res.tenantId,\n        failedAt: new Date().toISOString()\n      }\n    });\n  }\n}\n\nreturn results;"
+      },
+      "id": "e0000008-0001-4000-8000-000000000005",
+      "name": "Verify Alert Acknowledgment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Boolean($json.success) }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e0000008-0001-4000-8000-000000000006",
+      "name": "Check Alert Delivered?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "e0000008-0001-4000-8000-000000000007",
+      "name": "Respond to Webhook (200)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "id": "e0000008-0001-4000-8000-000000000008",
+      "name": "Respond Delivery Failed (502)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1340,
+        460
+      ]
+    }
+  ],
+  "connections": {
+    "Sub-Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Failure Alert Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Trigger (/failure-alert)": {
+      "main": [
+        [
+          {
+            "node": "Format Failure Alert Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Failure Alert Context": {
+      "main": [
+        [
+          {
+            "node": "Post Alert to Admin Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Alert to Admin Webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify Alert Acknowledgment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Alert Acknowledgment": {
+      "main": [
+        [
+          {
+            "node": "Check Alert Delivered?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Alert Delivered?": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook (200)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Delivery Failed (502)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e0000008-0000-4000-8000-000000000002",
+  "id": "failure-alert",
+  "tags": [
+    "notifications",
+    "monitoring",
+    "alerts"
+  ]
+}

@@ -1,0 +1,56 @@
+id,name,category,date,startTime,endTime,trainer,room,capacity,status
+ed37482b-d52d-4d5e-853a-9bf1a291732c,Evening Core & Mobility,Pilates,10/19/2026,18:00,18:50,Ananya Sharma,Studio A,14,Scheduled
+6f635121-7b9c-4005-a0ae-c963ab8ce385,Weekend Strength Circuit,Strength,10/24/2026,9:00,9:55,Rahul Menon,Training Floor,18,Scheduled
+f3039ea5-be04-4f7a-a81a-071817129f8f,Morning Vinyasa Flow,Yoga,10/20/2026,7:00,7:50,Kavita Iyer,Studio B,20,Scheduled
+40676334-ec79-43be-b96a-fc60ae7078ea,Reformer Fundamentals,Pilates,10/21/2026,8:00,8:50,Meera Nair,Reformer Room,10,Scheduled
+07465834-8afd-44ae-aef7-b374200da2b8,HIIT Express,HIIT,10/21/2026,18:30,19:00,Rahul Menon,Training Floor,16,Scheduled
+a02fb007-9b75-4151-b4bf-589bc79e23da,Power Yoga,Yoga,10/22/2026,6:30,7:20,Kavita Iyer,Studio B,18,Scheduled
+d11ad49d-f272-42ef-8ab8-bd1063989ab9,Full Body Strength,Strength,10/22/2026,19:00,19:55,Rahul Menon,Training Floor,16,Scheduled
+f55ee054-4389-43ec-aafa-2b317a957971,Pilates for Beginners,Pilates,10/23/2026,17:30,18:20,Ananya Sharma,Studio A,12,Scheduled
+3a6ef8d3-25ce-43fc-895e-f1d04145ff00,Breathwork & Stretch,Wellness,10/23/2026,8:00,8:40,Meera Nair,Studio B,14,Scheduled
+2950e9ae-5089-4e3b-ae8b-9e7c4a815857,Saturday Mobility Flow,Mobility,10/24/2026,7:30,8:15,Kavita Iyer,Studio B,16,Scheduled
+328bf8ae-57ad-457d-b4f0-31fc8acaca45,Core Stability Lab,Pilates,10/25/2026,10:00,10:50,Ananya Sharma,Studio A,12,Scheduled
+8325fa80-c4fc-4301-a2d9-7c03b1d838a0,Functional Fitness,Strength,10/26/2026,18:00,18:50,Rahul Menon,Training Floor,20,Scheduled
+c8d96a8f-a561-4b5c-b404-e11f7f041128,Sunrise Meditation,Wellness,10/27/2026,6:45,7:15,Meera Nair,Studio B,15,Scheduled
+3c37bb01-18b0-410e-8eab-f94903f33851,Dance Cardio,Cardio,10/28/2026,19:00,19:45,Kavita Iyer,Studio A,18,Scheduled
+8052b13c-dc7e-451e-9fc8-16f4afbc11c4,Recovery & Foam Rolling,Recovery,10/29/2026,18:00,18:40,Ananya Sharma,Studio A,12,Cancelled
+c6cf381a-3d43-481c-a08f-02b16254c3f0,Desk Reset Mobility,Mobility,10/30/2026,7:00,7:50,Ananya Sharma,Studio B,16,Scheduled
+09bb1454-9d7a-41cb-b6d6-e11fa79b8a2e,Kettlebell Basics,Strength,10/30/2026,7:00,7:50,Rahul Menon,Training Floor,20,Scheduled
+e336cb2e-c96b-4199-abc2-dc5c1e7aedc4,Stress Reset,Wellness,10/31/2026,19:00,19:55,Meera Nair,Studio B,15,Scheduled
+e844abb7-2919-4fa7-ae34-947241901b65,Metcon Madness,HIIT,11/1/2026,12:30,13:15,Rahul Menon,Training Floor,14,Scheduled
+683981a9-a1e7-4493-9a46-173666f929ae,Stretch & Restore,Recovery,11/2/2026,10:00,10:50,Ananya Sharma,Studio A,11,Scheduled
+cab9b93a-b5d9-4ef9-9ee7-2b23e3f18654,Desk Reset Mobility,Mobility,11/3/2026,18:00,18:50,Ananya Sharma,Studio B,14,Scheduled
+8a94a6ef-ef46-4c53-b79e-cb4ea95c2c0b,Desk Reset Mobility,Mobility,11/4/2026,12:30,13:15,Ananya Sharma,Studio B,14,Scheduled
+fe5d10a1-1061-4071-867b-ea25d04c3dee,Kettlebell Basics,Strength,11/5/2026,17:30,18:20,Rahul Menon,Training Floor,16,Scheduled
+56092f23-9043-4154-81e1-9042096699a6,Stress Reset,Wellness,11/5/2026,8:00,8:50,Meera Nair,Studio B,13,Scheduled
+038d04fb-1018-47f5-8191-590c42c79c1c,Sound Bath,Wellness,11/6/2026,19:00,19:55,Meera Nair,Studio B,12,Scheduled
+a269dbc6-273e-4bbe-a0bf-aadc10088333,Zumba Fusion,Cardio,11/7/2026,12:30,13:15,Kavita Iyer,Studio A,19,Scheduled
+f82db683-ba56-4268-b8c9-f8f90c77b1ea,Zumba Fusion,Cardio,11/8/2026,8:00,8:50,Kavita Iyer,Studio A,17,Scheduled
+85c80ede-202c-415a-898d-b8601e47caa6,Spin & Sweat,Cardio,11/8/2026,18:00,18:50,Kavita Iyer,Studio A,16,Scheduled
+c313fdb2-a936-421a-be38-965bb76a0a07,Guided Meditation,Wellness,11/8/2026,12:30,13:15,Meera Nair,Studio B,14,Scheduled
+0b2ebf73-a821-49f2-b96c-a885780a33a3,HIIT Burn,HIIT,11/9/2026,18:30,19:15,Rahul Menon,Training Floor,16,Scheduled
+f72699ec-6a1e-460d-81cd-81b0c6db0211,Tabata Blast,HIIT,11/9/2026,19:00,19:55,Rahul Menon,Training Floor,18,Scheduled
+e39f13d7-6598-4372-8e0d-ce0daf0a6148,Upper Body Strength,Strength,11/10/2026,7:00,7:50,Rahul Menon,Training Floor,14,Scheduled
+ea75e258-ccc2-44da-84e7-0d70f5521d62,Cardio Circuit,HIIT,11/10/2026,18:00,18:50,Rahul Menon,Training Floor,16,Scheduled
+50a22a1b-59ad-4533-9b81-3e24efa4f9f1,Hip & Spine Mobility,Mobility,11/11/2026,10:00,10:50,Ananya Sharma,Studio B,14,Scheduled
+aa921282-eed9-4872-9028-c46db0d7b8a0,Stretch & Restore,Recovery,11/12/2026,9:00,9:55,Meera Nair,Studio A,11,Scheduled
+645fd402-1d49-480c-ab96-b046c187ac06,Bollywood Burn,Cardio,11/13/2026,7:00,7:50,Kavita Iyer,Studio A,20,Scheduled
+c6605afb-3835-4e48-a99f-b2666bc5b3b3,Stretch & Restore,Recovery,11/14/2026,12:30,13:15,Meera Nair,Studio A,10,Scheduled
+ba24f8b8-4a20-4268-949e-cc0ab1ff38d8,Strength & Conditioning,Strength,11/14/2026,10:00,10:50,Rahul Menon,Training Floor,18,Scheduled
+f92af541-a5dc-4896-98d1-e3045aa26879,Metcon Madness,HIIT,11/15/2026,9:00,9:55,Rahul Menon,Training Floor,16,Scheduled
+75c6f8ce-99f1-4e25-8baa-100720f098dc,Kettlebell Basics,Strength,11/15/2026,18:30,19:15,Rahul Menon,Training Floor,18,Scheduled
+01304377-1873-4a18-b8f1-dd8ab4b3ef23,Strength & Conditioning,Strength,11/16/2026,19:00,19:55,Rahul Menon,Training Floor,15,Scheduled
+4fcd7434-7aa2-4c74-8fdf-e8786c54e9aa,Ashtanga Intro,Yoga,11/16/2026,6:30,7:20,Kavita Iyer,Studio B,17,Scheduled
+1e93a2fb-e0df-484e-ad09-0b97faa7176f,Desk Reset Mobility,Mobility,11/17/2026,8:00,8:50,Kavita Iyer,Studio B,16,Cancelled
+7ce0c66d-df9a-44ae-918e-ca96a39745dc,Strength & Conditioning,Strength,11/18/2026,17:30,18:20,Rahul Menon,Training Floor,16,Scheduled
+8611869b-a3b9-415b-8635-fcb07f85df91,Core Foundations,Pilates,11/19/2026,18:00,18:50,Ananya Sharma,Reformer Room,11,Scheduled
+105cbc52-d65f-45b6-968e-485e46db73ab,Hatha Basics,Yoga,11/20/2026,6:30,7:20,Kavita Iyer,Studio B,18,Scheduled
+ff44577c-b8bf-477a-8e5f-87558f94b50b,Metcon Madness,HIIT,11/21/2026,7:00,7:50,Rahul Menon,Training Floor,15,Scheduled
+a07481bd-f1b8-4a7c-a37f-0de050931ba9,Stretch & Restore,Recovery,11/21/2026,9:00,9:55,Ananya Sharma,Studio A,12,Scheduled
+b3db6722-fc1c-457f-a5c1-f89647bc63bf,Metcon Madness,HIIT,11/21/2026,10:00,10:50,Rahul Menon,Training Floor,15,Scheduled
+27f1468c-f49e-463c-b1e4-77b84854c1b9,Reformer Intermediate,Pilates,11/22/2026,12:30,13:15,Ananya Sharma,Studio A,11,Scheduled
+e7a82c20-e5e6-4f0c-9dd2-84e869616452,Dance Cardio,Cardio,11/23/2026,6:30,7:20,Kavita Iyer,Studio A,18,Scheduled
+5c2e17d5-47a5-464e-ab0d-559ea48e0ca8,Stretch & Restore,Recovery,11/24/2026,10:00,10:50,Meera Nair,Studio A,10,Scheduled
+86417877-6539-4be4-a2ec-9eecf8d35b3f,Desk Reset Mobility,Mobility,11/25/2026,18:00,18:50,Kavita Iyer,Studio A,15,Scheduled
+9b97d72a-50e9-4d6d-a779-082cecbc0534,Foam Rolling Lab,Recovery,11/26/2026,12:30,13:15,Meera Nair,Studio A,10,Scheduled
+fa20649f-29f1-4ec6-8642-024a278aecf3,Foam Rolling Lab,Recovery,11/27/2026,19:00,19:55,Meera Nair,Studio A,12,Scheduled

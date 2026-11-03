@@ -1,0 +1,28 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "field:tenant_code",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["tenant_code", "tenant_uuid", "company", "tier", "is_active"],
+  "fields": [
+    {"fieldname": "tenant_code", "fieldtype": "Data", "label": "Tenant Code", "reqd": 1, "unique": 1, "in_list_view": 1},
+    {"fieldname": "tenant_uuid", "fieldtype": "Data", "label": "Tenant UUID", "reqd": 1, "unique": 1},
+    {"fieldname": "company", "fieldtype": "Link", "label": "ERPNext Company", "options": "Company", "reqd": 1},
+    {"fieldname": "tier", "fieldtype": "Select", "label": "Tier", "options": "basic\npremium\nultra"},
+    {"fieldname": "is_active", "fieldtype": "Check", "label": "Is Active", "default": 1}
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [],
+  "module": "Tenant",
+  "name": "Wellness Tenant Scope",
+  "naming_rule": "By fieldname",
+  "permissions": [
+    {"create": 1, "delete": 1, "export": 1, "read": 1, "report": 1, "role": "System Manager", "write": 1},
+    {"read": 1, "role": "WS Owner"},
+    {"read": 1, "role": "WS Admin"}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1
+}

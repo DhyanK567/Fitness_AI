@@ -1,0 +1,11 @@
+{
+ "doctype":"DocType","engine":"InnoDB","module":"Attendance","name":"WS Attendance Correction","istable":1,
+ "field_order":["corrected_by","corrected_on","previous_value","new_value","reason"],
+ "fields":[
+  {"fieldname":"corrected_by","fieldtype":"Link","label":"Corrected By","options":"User","reqd":1},
+  {"fieldname":"corrected_on","fieldtype":"Datetime","label":"Corrected On","default":"Now","reqd":1},
+  {"fieldname":"previous_value","fieldtype":"Data","label":"Previous Value","reqd":1},
+  {"fieldname":"new_value","fieldtype":"Data","label":"New Value","reqd":1},
+  {"fieldname":"reason","fieldtype":"Small Text","label":"Reason","reqd":1}
+ ]
+}

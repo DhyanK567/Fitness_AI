@@ -1,0 +1,178 @@
+/members:
+  post:
+    tags:
+      - Members
+    summary: Create a new member
+    operationId: createMember
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/members.yaml#/CreateMemberRequest'
+
+    responses:
+      '201':
+        description: Member created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/members.yaml#/MemberResponse'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+      '409':
+        description: Email or phone already exists
+
+  get:
+    tags:
+      - Members
+    summary: Get all members
+    operationId: getMembers
+    responses:
+      '200':
+        description: Members retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/members.yaml#/MemberResponse'
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+
+'/members/me':
+  get:
+    tags: [Members]
+    summary: Get the authenticated member's own profile
+    operationId: getMyMemberProfile
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Own member profile
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/members.yaml#/MemberResponse'
+      '401': {description: User not authenticated}
+      '403': {description: Account is not linked to a member}
+  put:
+    tags: [Members]
+    summary: Update editable fields on the authenticated member's own profile
+    operationId: updateMyMemberProfile
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/members.yaml#/UpdateMyMemberProfileRequest'
+    responses:
+      '200':
+        description: Updated own member profile
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/members.yaml#/MemberResponse'
+      '400': {description: Invalid profile fields}
+      '401': {description: User not authenticated}
+      '403': {description: Account is not linked to a member}
+
+'/members/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique member ID
+      schema:
+        type: string
+        example: MEM-0001
+
+  get:
+    tags:
+      - Members
+    summary: Get member by ID
+    operationId: getMemberById
+
+    responses:
+      '200':
+        description: Member retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/members.yaml#/MemberResponse'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Member not found
+
+  put:
+    tags:
+      - Members
+    summary: Update member
+    operationId: updateMember
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/members.yaml#/UpdateMemberRequest'
+
+    responses:
+      '200':
+        description: Member updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/members.yaml#/MemberResponse'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Member not found
+
+      '409':
+        description: Email or phone already exists
+
+  delete:
+    tags:
+      - Members
+    summary: Delete member
+    operationId: deleteMember
+
+    responses:
+      '200':
+        description: Member deleted successfully
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Member not found

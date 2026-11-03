@@ -1,0 +1,235 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:studio_name",
+ "creation": "2026-09-21 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "studio_name",
+  "subdomain",
+  "section_contact",
+  "owner_name",
+  "owner_email",
+  "owner_phone",
+  "city",
+  "section_branding",
+  "logo",
+  "primary_color",
+  "secondary_color",
+  "section_config",
+  "default_class_capacity",
+  "cancellation_window_hours",
+  "renewal_reminder_days",
+  "currency",
+  "timezone",
+  "section_marketplace",
+  "marketplace_enabled",
+  "marketplace_marketing_opt_in",
+  "marketplace_commission_rate",
+  "marketplace_payout_schedule",
+  "section_status",
+  "status",
+  "subscription_tier",
+  "is_active"
+ ],
+ "fields": [
+  {
+   "fieldname": "studio_name",
+   "fieldtype": "Data",
+   "label": "Studio Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "subdomain",
+   "fieldtype": "Data",
+   "label": "Subdomain",
+   "reqd": 1,
+   "unique": 1,
+   "description": "Used to identify the tenant (e.g. kalstudio)"
+  },
+  {
+   "fieldname": "section_contact",
+   "fieldtype": "Section Break",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "owner_name",
+   "fieldtype": "Data",
+   "label": "Owner Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "owner_email",
+   "fieldtype": "Data",
+   "label": "Owner Email",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "owner_phone",
+   "fieldtype": "Data",
+   "label": "Owner Phone",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "section_branding",
+   "fieldtype": "Section Break",
+   "label": "Branding"
+  },
+  {
+   "fieldname": "logo",
+   "fieldtype": "Attach Image",
+   "label": "Studio Logo"
+  },
+  {
+   "fieldname": "primary_color",
+   "fieldtype": "Color",
+   "label": "Primary Color",
+   "default": "#4F46E5"
+  },
+  {
+   "fieldname": "secondary_color",
+   "fieldtype": "Color",
+   "label": "Secondary Color",
+   "default": "#7C3AED"
+  },
+  {
+   "fieldname": "section_config",
+   "fieldtype": "Section Break",
+   "label": "Configuration"
+  },
+  {
+   "fieldname": "default_class_capacity",
+   "fieldtype": "Int",
+   "label": "Default Class Capacity",
+   "default": 30,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cancellation_window_hours",
+   "fieldtype": "Int",
+   "label": "Cancellation Window (Hours)",
+   "default": 4,
+   "reqd": 1
+  },
+  {
+   "fieldname": "renewal_reminder_days",
+   "fieldtype": "Small Text",
+   "label": "Renewal Reminder Days",
+   "default": "7,3,1",
+   "description": "Comma-separated days before expiry to send reminders"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "default": "INR"
+  },
+  {
+   "fieldname": "timezone",
+   "fieldtype": "Select",
+   "label": "Timezone",
+   "options": "Asia/Kolkata\nUTC",
+   "default": "Asia/Kolkata"
+  },
+  {
+   "fieldname": "section_marketplace",
+   "fieldtype": "Section Break",
+   "label": "Marketplace"
+  },
+  {
+   "fieldname": "marketplace_enabled",
+   "fieldtype": "Check",
+   "label": "Marketplace Enabled",
+   "default": 0
+  },
+  {
+   "fieldname": "marketplace_marketing_opt_in",
+   "fieldtype": "Check",
+   "label": "Opt In To Platform Marketing",
+   "default": 0
+  },
+  {
+   "fieldname": "marketplace_commission_rate",
+   "fieldtype": "Percent",
+   "label": "Default Marketplace Commission (%)",
+   "default": 15
+  },
+  {
+   "fieldname": "marketplace_payout_schedule",
+   "fieldtype": "Select",
+   "label": "Marketplace Payout Schedule",
+   "options": "Weekly\nFortnightly\nMonthly",
+   "default": "Monthly"
+  },
+  {
+   "fieldname": "section_status",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nSuspended\nInactive",
+   "default": "Active",
+   "reqd": 1
+  },
+  {
+   "fieldname": "subscription_tier",
+   "fieldtype": "Select",
+   "label": "SaaS Subscription Tier",
+   "options": "Basic\nPremium\nUltra",
+   "default": "Basic"
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "default": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-21 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Tenant",
+ "name": "Studio Tenant",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "WS Owner",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "WS Admin",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

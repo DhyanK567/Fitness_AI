@@ -1,0 +1,10 @@
+{
+ "doctype":"DocType","engine":"InnoDB","module":"Wellness CRM","name":"WS Lead Activity","istable":1,
+ "field_order":["activity_type","note","activity_on","by_user"],
+ "fields":[
+  {"fieldname":"activity_type","fieldtype":"Select","label":"Activity Type","options":"Note\nCall\nMessage\nStatus Change","reqd":1,"in_list_view":1},
+  {"fieldname":"note","fieldtype":"Small Text","label":"Note"},
+  {"fieldname":"activity_on","fieldtype":"Datetime","label":"Activity On","default":"Now","reqd":1},
+  {"fieldname":"by_user","fieldtype":"Link","label":"By User","options":"User"}
+ ]
+}

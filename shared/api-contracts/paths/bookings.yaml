@@ -1,0 +1,141 @@
+/bookings:
+  post:
+    tags:
+      - Bookings
+    summary: Create a new booking
+    operationId: createBooking
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/bookings.yaml#/CreateBookingRequest'
+
+    responses:
+      '201':
+        description: Booking created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/bookings.yaml#/Booking'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '409':
+        description: Member already has a booking for this class schedule
+
+  get:
+    tags:
+      - Bookings
+    summary: Get all bookings
+    operationId: getBookings
+
+    responses:
+      '200':
+        description: Bookings retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/bookings.yaml#/Booking'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+
+'/bookings/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique booking ID
+      schema:
+        type: string
+        example: BKG-00001
+
+  get:
+    tags:
+      - Bookings
+    summary: Get booking by ID
+    operationId: getBookingById
+
+    responses:
+      '200':
+        description: Booking retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/bookings.yaml#/Booking'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Booking not found
+
+  put:
+    tags:
+      - Bookings
+    summary: Update booking
+    operationId: updateBooking
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/bookings.yaml#/UpdateBookingRequest'
+
+    responses:
+      '200':
+        description: Booking updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/bookings.yaml#/Booking'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Booking not found
+
+  delete:
+    tags:
+      - Bookings
+    summary: Delete booking
+    operationId: deleteBooking
+
+    responses:
+      '200':
+        description: Booking deleted successfully
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Booking not found

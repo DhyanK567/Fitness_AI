@@ -1,0 +1,35 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"event_title","fieldtype":"Data","label":"Event Title","reqd":1,"in_list_view":1},
+  {"fieldname":"event_category","fieldtype":"Select","label":"Category","options":"Workshop\nInternal Studio Event\nPublic Event\nSpecial Session","reqd":1,"in_list_view":1},
+  {"fieldname":"event_date","fieldtype":"Date","label":"Date","reqd":1,"in_list_view":1},
+  {"fieldname":"start_time","fieldtype":"Time","label":"Start Time","reqd":1},
+  {"fieldname":"end_time","fieldtype":"Time","label":"End Time"},
+  {"fieldname":"capacity","fieldtype":"Int","label":"Capacity","reqd":1,"default":30},
+  {"fieldname":"is_paid","fieldtype":"Check","label":"Paid Event","default":0},
+  {"fieldname":"price","fieldtype":"Currency","label":"Price","depends_on":"eval:doc.is_paid==1"},
+  {"fieldname":"audience","fieldtype":"Select","label":"Open To","options":"Members Only\nPublic\nLeads & Prospects","default":"Members Only","reqd":1},
+  {"fieldname":"registration_deadline","fieldtype":"Date","label":"Registration Deadline"},
+  {"fieldname":"is_published","fieldtype":"Check","label":"Published Publicly","default":1,"in_list_view":1},
+  {"fieldname":"status","fieldtype":"Select","label":"Status","options":"Upcoming\nOngoing\nCompleted\nCancelled","default":"Upcoming","in_list_view":1},
+  {"fieldname":"image","fieldtype":"Attach Image","label":"Event Image"},
+  {"fieldname":"description","fieldtype":"Text Editor","label":"Description"},
+  {"fieldname":"confirmed_count","fieldtype":"Int","label":"Confirmed","default":0,"read_only":1},
+  {"fieldname":"waitlist_count","fieldtype":"Int","label":"Waitlist","default":0,"read_only":1}
+ ],
+ "module": "Events",
+ "name": "WS Event",
+ "autoname": "WS-EVT-.####",
+ "permissions": [
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Admin"},
+  {"read":1,"role":"WS Member"},
+  {"read":1,"role":"Guest"}
+ ],
+ "track_changes": 1
+}

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Preview · fitness-day1-team-handoff.canvas.tsx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Cursor Canvas Dark Theme Tokens */
+      --canvas-bg: #0b0d11;
+      --bg-editor: #10141a;
+      --bg-elevated: #161c24;
+      --bg-elevated-hover: #1c232e;
+      --stroke-primary: #232b36;
+      --stroke-strong: #333d4d;
+      --text-primary: #e6edf3;
+      --text-secondary: #9aa4b2;
+      --text-tertiary: #626e7e;
+      --accent-primary: #388bfd;
+      --accent-subtle: rgba(56, 139, 253, 0.12);
+      --accent-glow: rgba(56, 139, 253, 0.25);
+      --info-bg: rgba(56, 139, 253, 0.08);
+      --info-border: rgba(56, 139, 253, 0.3);
+      --info-text: #58a6ff;
+      --success-accent: #3fb950;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --canvas-bg: #f3f5f8;
+      --bg-editor: #ffffff;
+      --bg-elevated: #f8fafc;
+      --bg-elevated-hover: #eef2f7;
+      --stroke-primary: #e2e8f0;
+      --stroke-strong: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #94a3b8;
+      --accent-primary: #0284c7;
+      --accent-subtle: rgba(2, 132, 199, 0.1);
+      --accent-glow: rgba(2, 132, 199, 0.2);
+      --info-bg: rgba(2, 132, 199, 0.08);
+      --info-border: rgba(2, 132, 199, 0.3);
+      --info-text: #0284c7;
+      --success-accent: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--canvas-bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Top Canvas Navigation Bar */
+    .canvas-navbar {
+      height: 48px;
+      background: var(--bg-editor);
+      border-bottom: 1px solid var(--stroke-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .canvas-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .canvas-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-glow);
+    }
+
+    .canvas-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success-accent);
+      box-shadow: 0 0 6px var(--success-accent);
+    }
+
+    .canvas-filename {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .canvas-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-control {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      color: var(--text-secondary);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-control:hover {
+      background: var(--bg-elevated-hover);
+      color: var(--text-primary);
+      border-color: var(--stroke-strong);
+    }
+
+    /* Canvas Frame */
+    .canvas-viewport {
+      flex: 1;
+      padding: 32px 24px;
+      display: flex;
+      justify-content: center;
+      background-image: radial-gradient(var(--stroke-primary) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .canvas-sheet {
+      width: 100%;
+      max-width: 1180px;
+      background: var(--bg-editor);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    }
+
+    /* Stack */
+    .stack {
+      display: flex;
+      flex-direction: column;
+    }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .gap-6 { gap: 24px; }
+
+    /* Typography */
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 8px 0 6px 0;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .text-secondary {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .text-tertiary {
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+
+    .font-semibold {
+      font-weight: 600;
+    }
+
+    .text-link {
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .text-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Pill */
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-glow);
+    }
+
+    /* Callout */
+    .callout {
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .callout-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--info-text);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .callout-header svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .callout-content {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+
+    .card:hover {
+      border-color: var(--stroke-strong);
+    }
+
+    .card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--stroke-primary);
+      background: rgba(255,255,255,0.015);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    /* Flow Layout */
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .flow-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .flow-item-wrap {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .flow-node {
+      flex: 1;
+      padding: 14px;
+      background: var(--bg-editor);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .flow-node:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .flow-number {
+      color: var(--accent-primary);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      margin-bottom: 6px;
+    }
+
+    .flow-title {
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .flow-detail {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .flow-arrow {
+      align-self: center;
+      color: var(--text-tertiary);
+      font-size: 18px;
+      user-select: none;
+    }
+
+    /* Split Grid */
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Q&A List */
+    .qa-item {
+      padding: 12px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 8px;
+      transition: background-color 0.15s ease;
+    }
+
+    .qa-item:hover {
+      background: var(--bg-elevated-hover);
+    }
+
+    .qa-question {
+      font-weight: 600;
+      font-size: 13.5px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .qa-tag-q {
+      color: var(--accent-primary);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    .qa-answer {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.5;
+      padding-left: 20px;
+    }
+
+    /* Yashwanth Quote Card */
+    .quote-box {
+      font-style: italic;
+      position: relative;
+      padding-left: 12px;
+      border-left: 3px solid var(--accent-primary);
+    }
+
+    /* Interactive Status Indicators */
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(63, 185, 80, 0.12);
+      color: var(--success-accent);
+      border: 1px solid rgba(63, 185, 80, 0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Header Navigation -->
+  <header class="canvas-navbar">
+    <div class="canvas-title-group">
+      <span class="canvas-badge"><span class="canvas-badge-dot"></span> Canvas Preview</span>
+      <span class="canvas-filename">fitness-day1-team-handoff.canvas.tsx</span>
+    </div>
+    <div class="canvas-controls">
+      <span class="status-chip">✓ Verified · All 7 Tests Passing</span>
+      <button class="btn-control" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme (Dark / Light)">
+        <span id="themeIcon">☀️</span> <span id="themeLabel">Light Mode</span>
+      </button>
+      <button class="btn-control" onclick="window.print()" title="Print / Export PDF">
+        <span>🖨️</span> Print
+      </button>
+    </div>
+  </header>
+
+  <!-- Canvas Body Viewport -->
+  <main class="canvas-viewport">
+    <div class="canvas-sheet">
+      <div class="stack gap-6">
+
+        <!-- Title Section -->
+        <div>
+          <span class="pill">Fitness · Day 1 · SL + ERPE</span>
+          <h1>Syed + Yashwanth team handoff</h1>
+          <p class="text-secondary">A visual, end-to-end explanation of the isolated pivot work completed on 30 September 2026.</p>
+        </div>
+
+        <!-- Scope Boundary Callout -->
+        <div class="callout">
+          <div class="callout-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Scope boundary
+          </div>
+          <div class="callout-content">
+            Only the documented Day 1 assignment was handled. The work is isolated in <strong>Fitness/Coding Work</strong>; old Cal/KAL Studio work, frontend database changes, PDFs, and unrelated teammate work were not included.
+          </div>
+        </div>
+
+        <!-- Flow Diagram Card -->
+        <div class="card">
+          <div class="card-header">
+            <span>End-to-end request and data flow</span>
+            <span class="text-tertiary" style="font-size: 11px; font-weight: 500;">5 Architecture Stages</span>
+          </div>
+          <div class="card-body">
+            <div class="flow-grid">
+              
+              <!-- Stage 1 -->
+              <div class="flow-item-wrap">
+                <div class="flow-node">
+                  <div class="flow-number">01</div>
+                  <div class="flow-title">Client / frontend</div>
+                  <div class="flow-detail">Sends requests according to the frozen contract.</div>
+                </div>
+                <div class="flow-arrow">→</div>
+              </div>
+
+              <!-- Stage 2 -->
+              <div class="flow-item-wrap">
+                <div class="flow-node">
+                  <div class="flow-number">02</div>
+                  <div class="flow-title">OpenAPI contract</div>
+                  <div class="flow-detail">Defines members, memberships, classes, bookings, attendance, leads, and payments.</div>
+                </div>
+                <div class="flow-arrow">→</div>
+              </div>
+
+              <!-- Stage 3 -->
+              <div class="flow-item-wrap">
+                <div class="flow-node">
+                  <div class="flow-number">03</div>
+                  <div class="flow-title">Gateway</div>
+                  <div class="flow-detail">Resolves tenant context, creates correlation IDs, and forwards ERP calls safely.</div>
+                </div>
+                <div class="flow-arrow">→</div>
+              </div>
+
+              <!-- Stage 4 -->
+              <div class="flow-item-wrap">
+                <div class="flow-node">
+                  <div class="flow-number">04</div>
+                  <div class="flow-title">Frappe / ERPNext</div>
+                  <div class="flow-detail">Hosts the assigned Fitness DocTypes and the health endpoint.</div>
+                </div>
+                <div class="flow-arrow">→</div>
+              </div>
+
+              <!-- Stage 5 -->
+              <div class="flow-item-wrap">
+                <div class="flow-node" style="width: 100%;">
+                  <div class="flow-number">05</div>
+                  <div class="flow-title">PostgreSQL</div>
+                  <div class="flow-detail">Stores platform, IAM, config, operations, and audit foundations with tenant RLS.</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Split: What was completed vs Repository handoff -->
+        <div class="split-grid">
+          
+          <div class="card">
+            <div class="card-header">
+              <span>What was completed</span>
+              <span class="status-chip" style="font-size: 10px;">Day 1 Verified</span>
+            </div>
+            <div class="card-body">
+              <div class="stack gap-4">
+                <div>
+                  <h3>API and gateway</h3>
+                  <p class="text-secondary">Frozen OpenAPI resources and actions; host-derived tenant context; safe correlation IDs; ERP adapter forwarding; controlled health response.</p>
+                </div>
+                <div>
+                  <h3>Database foundation</h3>
+                  <p class="text-secondary">Prisma schema plus PostgreSQL migrations for platform, IAM, configuration, operations, audit, RLS, outbox, idempotency, and webhook inbox foundations.</p>
+                </div>
+                <div>
+                  <h3>ERP/Frappe foundation</h3>
+                  <p class="text-secondary">Assigned Fitness DocType metadata and the wellness_studio health endpoint, with no claim of external Frappe Cloud deployment.</p>
+                </div>
+                <div>
+                  <h3>Verification</h3>
+                  <p class="text-secondary">7 Python checks, 7 gateway unit tests, 1 E2E test, Prisma validation, TypeScript compilation, and Python compilation all passed.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span>Repository handoff</span>
+              <span class="text-tertiary" style="font-size: 11px;">Git Context</span>
+            </div>
+            <div class="card-body">
+              <div class="stack gap-4">
+                <div>
+                  <div class="font-semibold" style="margin-bottom: 2px;">Folder</div>
+                  <div class="text-secondary" style="font-family: var(--font-mono); font-size: 13px;">Fitness/Coding Work</div>
+                </div>
+                <div>
+                  <div class="font-semibold" style="margin-bottom: 2px;">Branch</div>
+                  <div class="text-secondary" style="font-family: var(--font-mono); font-size: 13px; color: var(--accent-primary);">feature/fitness-day1-sl-erpe</div>
+                </div>
+                <div>
+                  <div class="font-semibold" style="margin-bottom: 2px;">Commit</div>
+                  <div class="text-secondary" style="font-family: var(--font-mono); font-size: 13px;">1e61dd9 · 73 files</div>
+                </div>
+                <div>
+                  <div class="font-semibold" style="margin-bottom: 2px;">Review</div>
+                  <a href="#" class="text-link" style="font-size: 13px; font-weight: 600;">GitHub PR for feature/fitness-day1-sl-erpe ↗</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Team Doubts and Answers -->
+        <div>
+          <h2>Team doubts and answers</h2>
+          <div class="stack gap-3">
+            
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-tag-q">Q:</span> What did we complete?</div>
+              <div class="qa-answer">Only Syed and Yashwanth’s documented Day 1 SL + ERPE scope: API contract freeze, gateway foundation, database foundation, assigned Frappe DocTypes, health endpoint, and verification tests.</div>
+            </div>
+
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-tag-q">Q:</span> Are we using Prisma and PostgreSQL?</div>
+              <div class="qa-answer">Yes. Prisma defines and validates the PostgreSQL schema. PostgreSQL is the actual relational database. Prisma is the application schema and migration tool; it is not a replacement for PostgreSQL.</div>
+            </div>
+
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-tag-q">Q:</span> Do we need a PostgreSQL API key from a website?</div>
+              <div class="qa-answer">Not for local PostgreSQL itself. Local development uses a DATABASE_URL connection string. A hosted provider may give a password, connection string, pooler URL, or API key depending on that provider. We must use the provider’s documented credential and never commit it.</div>
+            </div>
+
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-tag-q">Q:</span> Why are there tenant and audit protections?</div>
+              <div class="qa-answer">The plan requires multi-tenant isolation and an audit trail. The migrations add tenant context helpers, row-level security, append-only audit protections, outbox events, idempotency keys, and webhook inbox foundations.</div>
+            </div>
+
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-tag-q">Q:</span> Did we build frontend screens or AI features?</div>
+              <div class="qa-answer">No. Those are outside this Day 1 handoff. AI remains P1 and no unrelated frontend or teammate-owned work was added.</div>
+            </div>
+
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-tag-q">Q:</span> How do we prove it works?</div>
+              <div class="qa-answer">The isolated folder passes 7 Python contract checks, 7 gateway unit tests, 1 gateway E2E test, Prisma validation, TypeScript compilation, and Python compilation.</div>
+            </div>
+
+            <div class="qa-item">
+              <div class="qa-question"><span class="qa-tag-q">Q:</span> Where is the official work?</div>
+              <div class="qa-answer">Fitness/Coding Work on branch feature/fitness-day1-sl-erpe. The PR is the review point; the old branch is not the pivot-work branch.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Message to Yashwanth -->
+        <div class="card">
+          <div class="card-header">
+            <span>Message to Yashwanth</span>
+            <span class="text-tertiary" style="font-size: 11px;">Handoff Communication</span>
+          </div>
+          <div class="card-body">
+            <div class="quote-box">
+              <p class="text-secondary">
+                “Yashwanth, as you are new to this project, I completed our assigned Day 1 SL + ERPE work and will share your upcoming tasks as we move through the next days. Day 1 established the API contract, gateway protections, Prisma/PostgreSQL foundation, assigned Frappe DocTypes, ERP health endpoint, and automated verification. Please review the isolated Fitness/Coding Work folder and the Day 1 branch first. We will follow the documented day-by-day plan and will not take up another teammate’s work or add new architecture.”
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggested Presentation Order -->
+        <div style="padding-top: 4px;">
+          <p class="text-tertiary">
+            💡 <strong>Suggested presentation order:</strong> scope boundary → flow → completed areas → database/API-key Q&A → tests → Yashwanth handoff.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const isDark = body.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+      document.getElementById('themeLabel').textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    }
+  </script>
+</body>
+</html>

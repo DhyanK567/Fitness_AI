@@ -1,0 +1,56 @@
+name,planType,priceINR,sessionLimit
+QA Import Monthly,Monthly,2500,8
+QA Import Quarterly,Quarterly,6800,24
+QA Import Annual,Annual,24000,96
+Basic Monthly,Monthly,2500,8
+Basic Quarterly,Quarterly,6800,24
+Basic Half-Yearly,Half-Yearly,12800,48
+Basic Annual,Annual,23400,96
+Premium Monthly,Monthly,3800,12
+Premium Quarterly,Quarterly,10400,36
+Premium Half-Yearly,Half-Yearly,19400,72
+Premium Annual,Annual,35600,144
+Ultra Premium Monthly,Monthly,5600,20
+Ultra Premium Quarterly,Quarterly,15300,60
+Ultra Premium Half-Yearly,Half-Yearly,28600,120
+Ultra Premium Annual,Annual,52400,240
+Basic Student Monthly,Monthly,2100,8
+Basic Student Quarterly,Quarterly,5800,24
+Basic Student Half-Yearly,Half-Yearly,10800,48
+Basic Student Annual,Annual,19900,96
+Premium Student Monthly,Monthly,3200,12
+Premium Student Quarterly,Quarterly,8800,36
+Premium Student Half-Yearly,Half-Yearly,16500,72
+Premium Student Annual,Annual,30200,144
+Ultra Premium Student Monthly,Monthly,4800,20
+Ultra Premium Student Quarterly,Quarterly,13000,60
+Ultra Premium Student Half-Yearly,Half-Yearly,24300,120
+Ultra Premium Student Annual,Annual,44600,240
+Basic Corporate Monthly,Monthly,2200,8
+Basic Corporate Quarterly,Quarterly,6100,24
+Basic Corporate Half-Yearly,Half-Yearly,11500,48
+Basic Corporate Annual,Annual,21100,96
+Premium Corporate Monthly,Monthly,3400,12
+Premium Corporate Quarterly,Quarterly,9300,36
+Premium Corporate Half-Yearly,Half-Yearly,17400,72
+Premium Corporate Annual,Annual,32000,144
+Ultra Premium Corporate Monthly,Monthly,5000,20
+Ultra Premium Corporate Quarterly,Quarterly,13800,60
+Ultra Premium Corporate Half-Yearly,Half-Yearly,25700,120
+Ultra Premium Corporate Annual,Annual,47200,240
+Basic Couple Monthly,Monthly,4400,16
+Basic Couple Quarterly,Quarterly,11900,48
+Basic Couple Half-Yearly,Half-Yearly,22300,96
+Basic Couple Annual,Annual,41000,192
+Premium Couple Monthly,Monthly,6600,24
+Premium Couple Quarterly,Quarterly,18200,72
+Premium Couple Half-Yearly,Half-Yearly,33900,144
+Premium Couple Annual,Annual,62200,288
+Ultra Premium Couple Monthly,Monthly,9800,40
+Ultra Premium Couple Quarterly,Quarterly,26800,120
+Ultra Premium Couple Half-Yearly,Half-Yearly,50000,240
+Ultra Premium Couple Annual,Annual,91700,480
+Basic Senior Monthly,Monthly,2000,8
+Basic Senior Quarterly,Quarterly,5500,24
+Basic Senior Half-Yearly,Half-Yearly,10200,48
+Basic Senior Annual,Annual,18700,96

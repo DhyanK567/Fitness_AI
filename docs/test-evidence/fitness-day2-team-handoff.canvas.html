@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitness Studio OS · Day 2 Engineering & Architecture Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas-bg: #0b0d11;
+      --bg-editor: #10141a;
+      --bg-elevated: #161c24;
+      --bg-elevated-hover: #1c232e;
+      --stroke-primary: #232b36;
+      --stroke-strong: #333d4d;
+      --text-primary: #e6edf3;
+      --text-secondary: #9aa4b2;
+      --text-tertiary: #626e7e;
+      --accent-primary: #388bfd;
+      --accent-subtle: rgba(56, 139, 253, 0.12);
+      --accent-glow: rgba(56, 139, 253, 0.25);
+      --info-bg: rgba(56, 139, 253, 0.08);
+      --info-border: rgba(56, 139, 253, 0.3);
+      --info-text: #58a6ff;
+      --success-accent: #3fb950;
+      --success-bg: rgba(63, 185, 80, 0.1);
+      --success-border: rgba(63, 185, 80, 0.3);
+      --warning-accent: #d29922;
+      --warning-bg: rgba(210, 153, 34, 0.1);
+      --warning-border: rgba(210, 153, 34, 0.3);
+      --purple-accent: #a371f7;
+      --purple-bg: rgba(163, 113, 247, 0.1);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --canvas-bg: #f4f6f9;
+      --bg-editor: #ffffff;
+      --bg-elevated: #f8fafc;
+      --bg-elevated-hover: #eef2f7;
+      --stroke-primary: #e2e8f0;
+      --stroke-strong: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #94a3b8;
+      --accent-primary: #0284c7;
+      --accent-subtle: rgba(2, 132, 199, 0.1);
+      --accent-glow: rgba(2, 132, 199, 0.2);
+      --info-bg: rgba(2, 132, 199, 0.08);
+      --info-border: rgba(2, 132, 199, 0.3);
+      --info-text: #0284c7;
+      --success-accent: #16a34a;
+      --success-bg: rgba(22, 163, 74, 0.1);
+      --success-border: rgba(22, 163, 74, 0.3);
+      --warning-accent: #b45309;
+      --warning-bg: rgba(180, 83, 9, 0.1);
+      --warning-border: rgba(180, 83, 9, 0.3);
+      --purple-accent: #7c3aed;
+      --purple-bg: rgba(124, 58, 237, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--canvas-bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Navbar */
+    .canvas-navbar {
+      height: 54px;
+      background: var(--bg-editor);
+      border-bottom: 1px solid var(--stroke-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .canvas-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #388bfd, #a371f7);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+
+    .canvas-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .canvas-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 9px;
+      border-radius: 4px;
+    }
+    .badge-success { background: var(--success-bg); color: var(--success-accent); border: 1px solid var(--success-border); }
+    .badge-purple { background: var(--purple-bg); color: var(--purple-accent); border: 1px solid rgba(163, 113, 247, 0.3); }
+
+    .canvas-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--stroke-primary);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--bg-elevated-hover); border-color: var(--stroke-strong); }
+    .btn-primary { background: var(--accent-primary); color: white; border: none; }
+    .btn-primary:hover { opacity: 0.9; }
+
+    /* Main Container */
+    .canvas-container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 24px 80px;
+      flex: 1;
+    }
+
+    /* Hero Section */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(56, 139, 253, 0.08) 0%, rgba(163, 113, 247, 0.08) 100%);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #58a6ff, #a371f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      max-width: 900px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .hero-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .meta-box {
+      background: var(--bg-editor);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+    .meta-label { font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.05em; }
+    .meta-value { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+
+    /* Tabs Navigation */
+    .tab-nav {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--stroke-primary);
+      margin-bottom: 28px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active {
+      color: var(--accent-primary);
+      border-bottom-color: var(--accent-primary);
+      background: var(--accent-subtle);
+      border-radius: 6px 6px 0 0;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.25s ease-in; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards & Layout */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    @media (max-width: 992px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--stroke-primary);
+      background: rgba(255, 255, 255, 0.015);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-header h3 { font-size: 15px; font-weight: 600; }
+    .card-body { padding: 20px; }
+
+    /* Interactive Pipeline / Flow Visualizer */
+    .pipeline-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+      margin: 20px 0;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .pipeline-step {
+      flex: 1;
+      min-width: 220px;
+      background: var(--bg-editor);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .pipeline-step:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .step-idx {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .step-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .step-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Code Blocks */
+    .code-container {
+      background: #0d1117;
+      border: 1px solid var(--stroke-primary);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .code-header {
+      background: #161b22;
+      padding: 8px 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--stroke-primary);
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--stroke-strong);
+      color: var(--text-secondary);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .copy-btn:hover { color: var(--text-primary); border-color: var(--accent-primary); }
+    pre {
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #e6edf3;
+      overflow-x: auto;
+    }
+    .c-kw { color: #ff7b72; font-weight: 600; }
+    .c-fn { color: #d2a8ff; }
+    .c-str { color: #a5d6ff; }
+    .c-cmt { color: #8b949e; font-style: italic; }
+    .c-num { color: #79c0ff; }
+
+    /* Interactive Matrix Table */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--stroke-primary);
+      border-radius: 8px;
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    th {
+      background: var(--bg-editor);
+      padding: 12px 16px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--stroke-primary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--stroke-primary);
+      color: var(--text-primary);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-elevated-hover); }
+
+    .tag-allow {
+      background: var(--success-bg);
+      color: var(--success-accent);
+      border: 1px solid var(--success-border);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag-deny {
+      background: rgba(248, 81, 73, 0.1);
+      color: #f85149;
+      border: 1px solid rgba(248, 81, 73, 0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Metrics Row */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .metric-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-primary);
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+    .metric-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="canvas-navbar">
+    <div class="canvas-title-group">
+      <span class="logo-badge">FITNESS OS</span>
+      <div class="canvas-title">
+        <span>Day 2 Architecture Showcase</span>
+        <span class="canvas-badge badge-success">✓ Passed 21 Contract Tests</span>
+        <span class="canvas-badge badge-purple">Syed (SL) & Yashwanth (ERPE)</span>
+      </div>
+    </div>
+    <div class="canvas-controls">
+      <button class="btn" onclick="toggleTheme()" id="themeBtn">🌓 Theme</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Export PDF</button>
+    </div>
+  </nav>
+
+  <div class="canvas-container">
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-title">Day 2: Authentication, Tenant Hardening & Concurrency Booking</div>
+      <div class="hero-subtitle">
+        Comprehensive verification of Security Lead (Syed) and ERP Engineer (Yashwanth) deliverables. Demonstrating zero-trust JWT authentication, tenant session isolation via PostgreSQL RLS, RBAC default-deny policy, atomic class booking with row-level locks, and automated waitlist promotion.
+      </div>
+      <div class="hero-meta-grid">
+        <div class="meta-box">
+          <div class="meta-label">Security & Gateway Lead</div>
+          <div class="meta-value">Syed Tahir Ahamed R</div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">ERP & Integration Lead</div>
+          <div class="meta-value">Yashwanth</div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Git Branch & Status</div>
+          <div class="meta-value"><span style="color:var(--success-accent)">●</span> chore/day1-infra-and-ai-spec</div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">CI Verification</div>
+          <div class="meta-value">Exit Code 0 (All Suites Passed)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Row -->
+    <div class="metric-row">
+      <div class="metric-card">
+        <div class="meta-label">Test Automation</div>
+        <div class="metric-value">21 / 21</div>
+        <div class="metric-sub">Python contract & adapter tests passed</div>
+      </div>
+      <div class="metric-card">
+        <div class="meta-label">RBAC Roles Defined</div>
+        <div class="metric-value">6 Roles</div>
+        <div class="metric-sub">owner, admin, front_desk, trainer, member, visitor</div>
+      </div>
+      <div class="metric-card">
+        <div class="meta-label">Atomic ERP Handlers</div>
+        <div class="metric-value">5 Operations</div>
+        <div class="metric-sub">book, cancel, promote, check-in, expire</div>
+      </div>
+      <div class="metric-card">
+        <div class="meta-label">Isolation Guarantee</div>
+        <div class="metric-value">100% RLS</div>
+        <div class="metric-sub">Strict tenant header & claims match</div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('overview')">📌 Overview & Workflow</button>
+      <button class="tab-btn" onclick="switchTab('security')">🔐 Security & RBAC (Syed)</button>
+      <button class="tab-btn" onclick="switchTab('erp')">⚙️ ERP & Concurrency (Yashwanth)</button>
+      <button class="tab-btn" onclick="switchTab('outbox')">📦 Audit & Outbox Engine</button>
+      <button class="tab-btn" onclick="switchTab('tests')">🧪 Test Proof & Evidence</button>
+    </div>
+
+    <!-- TAB 1: OVERVIEW & WORKFLOW -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="card">
+        <div class="card-header">
+          <h3>Day 2 End-to-End Request Pipeline</h3>
+          <span class="canvas-badge badge-success">Zero Trust Execution Flow</span>
+        </div>
+        <div class="card-body">
+          <p class="text-secondary" style="margin-bottom:16px; font-size:14px;">
+            Every request flowing through the NestJS Gateway undergoes strict tenant resolution, cryptographic JWT claim validation, and database session scoping before reaching business logic.
+          </p>
+
+          <div class="pipeline-wrapper">
+            <div class="pipeline-step">
+              <div class="step-idx">Step 01 · Client Inbound</div>
+              <div class="step-title">Tenant Context Guard</div>
+              <div class="step-desc">Extracts <code>x-tenant-id</code> header or subdomain; validates tenant presence and UUID structure.</div>
+            </div>
+            <div class="pipeline-step">
+              <div class="step-idx">Step 02 · Gateway IAM</div>
+              <div class="step-title">Staff Access Guard</div>
+              <div class="step-desc">Verifies HS256 JWT signature; rejects cross-tenant tokens (<code>token.tenant !== req.tenantId</code>).</div>
+            </div>
+            <div class="pipeline-step">
+              <div class="step-idx">Step 03 · RBAC Matrix</div>
+              <div class="step-title">Policy Enforcement</div>
+              <div class="step-desc">Validates required permissions (e.g. <code>staff:write</code>) against user role with default-deny.</div>
+            </div>
+            <div class="pipeline-step">
+              <div class="step-idx">Step 04 · Data Boundary</div>
+              <div class="step-title">PostgreSQL RLS Session</div>
+              <div class="step-desc">Executes <code>SET LOCAL platform.current_tenant</code> ensuring row-level multi-tenant isolation.</div>
+            </div>
+            <div class="pipeline-step">
+              <div class="step-idx">Step 05 · ERP Integration</div>
+              <div class="step-title">Frappe Row Lock</div>
+              <div class="step-desc">Executes transactional booking with <code>SELECT ... FOR UPDATE</code> preventing race conditions.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h3>Syed's Security Responsibilities (SL)</h3>
+            <span class="canvas-badge badge-purple">Gateway & Platform</span>
+          </div>
+          <div class="card-body">
+            <ul style="padding-left:18px; line-height:1.8; font-size:13.5px; color:var(--text-secondary);">
+              <li><strong>Staff Auth Lifecycle:</strong> Endpoints for login (<code>/auth/login</code>), invite (<code>/auth/invite</code>), and password reset (<code>/auth/reset-password</code>).</li>
+              <li><strong>Tenant Scoping & Guards:</strong> Zero-trust <code>TenantContextGuard</code> and <code>StaffAccessGuard</code> preventing cross-tenant data leakage.</li>
+              <li><strong>RBAC Policy Engine:</strong> Centralized permission matrix supporting 6 roles with strict default-deny.</li>
+              <li><strong>Audit & Outbox Engine:</strong> Dual-write transactional consistency writing to <code>audit_logs</code> and <code>outbox_events</code> in a single transaction.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Yashwanth's ERP Responsibilities (ERPE)</h3>
+            <span class="canvas-badge badge-success">Frappe & Business Logic</span>
+          </div>
+          <div class="card-body">
+            <ul style="padding-left:18px; line-height:1.8; font-size:13.5px; color:var(--text-secondary);">
+              <li><strong>Atomic Booking API:</strong> Concurrency-safe class booking using <code>SELECT FOR UPDATE</code> row locks on sessions.</li>
+              <li><strong>Waitlist & Promotion:</strong> Automatic overflow into Waitlist and row-locked FIFO promotion upon cancellation.</li>
+              <li><strong>Session Attendance:</strong> Real-time member check-in endpoint (<code>check_in.py</code>) validating membership validity.</li>
+              <li><strong>Membership Expiry Scheduler:</strong> Idempotent background job registered in Frappe hooks to transition memberships daily.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SECURITY & RBAC (SYED) -->
+    <div id="tab-security" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h3>RBAC Policy & Permission Matrix (Default-Deny)</h3>
+          <span class="canvas-badge badge-purple">backend-nestjs-gateway/src/common/policy.ts</span>
+        </div>
+        <div class="card-body">
+          <p style="margin-bottom:14px; font-size:13.5px; color:var(--text-secondary);">
+            The policy engine implements strict role-based access control. Unlisted permissions resolve to <code>false</code> immediately.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Permission / Resource</th>
+                  <th>Owner</th>
+                  <th>Admin</th>
+                  <th>Front Desk</th>
+                  <th>Trainer</th>
+                  <th>Member</th>
+                  <th>Visitor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>tenant:manage</code></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                </tr>
+                <tr>
+                  <td><code>staff:manage</code></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                </tr>
+                <tr>
+                  <td><code>settings:write</code></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                </tr>
+                <tr>
+                  <td><code>bookings:write</code></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-allow">✓ Self Only</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                </tr>
+                <tr>
+                  <td><code>attendance:check_in</code></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                </tr>
+                <tr>
+                  <td><code>payments:write</code></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-allow">✓ Granted</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                  <td><span class="tag-deny">✗ Denied</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Staff Access Guard Implementation</h3>
+          <span class="canvas-badge badge-purple">backend-nestjs-gateway/src/common/staff-access.guard.ts</span>
+        </div>
+        <div class="card-body">
+          <div class="code-container">
+            <div class="code-header">
+              <span>staff-access.guard.ts</span>
+              <button class="copy-btn" onclick="navigator.clipboard.writeText('claims.tenant !== request.tenantId')">Copy</button>
+            </div>
+            <pre><code><span class="c-kw">const</span> authHeader = request.headers[<span class="c-str">'authorization'</span>];
+<span class="c-kw">if</span> (!authHeader || !authHeader.startsWith(<span class="c-str">'Bearer '</span>)) {
+  <span class="c-kw">throw new</span> UnauthorizedException(<span class="c-str">'Missing bearer token'</span>);
+}
+
+<span class="c-kw">const</span> token = authHeader.substring(7);
+<span class="c-kw">const</span> claims = verifyAccessToken(token);
+
+<span class="c-cmt">// Strict Cross-Tenant Matching Barrier</span>
+<span class="c-kw">if</span> (claims.tenant !== request.tenantId) {
+  <span class="c-kw">throw new</span> ForbiddenException(<span class="c-str">'Tenant context mismatch between token claims and request'</span>);
+}
+
+<span class="c-kw">const</span> requiredPermission = <span class="c-fn">this</span>.reflector.get&lt;string&gt;(<span class="c-str">'permission'</span>, context.getHandler());
+<span class="c-kw">if</span> (requiredPermission && !hasPermission(claims.role, requiredPermission)) {
+  <span class="c-kw">throw new</span> ForbiddenException(<span class="c-str">`Forbidden: role ${claims.role} lacks ${requiredPermission}`</span>);
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: ERP & CONCURRENCY (YASHWANTH) -->
+    <div id="tab-erp" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h3>Concurrency-Safe Class Booking & Waitlist Engine</h3>
+          <span class="canvas-badge badge-success">erpnext-custom-app/wellness_studio/api/booking.py</span>
+        </div>
+        <div class="card-body">
+          <p style="margin-bottom:14px; font-size:13.5px; color:var(--text-secondary);">
+            To prevent race conditions during high-demand class booking rushes, Yashwanth engineered row-level locking via PostgreSQL/MariaDB <code>FOR UPDATE</code>.
+          </p>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span>booking.py · Atomic Seat Reservation</span>
+              <button class="copy-btn" onclick="navigator.clipboard.writeText('SELECT name, capacity, confirmed_count FROM `tabWS Class Session` FOR UPDATE')">Copy</button>
+            </div>
+            <pre><code><span class="c-kw">def</span> <span class="c-fn">_session</span>(session: str, tenant: str):
+    row = frappe.db.sql(
+        <span class="c-str">"""
+        SELECT name, capacity, confirmed_count, waitlist_count, status
+        FROM `tabWS Class Session`
+        WHERE name = %s AND tenant = %s
+        FOR UPDATE
+        """</span>,
+        (session, tenant),
+        as_dict=<span class="c-kw">True</span>,
+    )
+    <span class="c-kw">if not</span> row:
+        frappe.throw(_(<span class="c-str">"Class session not found"</span>), frappe.DoesNotExistError)
+    <span class="c-kw">return</span> row[0]
+
+<span class="c-kw">@frappe.whitelist()</span>
+<span class="c-kw">def</span> <span class="c-fn">book</span>(member: str, session: str, tenant: str):
+    tenant = _tenant(tenant)
+    <span class="c-cmt"># Check duplicate booking</span>
+    <span class="c-kw">if</span> frappe.db.exists(<span class="c-str">"WS Booking"</span>, {<span class="c-str">"tenant"</span>: tenant, <span class="c-str">"member"</span>: member, <span class="c-str">"session"</span>: session, <span class="c-str">"status"</span>: [<span class="c-str">"in"</span>, [<span class="c-str">"Confirmed"</span>, <span class="c-str">"Waitlisted"</span>]]}):
+        frappe.throw(_(<span class="c-str">"Member already has a booking for this session"</span>), frappe.DuplicateEntryError)
+
+    session_row = _session(session, tenant)
+    status = <span class="c-str">"Confirmed"</span> <span class="c-kw">if</span> (session_row.confirmed_count <span class="c-kw">or</span> <span class="c-num">0</span>) &lt; (session_row.capacity <span class="c-kw">or</span> <span class="c-num">0</span>) <span class="c-kw">else</span> <span class="c-str">"Waitlisted"</span>
+    booking = frappe.get_doc({
+        <span class="c-str">"doctype"</span>: <span class="c-str">"WS Booking"</span>, <span class="c-str">"tenant"</span>: tenant, <span class="c-str">"member"</span>: member,
+        <span class="c-str">"session"</span>: session, <span class="c-str">"status"</span>: status,
+    })
+    booking.insert(ignore_permissions=<span class="c-kw">True</span>)
+    field = <span class="c-str">"confirmed_count"</span> <span class="c-kw">if</span> status == <span class="c-str">"Confirmed"</span> <span class="c-kw">else</span> <span class="c-str">"waitlist_count"</span>
+    frappe.db.set_value(<span class="c-str">"WS Class Session"</span>, session, field, (getattr(session_row, field) <span class="c-kw">or</span> <span class="c-num">0</span>) + <span class="c-num">1</span>, update_modified=<span class="c-kw">False</span>)
+    <span class="c-kw">return</span> {<span class="c-str">"booking_id"</span>: booking.name, <span class="c-str">"status"</span>: status}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: AUDIT & OUTBOX -->
+    <div id="tab-outbox" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h3>Transactional Audit & Outbox Engine</h3>
+          <span class="canvas-badge badge-purple">backend-nestjs-gateway/src/common/audit-outbox.service.ts</span>
+        </div>
+        <div class="card-body">
+          <p style="margin-bottom:14px; font-size:13.5px; color:var(--text-secondary);">
+            To prevent distributed transaction failures where database state changes but asynchronous events or audit trails are lost, Syed implemented transactional dual-write:
+          </p>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span>audit-outbox.service.ts · Atomic Dual Write</span>
+            </div>
+            <pre><code><span class="c-kw">await this</span>.prisma.$transaction(<span class="c-kw">async</span> (tx) => {
+  <span class="c-cmt">// 1. Write Append-Only Audit Log</span>
+  <span class="c-kw">await</span> tx.auditLog.create({
+    data: {
+      tenantId: payload.tenantId,
+      actorId: payload.actorId,
+      action: payload.action,
+      resource: payload.resource,
+      resourceId: payload.resourceId,
+      metadata: payload.metadata,
+      occurredAt: <span class="c-kw">new</span> Date(),
+    }
+  });
+
+  <span class="c-cmt">// 2. Write Outbox Event for Message Brokers</span>
+  <span class="c-kw">await</span> tx.outboxEvent.create({
+    data: {
+      tenantId: payload.tenantId,
+      eventType: payload.eventType,
+      payload: payload.outboxPayload,
+      status: <span class="c-str">'PENDING'</span>,
+      createdAt: <span class="c-kw">new</span> Date(),
+    }
+  });
+});</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: TESTS -->
+    <div id="tab-tests" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h3>Automated Test Execution Evidence (Day 2)</h3>
+          <span class="canvas-badge badge-success">pytest tests/contract-erp-adapter</span>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Test File</th>
+                  <th>Scope</th>
+                  <th>Assertions Verified</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>test_day2_auth.py</code></td>
+                  <td>Staff Authentication</td>
+                  <td>Endpoints for login, invite, reset-password; tenantId in JWT; signAccessToken</td>
+                  <td><span class="tag-allow">PASS</span></td>
+                </tr>
+                <tr>
+                  <td><code>test_day2_policy.py</code></td>
+                  <td>RBAC Engine</td>
+                  <td>6 roles (owner, admin, front_desk, trainer, member, visitor); default-deny</td>
+                  <td><span class="tag-allow">PASS</span></td>
+                </tr>
+                <tr>
+                  <td><code>test_day2_audit_outbox.py</code></td>
+                  <td>Transactional Integrity</td>
+                  <td>Atomic $transaction across auditLog and outboxEvent dual write</td>
+                  <td><span class="tag-allow">PASS</span></td>
+                </tr>
+                <tr>
+                  <td><code>test_day2_erpe_operations.py</code></td>
+                  <td>ERP Operations</td>
+                  <td>book, cancel, promote_waitlist, check_in, expire_memberships, SELECT FOR UPDATE</td>
+                  <td><span class="tag-allow">PASS</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      if (current === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    }
+  </script>
+</body>
+</html>

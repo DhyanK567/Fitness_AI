@@ -1,0 +1,56 @@
+title,category,startAt,endAt,venue,organizer,capacity
+QA Import Wellness Day,Wellness,2026-11-05T09:00:00.000Z,2026-11-05T15:00:00.000Z,Studio A,QA Import Team,30
+QA Import Mobility Workshop,Workshop,2026-11-12T18:00:00.000Z,2026-11-12T20:00:00.000Z,Studio B,QA Import Team,20
+QA Import Open House,Community,2026-11-19T10:00:00.000Z,2026-11-19T13:00:00.000Z,Main Studio,QA Import Team,40
+Sunrise Yoga in the Park,Wellness,2026-11-26T07:00:00.000Z,2026-11-26T10:00:00.000Z,Studio A,Studio Events Team,25
+Nutrition Masterclass,Workshop,2026-11-29T07:00:00.000Z,2026-11-29T09:00:00.000Z,Studio B,Rahul Menon,20
+Member Appreciation Night,Community,2026-12-02T10:00:00.000Z,2026-12-02T13:00:00.000Z,Main Studio,Ananya Sharma,60
+Beginner Pilates Workshop,Workshop,2026-12-04T09:00:00.000Z,2026-12-04T11:00:00.000Z,Studio A,Studio Events Team,23
+Strength 101 Clinic,Workshop,2026-12-07T18:00:00.000Z,2026-12-07T20:00:00.000Z,Training Floor,Studio Events Team,15
+Breathwork Evening,Wellness,2026-12-10T18:00:00.000Z,2026-12-10T20:00:00.000Z,Studio B,Meera Nair,20
+Partner Yoga Social,Community,2026-12-12T09:00:00.000Z,2026-12-12T11:00:00.000Z,Studio A,Meera Nair,30
+HIIT Challenge Day,Challenge,2026-12-15T06:00:00.000Z,2026-12-15T09:00:00.000Z,Training Floor,Ananya Sharma,30
+Meditation Retreat Morning,Wellness,2026-12-17T06:00:00.000Z,2026-12-17T10:00:00.000Z,Studio B,Rahul Menon,20
+Bring-a-Friend Weekend,Community,2026-12-19T06:00:00.000Z,2026-12-19T11:00:00.000Z,Main Studio,Kavita Iyer,45
+Injury Prevention Seminar,Workshop,2026-12-23T07:00:00.000Z,2026-12-23T09:00:00.000Z,Studio B,Ananya Sharma,25
+Dance Fitness Party,Community,2026-12-26T07:00:00.000Z,2026-12-26T09:00:00.000Z,Studio A,Meera Nair,40
+30-Day Fitness Kickoff,Challenge,2026-12-29T06:00:00.000Z,2026-12-29T08:00:00.000Z,Main Studio,Meera Nair,50
+Mobility Masterclass,Workshop,2026-12-31T09:00:00.000Z,2026-12-31T11:00:00.000Z,Studio B,Kavita Iyer,20
+Reformer Open Day,Community,2027-01-04T07:00:00.000Z,2027-01-04T10:00:00.000Z,Reformer Room,Ananya Sharma,10
+Wellness Talk: Sleep & Recovery,Wellness,2027-01-06T10:00:00.000Z,2027-01-06T12:00:00.000Z,Studio A,Meera Nair,30
+Sunrise Yoga in the Park #2,Wellness,2027-01-10T18:00:00.000Z,2027-01-10T21:00:00.000Z,Studio A,Ananya Sharma,25
+Nutrition Masterclass #2,Workshop,2027-01-14T19:00:00.000Z,2027-01-14T21:00:00.000Z,Studio B,Meera Nair,30
+Member Appreciation Night #2,Community,2027-01-16T19:00:00.000Z,2027-01-16T22:00:00.000Z,Main Studio,Kavita Iyer,65
+Beginner Pilates Workshop #2,Workshop,2027-01-20T18:00:00.000Z,2027-01-20T20:00:00.000Z,Studio A,Rahul Menon,18
+Strength 101 Clinic #2,Workshop,2027-01-22T17:00:00.000Z,2027-01-22T19:00:00.000Z,Training Floor,Studio Events Team,15
+Breathwork Evening #2,Wellness,2027-01-26T07:00:00.000Z,2027-01-26T09:00:00.000Z,Studio B,Rahul Menon,30
+Partner Yoga Social #2,Community,2027-01-28T19:00:00.000Z,2027-01-28T21:00:00.000Z,Studio A,Rahul Menon,35
+HIIT Challenge Day #2,Challenge,2027-02-01T19:00:00.000Z,2027-02-01T22:00:00.000Z,Training Floor,Ananya Sharma,40
+Meditation Retreat Morning #2,Wellness,2027-02-03T09:00:00.000Z,2027-02-03T13:00:00.000Z,Studio B,Studio Events Team,15
+Bring-a-Friend Weekend #2,Community,2027-02-05T19:00:00.000Z,2027-02-06T00:00:00.000Z,Main Studio,Studio Events Team,45
+Injury Prevention Seminar #2,Workshop,2027-02-08T10:00:00.000Z,2027-02-08T12:00:00.000Z,Studio B,Ananya Sharma,35
+Dance Fitness Party #2,Community,2027-02-11T19:00:00.000Z,2027-02-11T21:00:00.000Z,Studio A,Kavita Iyer,40
+30-Day Fitness Kickoff #2,Challenge,2027-02-14T17:00:00.000Z,2027-02-14T19:00:00.000Z,Main Studio,Kavita Iyer,40
+Mobility Masterclass #2,Workshop,2027-02-17T10:00:00.000Z,2027-02-17T12:00:00.000Z,Studio B,Rahul Menon,20
+Reformer Open Day #2,Community,2027-02-19T10:00:00.000Z,2027-02-19T13:00:00.000Z,Reformer Room,Meera Nair,20
+Wellness Talk: Sleep & Recovery #2,Wellness,2027-02-23T07:00:00.000Z,2027-02-23T09:00:00.000Z,Studio A,Kavita Iyer,40
+Sunrise Yoga in the Park #3,Wellness,2027-02-25T09:00:00.000Z,2027-02-25T12:00:00.000Z,Studio A,Studio Events Team,20
+Nutrition Masterclass #3,Workshop,2027-02-27T09:00:00.000Z,2027-02-27T11:00:00.000Z,Studio B,Ananya Sharma,30
+Member Appreciation Night #3,Community,2027-03-03T18:00:00.000Z,2027-03-03T21:00:00.000Z,Main Studio,Rahul Menon,65
+Beginner Pilates Workshop #3,Workshop,2027-03-06T07:00:00.000Z,2027-03-06T09:00:00.000Z,Studio A,Meera Nair,23
+Strength 101 Clinic #3,Workshop,2027-03-08T17:00:00.000Z,2027-03-08T19:00:00.000Z,Training Floor,Rahul Menon,15
+Breathwork Evening #3,Wellness,2027-03-12T19:00:00.000Z,2027-03-12T21:00:00.000Z,Studio B,Studio Events Team,25
+Partner Yoga Social #3,Community,2027-03-14T17:00:00.000Z,2027-03-14T19:00:00.000Z,Studio A,Rahul Menon,30
+HIIT Challenge Day #3,Challenge,2027-03-16T18:00:00.000Z,2027-03-16T21:00:00.000Z,Training Floor,Rahul Menon,30
+Meditation Retreat Morning #3,Wellness,2027-03-20T09:00:00.000Z,2027-03-20T13:00:00.000Z,Studio B,Rahul Menon,25
+Bring-a-Friend Weekend #3,Community,2027-03-22T17:00:00.000Z,2027-03-22T22:00:00.000Z,Main Studio,Rahul Menon,55
+Injury Prevention Seminar #3,Workshop,2027-03-26T06:00:00.000Z,2027-03-26T08:00:00.000Z,Studio B,Studio Events Team,30
+Dance Fitness Party #3,Community,2027-03-28T10:00:00.000Z,2027-03-28T12:00:00.000Z,Studio A,Ananya Sharma,35
+30-Day Fitness Kickoff #3,Challenge,2027-04-01T17:00:00.000Z,2027-04-01T19:00:00.000Z,Main Studio,Studio Events Team,50
+Mobility Masterclass #3,Workshop,2027-04-03T09:00:00.000Z,2027-04-03T11:00:00.000Z,Studio B,Ananya Sharma,20
+Reformer Open Day #3,Community,2027-04-05T10:00:00.000Z,2027-04-05T13:00:00.000Z,Reformer Room,Studio Events Team,10
+Wellness Talk: Sleep & Recovery #3,Wellness,2027-04-07T07:00:00.000Z,2027-04-07T09:00:00.000Z,Studio A,Rahul Menon,35
+Sunrise Yoga in the Park #4,Wellness,2027-04-10T19:00:00.000Z,2027-04-10T22:00:00.000Z,Studio A,Rahul Menon,30
+Nutrition Masterclass #4,Workshop,2027-04-14T09:00:00.000Z,2027-04-14T11:00:00.000Z,Studio B,Meera Nair,25
+Member Appreciation Night #4,Community,2027-04-18T10:00:00.000Z,2027-04-18T13:00:00.000Z,Main Studio,Studio Events Team,60
+Beginner Pilates Workshop #4,Workshop,2027-04-21T10:00:00.000Z,2027-04-21T12:00:00.000Z,Studio A,Ananya Sharma,18

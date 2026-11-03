@@ -1,0 +1,10 @@
+{
+ "doctype":"DocType","engine":"InnoDB","module":"Tenant","name":"WS Studio Scope","autoname":"field:studio_uuid","track_changes":1,
+ "field_order":["tenant","studio_uuid","studio_name"],
+ "fields":[
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1,"in_list_view":1},
+  {"fieldname":"studio_uuid","fieldtype":"Data","label":"Studio UUID","reqd":1,"unique":1},
+  {"fieldname":"studio_name","fieldtype":"Data","label":"Studio Name","reqd":1,"in_list_view":1}
+ ],
+ "permissions":[{"create":1,"read":1,"write":1,"role":"System Manager"},{"read":1,"role":"WS Owner"},{"read":1,"role":"WS Admin"}]
+}

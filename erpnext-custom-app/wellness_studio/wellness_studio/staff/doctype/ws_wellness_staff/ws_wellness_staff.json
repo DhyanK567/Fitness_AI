@@ -1,0 +1,18 @@
+{
+ "doctype":"DocType","engine":"InnoDB","module":"Staff","name":"WS Wellness Staff","autoname":"WS-STF-.####","track_changes":1,
+ "field_order":["tenant","studio","branch","full_name","email","phone","staff_role","is_trainer","assigned_class_types","is_active","app_user_uuid"],
+ "fields":[
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"full_name","fieldtype":"Data","label":"Full Name","reqd":1,"in_list_view":1},
+  {"fieldname":"email","fieldtype":"Data","label":"Email","options":"Email","reqd":1,"in_list_view":1},
+  {"fieldname":"phone","fieldtype":"Data","label":"Phone","options":"Phone"},
+  {"fieldname":"staff_role","fieldtype":"Select","label":"Staff Role","options":"Owner\nAdmin\nFront Desk\nTrainer","reqd":1},
+  {"fieldname":"is_trainer","fieldtype":"Check","label":"Is Trainer","default":0},
+  {"fieldname":"assigned_class_types","fieldtype":"Table","label":"Assigned Class Types","options":"WS Staff Class Assignment"},
+  {"fieldname":"is_active","fieldtype":"Check","label":"Is Active","default":1,"reqd":1},
+  {"fieldname":"app_user_uuid","fieldtype":"Data","label":"Application User UUID"}
+ ],
+ "permissions":[{"create":1,"read":1,"write":1,"role":"WS Owner"},{"create":1,"read":1,"write":1,"role":"WS Admin"},{"read":1,"role":"WS Front Desk"},{"read":1,"role":"WS Trainer"}]
+}

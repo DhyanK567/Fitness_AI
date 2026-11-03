@@ -1,0 +1,138 @@
+/attendance:
+  post:
+    tags:
+      - Attendance
+    summary: Record member attendance
+    operationId: createAttendance
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/attendance.yaml#/CreateAttendanceRequest'
+
+    responses:
+      '201':
+        description: Attendance recorded successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/attendance.yaml#/Attendance'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+  get:
+    tags:
+      - Attendance
+    summary: Get all attendance records
+    operationId: getAttendance
+
+    responses:
+      '200':
+        description: Attendance records retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/attendance.yaml#/Attendance'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+
+'/attendance/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique attendance ID
+      schema:
+        type: string
+        example: ATT-00001
+
+  get:
+    tags:
+      - Attendance
+    summary: Get attendance by ID
+    operationId: getAttendanceById
+
+    responses:
+      '200':
+        description: Attendance record retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/attendance.yaml#/Attendance'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Attendance record not found
+
+  put:
+    tags:
+      - Attendance
+    summary: Update attendance
+    operationId: updateAttendance
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/attendance.yaml#/UpdateAttendanceRequest'
+
+    responses:
+      '200':
+        description: Attendance updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/attendance.yaml#/Attendance'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Attendance record not found
+
+  delete:
+    tags:
+      - Attendance
+    summary: Delete attendance record
+    operationId: deleteAttendance
+
+    responses:
+      '409':
+        description: Attendance is audit-retained; use a reasoned correction instead of deletion
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Attendance record not found

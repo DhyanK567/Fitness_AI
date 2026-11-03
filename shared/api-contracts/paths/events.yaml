@@ -1,0 +1,142 @@
+/events:
+  get:
+    tags: [Events]
+    summary: List tenant events
+    operationId: listEvents
+    responses:
+      '200':
+        description: Tenant event list
+        content:
+          application/json:
+            schema:
+              type: array
+              items: {$ref: '../schemas/events.yaml#/Event'}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have permission}
+  post:
+    tags: [Events]
+    summary: Create an event
+    operationId: createEvent
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/events.yaml#/CreateEventRequest'}
+    responses:
+      '201':
+        description: Event created
+        content:
+          application/json:
+            schema: {$ref: '../schemas/events.yaml#/Event'}
+      '400': {description: Invalid event fields or paid event price}
+      '401': {description: User not authenticated}
+      '403': {description: User does not have permission}
+
+'/events/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema: {type: string}
+  get:
+    tags: [Events]
+    summary: Get event
+    operationId: getEvent
+    responses:
+      '200':
+        description: Event record
+        content:
+          application/json:
+            schema: {$ref: '../schemas/events.yaml#/Event'}
+      '404': {description: Event not found}
+  put:
+    tags: [Events]
+    summary: Update event
+    operationId: updateEvent
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/events.yaml#/UpdateEventRequest'}
+    responses:
+      '200':
+        description: Event updated
+        content:
+          application/json:
+            schema: {$ref: '../schemas/events.yaml#/Event'}
+      '400': {description: Invalid event update}
+      '404': {description: Event not found}
+  delete:
+    tags: [Events]
+    summary: Cancel an event without deleting its registration history
+    operationId: cancelEvent
+    responses:
+      '200':
+        description: Event cancelled
+        content:
+          application/json:
+            schema: {$ref: '../schemas/events.yaml#/Event'}
+      '404': {description: Event not found}
+
+'/events/{id}/registrations':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema: {type: string}
+  post:
+    tags: [Events]
+    summary: Register an attendee using the atomic ERP capacity/hold operation
+    operationId: registerEventAttendee
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: {$ref: '../schemas/events.yaml#/RegisterEventRequest'}
+    responses:
+      '201':
+        description: Registration created or waitlisted
+        content:
+          application/json:
+            schema: {$ref: '../schemas/events.yaml#/EventRegistration'}
+      '400': {description: Registration cannot be created}
+      '409': {description: Duplicate active registration}
+
+'/events/public':
+  get:
+    tags: [Events]
+    summary: List published public events for the tenant
+    operationId: listPublicEvents
+    security: []
+    responses:
+      '200':
+        description: Published events
+        content:
+          application/json:
+            schema:
+              type: array
+              items: {$ref: '../schemas/events.yaml#/Event'}
+      '404': {description: Tenant not found or inactive}
+
+'/events/public/{id}/registrations':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema: {type: string}
+  post:
+    tags: [Events]
+    summary: Register a public attendee for a free event
+    operationId: registerPublicEventAttendee
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/events.yaml#/PublicRegisterEventRequest'
+    responses:
+      '201': {description: Registration created}
+      '400': {description: Invalid registration or paid events are not available in Phase 1}
+      '404': {description: Event not found}
+      '429': {description: Rate limit exceeded}

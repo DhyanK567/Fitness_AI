@@ -1,0 +1,100 @@
+ClassSchedule:
+  type: object
+  required:
+    - id
+    - class_id
+    - day_of_week
+    - start_time
+    - end_time
+  properties:
+    id:
+      type: string
+      readOnly: true
+      description: Unique schedule identifier generated automatically by ERPNext
+      example: SCH-00001
+
+    class_id:
+      type: string
+      description: ID of the class associated with this schedule
+      example: CLS-00001
+
+    day_of_week:
+      type: string
+      enum:
+        - Mon
+        - Tue
+        - Wed
+        - Thu
+        - Fri
+        - Sat
+        - Sun
+      description: Recurring day of the week
+      example: Mon
+
+    start_time:
+      type: string
+      pattern: '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+      description: Class start time in HH:MM format
+      example: "18:00"
+
+    end_time:
+      type: string
+      pattern: '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+      description: Class end time in HH:MM format and must be after start_time
+      example: "19:00"
+
+
+CreateClassScheduleRequest:
+  type: object
+  required:
+    - day_of_week
+    - start_time
+    - end_time
+  properties:
+    day_of_week:
+      type: string
+      enum:
+        - Mon
+        - Tue
+        - Wed
+        - Thu
+        - Fri
+        - Sat
+        - Sun
+      example: Mon
+
+    start_time:
+      type: string
+      pattern: '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+      example: "18:00"
+
+    end_time:
+      type: string
+      pattern: '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+      example: "19:00"
+
+
+UpdateClassScheduleRequest:
+  type: object
+  properties:
+    day_of_week:
+      type: string
+      enum:
+        - Mon
+        - Tue
+        - Wed
+        - Thu
+        - Fri
+        - Sat
+        - Sun
+      example: Mon
+
+    start_time:
+      type: string
+      pattern: '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+      example: "18:00"
+
+    end_time:
+      type: string
+      pattern: '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+      example: "19:00"

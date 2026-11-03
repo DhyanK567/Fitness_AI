@@ -1,0 +1,138 @@
+/class-schedules:
+  post:
+    tags:
+      - Class Schedule
+    summary: Create a class schedule
+    operationId: createClassSchedule
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/class-schedules.yaml#/CreateClassScheduleRequest'
+
+    responses:
+      '201':
+        description: Class schedule created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/class-schedules.yaml#/ClassSchedule'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+  get:
+    tags:
+      - Class Schedule
+    summary: Get all class schedules
+    operationId: getClassSchedules
+
+    responses:
+      '200':
+        description: Class schedules retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/class-schedules.yaml#/ClassSchedule'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+
+'/class-schedules/{id}':
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique class schedule ID
+      schema:
+        type: string
+        example: SCH-00001
+
+  get:
+    tags:
+      - Class Schedule
+    summary: Get class schedule by ID
+    operationId: getClassScheduleById
+
+    responses:
+      '200':
+        description: Class schedule retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/class-schedules.yaml#/ClassSchedule'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Class schedule not found
+
+  put:
+    tags:
+      - Class Schedule
+    summary: Update class schedule
+    operationId: updateClassSchedule
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/class-schedules.yaml#/UpdateClassScheduleRequest'
+
+    responses:
+      '200':
+        description: Class schedule updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/class-schedules.yaml#/ClassSchedule'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Class schedule not found
+
+  delete:
+    tags:
+      - Class Schedule
+    summary: Delete class schedule
+    operationId: deleteClassSchedule
+
+    responses:
+      '200':
+        description: Class schedule deleted successfully
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Class schedule not found

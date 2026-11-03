@@ -1,0 +1,25 @@
+Booking:
+  type: object
+  required: [id, member_id, class_schedule_id, booking_date, status, booked_at]
+  properties:
+    id: {type: string, readOnly: true, example: BKG-00001}
+    member_id: {type: string, example: MEM-00001}
+    class_schedule_id: {type: string, example: SCH-00001}
+    booking_date: {type: string, format: date, example: '2026-09-20'}
+    status: {type: string, enum: [confirmed, waitlisted, cancelled], example: confirmed}
+    booked_at: {type: string, format: date-time, example: '2026-09-20T18:00:00Z'}
+    payment_id: {type: string, nullable: true, example: PAY-00001}
+
+CreateBookingRequest:
+  type: object
+  required: [class_schedule_id, booking_date]
+  properties:
+    member_id: {type: string, nullable: true, description: Staff supplies the target member; for member requests the API uses the authenticated member link}
+    class_schedule_id: {type: string, example: SCH-00001}
+    booking_date: {type: string, format: date, example: '2026-09-20'}
+    payment_id: {type: string, nullable: true, example: PAY-00001}
+
+UpdateBookingRequest:
+  type: object
+  properties:
+    status: {type: string, enum: [confirmed, waitlisted, cancelled]}

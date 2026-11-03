@@ -1,0 +1,25 @@
+Attendance:
+  type: object
+  required: [id, booking_id, status]
+  properties:
+    id: {type: string, readOnly: true, example: ATT-00001}
+    booking_id: {type: string, example: BKG-00001}
+    check_in_time: {type: string, format: date-time, nullable: true, example: '2026-09-20T18:02:00Z'}
+    check_out_time: {type: string, format: date-time, nullable: true, example: '2026-09-20T19:00:00Z'}
+    status: {type: string, enum: [present, absent, late], example: present}
+    session_id: {type: string, readOnly: true}
+    member_id: {type: string, readOnly: true}
+    attendance_method: {type: string, readOnly: true}
+
+CreateAttendanceRequest:
+  type: object
+  required: [booking_id]
+  properties:
+    booking_id: {type: string, example: BKG-00001}
+    attendance_method: {type: string, enum: [QR Scan, Trainer Marked, Admin Entry], default: Trainer Marked}
+
+UpdateAttendanceRequest:
+  type: object
+  properties:
+    status: {type: string, enum: [present, absent, late]}
+    reason: {type: string, minLength: 1, maxLength: 1000, description: Required explanation; corrections are retained in the audit trail}

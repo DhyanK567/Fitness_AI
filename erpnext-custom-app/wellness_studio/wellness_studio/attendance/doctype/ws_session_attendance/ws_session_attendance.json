@@ -1,0 +1,31 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order":["tenant","studio","branch","session_kind","session","member","booking","attendance_method","status","marked_by","marked_on","is_corrected","corrections"],
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"session_kind","fieldtype":"Select","label":"Session Kind","options":"Class Session\nEvent","default":"Class Session","reqd":1},
+  {"fieldname":"session","fieldtype":"Link","label":"Class Session","options":"WS Class Session","reqd":1,"in_list_view":1},
+  {"fieldname":"member","fieldtype":"Link","label":"Member","options":"WS Member","reqd":1,"in_list_view":1},
+  {"fieldname":"booking","fieldtype":"Link","label":"Booking","options":"WS Booking"},
+  {"fieldname":"attendance_method","fieldtype":"Select","label":"Method","options":"QR Scan\nTrainer Marked\nAdmin Entry","reqd":1,"in_list_view":1},
+  {"fieldname":"status","fieldtype":"Select","label":"Attendance","options":"Present\nAbsent\nLate","default":"Present","reqd":1,"in_list_view":1},
+  {"fieldname":"marked_by","fieldtype":"Link","label":"Marked By","options":"User"},
+  {"fieldname":"marked_on","fieldtype":"Datetime","label":"Marked On","default":"Now"},
+  {"fieldname":"is_corrected","fieldtype":"Check","label":"Admin Corrected","default":0,"read_only":1}
+  ,{"fieldname":"corrections","fieldtype":"Table","label":"Corrections","options":"WS Attendance Correction","read_only":1}
+ ],
+ "module": "Attendance",
+ "name": "WS Session Attendance",
+ "autoname": "WS-ATT-.####",
+ "permissions": [
+  {"create":1,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"read":1,"write":1,"role":"WS Admin"},
+  {"create":1,"read":1,"write":1,"role":"WS Trainer"},
+  {"create":1,"read":1,"write":0,"role":"WS Front Desk"},
+  {"read":1,"role":"WS Member"}
+ ],
+ "track_changes": 1
+}

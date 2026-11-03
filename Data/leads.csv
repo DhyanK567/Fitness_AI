@@ -1,0 +1,56 @@
+﻿name,email,phone,source,stage,followUpDate,assigned,plan,notes
+Neha Kapoor,neha.k@example.com,9845122334,Instagram,New enquiry,10/20/2026,Meera Nair,Premium,Interested in evening reformer classes
+Siddharth Rao,siddharth.r@example.com,9880199887,Walk-in,Trial booked,10/21/2026,Ananya Sharma,Ultra Premium,Booked Saturday morning trial
+Devika Rao,devika.r@example.com,9611254020,Website enquiry,Follow-up,10/19/2026,Meera Nair,Premium,Updated follow-up preference
+Aarav Shah,aarav.sh@example.com,9845001001,Referral,Trial completed,10/22/2026,Rahul Menon,Basic,Interested in strength classes
+Mira Thomas,mira.t@example.com,9845001002,Google Search,New enquiry,10/23/2026,Kavita Iyer,Premium,Asked about beginner yoga
+Kabir Joshi,kabir.j@example.com,9845001003,Instagram,Converted,10/18/2026,Ananya Sharma,Ultra Premium,Converted after introductory offer
+Ananya Pillai,ananya.p@example.com,9845001004,Corporate,Follow-up,10/24/2026,Meera Nair,Premium,Needs weekday lunchtime schedule
+Ritesh Gowda,ritesh.g@example.com,9845001005,Walk-in,Trial booked,10/25/2026,Rahul Menon,Basic,Trial scheduled for Sunday
+Sara Fernandes,sara.f@example.com,9845001006,Facebook,New enquiry,10/26/2026,Kavita Iyer,Premium,Asked about membership freeze policy
+Varun Prasad,varun.p@example.com,9845001007,Referral,Trial completed,10/20/2026,Ananya Sharma,Basic,Follow up with pricing options
+Keerthi Ramesh,keerthi.r@example.com,9845001008,Website enquiry,Follow-up,10/21/2026,Meera Nair,Ultra Premium,Interested in personal coaching
+Imran Sheikh,imran.s@example.com,9845001009,Instagram,New enquiry,10/27/2026,Rahul Menon,Premium,Prefers contact after 6 PM
+Lavanya Murthy,lavanya.m@example.com,9845001010,Referral,Converted,10/18/2026,Kavita Iyer,Premium,Joined after a trial session
+Joel Mathew,joel.m@example.com,9845001011,Corporate,Trial booked,10/28/2026,Ananya Sharma,Basic,Corporate wellness enquiry
+Sonal Mehta,sonal.m@example.com,9845001012,Google Search,New enquiry,10/29/2026,Meera Nair,Ultra Premium,Interested in a 12-month plan
+Farah Rangan,farah.r@example.com,9913567957,Instagram,New enquiry,10/30/2026,Rahul Menon,Ultra Premium,Interested in beginner classes
+Akash Bhat,akash.b@example.com,9019546277,Corporate,Converted,10/17/2026,Kavita Iyer,Ultra Premium,Converted after introductory offer
+Madhav Acharya,madhav.a@example.com,9953252188,Referral,Trial completed,10/25/2026,Rahul Menon,Ultra Premium,Interested in strength classes
+Rekha Bhat,rekha.b@example.com,9743449924,Walk-in,Converted,10/11/2026,Ananya Sharma,Ultra Premium,Joined via referral discount
+Yash Tiwari,yash.t@example.com,9781123856,Walk-in,New enquiry,11/2/2026,Meera Nair,Ultra Premium,Asked about class timings
+Uma Verma,uma.v@example.com,9949550251,Website enquiry,Trial booked,11/3/2026,Kavita Iyer,Premium,Trial scheduled this week
+Pallavi Ghosh,pallavi.g@example.com,8832328494,Website enquiry,Converted,10/9/2026,Rahul Menon,Ultra Premium,Joined after a trial session
+Vinay Hegde,vinay.h@example.com,9764411918,Facebook,New enquiry,10/21/2026,Meera Nair,Premium,Asked about class timings
+Indira Iyengar,indira.i@example.com,9845256077,Website enquiry,Trial booked,11/3/2026,Kavita Iyer,Basic,Trial booked for evening yoga
+Deepak Thakur,deepak.t@example.com,9839333593,Google Search,Converted,10/11/2026,Ananya Sharma,Premium,Joined via referral discount
+Bharat Banerjee,bharat.b@example.com,9014652402,Corporate,Trial booked,11/7/2026,Meera Nair,Basic,Trial booked for evening yoga
+Anjali Hegde,anjali.h@example.com,9018792430,Instagram,Follow-up,10/24/2026,Kavita Iyer,Ultra Premium,Needs weekday lunchtime schedule
+Suhas Thakur,suhas.t@example.com,9619571240,Corporate,Converted,10/10/2026,Rahul Menon,Premium,Joined after a trial session
+Vandana Shenoy,vandana.s@example.com,9982042654,Instagram,Trial completed,11/1/2026,Rahul Menon,Basic,"Liked the trainer, awaiting decision"
+Rekha Tiwari,rekha.t@example.com,8821995552,Google Search,Trial completed,11/8/2026,Rahul Menon,Basic,Follow up with pricing options
+Deepak Chopra,deepak.c@example.com,9977759488,Website enquiry,Follow-up,10/30/2026,Rahul Menon,Premium,Needs weekday lunchtime schedule
+Anil Lal,anil.l@example.com,9986086876,Facebook,Converted,10/11/2026,Rahul Menon,Ultra Premium,Signed up for annual plan
+Disha Acharya,disha.a@example.com,8825484722,Facebook,Trial booked,10/18/2026,Meera Nair,Basic,Wants to try reformer pilates
+Harini Urs,harini.u@example.com,9086068587,Website enquiry,Follow-up,11/3/2026,Ananya Sharma,Ultra Premium,Needs weekday lunchtime schedule
+Kunal Naidu,kunal.n@example.com,9925513083,Website enquiry,Trial completed,10/25/2026,Rahul Menon,Premium,"Liked the trainer, awaiting decision"
+Akash Rangan,akash.r@example.com,9033557996,Instagram,Trial completed,11/5/2026,Rahul Menon,Ultra Premium,Asked about couple plans
+Trisha Hegde,trisha.h@example.com,8877459442,Instagram,Trial completed,10/21/2026,Rahul Menon,Basic,Interested in strength classes
+Chetan Urs,chetan.u@example.com,9612723229,Website enquiry,Trial completed,11/6/2026,Rahul Menon,Premium,"Liked the trainer, awaiting decision"
+Samarth Dutta,samarth.d@example.com,9822916212,Referral,Trial booked,10/28/2026,Ananya Sharma,Premium,Trial booked for evening yoga
+Samarth Mishra,samarth.m@example.com,9749916108,Corporate,Follow-up,11/1/2026,Meera Nair,Premium,Asked about membership freeze policy
+Dhruv Rangan,dhruv.r@example.com,9923644673,Walk-in,Converted,10/18/2026,Rahul Menon,Ultra Premium,Signed up for annual plan
+Parth Mishra,parth.m@example.com,9740178681,Facebook,Follow-up,10/23/2026,Ananya Sharma,Basic,Will decide after salary credit
+Chaitra Ghosh,chaitra.g@example.com,9696508635,Google Search,Converted,10/15/2026,Kavita Iyer,Ultra Premium,Joined via referral discount
+Nisha Naidu,nisha.n@example.com,9670687035,Google Search,Trial booked,10/23/2026,Kavita Iyer,Basic,Booked weekend trial
+Madhav Hegde,madhav.h@example.com,9799944578,Referral,Converted,10/11/2026,Meera Nair,Ultra Premium,Joined after a trial session
+Girish Pai,girish.p@example.com,9014853558,Google Search,Converted,10/13/2026,Kavita Iyer,Premium,Converted after introductory offer
+Nisha Hiremath,nisha.h@example.com,8878568028,Facebook,Follow-up,11/8/2026,Kavita Iyer,Premium,Will decide after salary credit
+Uma Kamath,uma.k@example.com,9866543041,Google Search,Converted,10/12/2026,Kavita Iyer,Basic,Joined via referral discount
+Pallavi Rastogi,pallavi.r@example.com,9013910766,Walk-in,New enquiry,10/25/2026,Rahul Menon,Premium,Prefers contact after 6 PM
+Rakesh Acharya,rakesh.a@example.com,9968444785,Instagram,Converted,10/13/2026,Ananya Sharma,Basic,Joined after a trial session
+Bhavna Verma,bhavna.v@example.com,8856574855,Referral,Converted,10/17/2026,Rahul Menon,Premium,Signed up for annual plan
+Farah Agarwal,farah.a@example.com,9818901342,Walk-in,Follow-up,11/8/2026,Meera Nair,Ultra Premium,Will decide after salary credit
+Arvind Hiremath,arvind.h@example.com,9835592325,Google Search,Converted,10/13/2026,Rahul Menon,Basic,Joined after a trial session
+Pallavi Kamath,pallavi.k@example.com,9969506840,Google Search,Trial completed,10/21/2026,Meera Nair,Basic,"Liked the trainer, awaiting decision"
+Akash Joshi,akash.j@example.com,9766779946,Referral,New enquiry,11/1/2026,Ananya Sharma,Premium,Enquired about trial offer

@@ -1,0 +1,29 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"event","fieldtype":"Link","label":"Event","options":"WS Event","reqd":1,"in_list_view":1},
+  {"fieldname":"member","fieldtype":"Link","label":"Member","options":"WS Member","in_list_view":1},
+  {"fieldname":"lead","fieldtype":"Link","label":"Lead","options":"WS Lead"},
+  {"fieldname":"registrant_name","fieldtype":"Data","label":"Registrant Name","reqd":1,"in_list_view":1},
+  {"fieldname":"registrant_phone","fieldtype":"Data","label":"Registrant Phone"},
+  {"fieldname":"registrant_email","fieldtype":"Data","label":"Registrant Email","options":"Email"},
+  {"fieldname":"status","fieldtype":"Select","label":"Status","options":"Pending Payment\nConfirmed\nWaitlisted\nCancelled\nExpired","default":"Pending Payment","reqd":1,"in_list_view":1},
+  {"fieldname":"hold_expires_at","fieldtype":"Datetime","label":"Payment Hold Expires At","read_only":1},
+  {"fieldname":"payment","fieldtype":"Link","label":"Payment","options":"WS Payment Record","read_only":1},
+  {"fieldname":"confirmed_on","fieldtype":"Datetime","label":"Confirmed On","read_only":1}
+ ],
+ "module": "Events",
+ "name": "WS Event Registration",
+ "autoname": "WS-EVR-.####",
+ "permissions": [
+  {"create":1,"read":1,"write":1,"role":"WS Owner"},
+  {"create":1,"read":1,"write":1,"role":"WS Admin"},
+  {"create":1,"read":1,"write":1,"role":"WS Front Desk"},
+  {"read":1,"role":"WS Member"}
+ ],
+ "track_changes": 1
+}

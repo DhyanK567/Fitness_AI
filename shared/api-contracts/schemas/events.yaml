@@ -1,0 +1,84 @@
+Event:
+  type: object
+  required: [id, title, category, event_date, start_time, capacity, is_paid, audience, is_published, status]
+  properties:
+    id: {type: string, readOnly: true}
+    title: {type: string, minLength: 1, maxLength: 160}
+    category: {type: string, enum: [Workshop, Internal Studio Event, Public Event, Special Session]}
+    event_date: {type: string, format: date}
+    start_time: {type: string, format: time}
+    end_time: {type: string, format: time, nullable: true}
+    capacity: {type: integer, minimum: 1}
+    is_paid: {type: boolean}
+    price: {type: number, minimum: 0}
+    audience: {type: string, enum: [Members Only, Public, Leads & Prospects]}
+    registration_deadline: {type: string, format: date, nullable: true}
+    is_published: {type: boolean}
+    status: {type: string, enum: [upcoming, ongoing, completed, cancelled]}
+    image: {type: string, nullable: true}
+    description: {type: string, nullable: true}
+    confirmed_count: {type: integer, readOnly: true}
+    waitlist_count: {type: integer, readOnly: true}
+
+CreateEventRequest:
+  type: object
+  required: [title, category, event_date, start_time, capacity, is_paid, audience]
+  properties:
+    title: {type: string, minLength: 1, maxLength: 160}
+    category: {type: string, enum: [Workshop, Internal Studio Event, Public Event, Special Session]}
+    event_date: {type: string, format: date}
+    start_time: {type: string, format: time}
+    end_time: {type: string, format: time, nullable: true}
+    capacity: {type: integer, minimum: 1}
+    is_paid: {type: boolean}
+    price: {type: number, minimum: 0}
+    audience: {type: string, enum: [Members Only, Public, Leads & Prospects]}
+    registration_deadline: {type: string, format: date, nullable: true}
+    is_published: {type: boolean, default: true}
+    image: {type: string, nullable: true}
+    description: {type: string, nullable: true}
+
+UpdateEventRequest:
+  type: object
+  minProperties: 1
+  properties:
+    title: {type: string, minLength: 1, maxLength: 160}
+    category: {type: string, enum: [Workshop, Internal Studio Event, Public Event, Special Session]}
+    event_date: {type: string, format: date}
+    start_time: {type: string, format: time}
+    end_time: {type: string, format: time, nullable: true}
+    capacity: {type: integer, minimum: 1}
+    is_paid: {type: boolean}
+    price: {type: number, minimum: 0}
+    audience: {type: string, enum: [Members Only, Public, Leads & Prospects]}
+    registration_deadline: {type: string, format: date, nullable: true}
+    is_published: {type: boolean}
+    status: {type: string, enum: [upcoming, ongoing, completed, cancelled]}
+    image: {type: string, nullable: true}
+    description: {type: string, nullable: true}
+
+RegisterEventRequest:
+  type: object
+  required: [registrant_name]
+  properties:
+    registrant_name: {type: string, minLength: 1, maxLength: 140}
+    member_id: {type: string, nullable: true}
+    registrant_phone: {type: string, nullable: true}
+    registrant_email: {type: string, format: email, nullable: true}
+
+PublicRegisterEventRequest:
+  type: object
+  required: [registrant_name]
+  additionalProperties: false
+  properties:
+    registrant_name: {type: string, minLength: 1, maxLength: 140}
+    registrant_phone: {type: string, nullable: true}
+    registrant_email: {type: string, format: email, nullable: true}
+
+EventRegistration:
+  type: object
+  required: [registration_id, status]
+  properties:
+    registration_id: {type: string, readOnly: true}
+    status: {type: string, enum: [Pending Payment, Confirmed, Waitlisted]}
+    hold_expires_at: {type: string, format: date-time, nullable: true}

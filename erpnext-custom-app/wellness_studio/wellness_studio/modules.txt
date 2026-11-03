@@ -1,0 +1,15 @@
+Tenant
+Members
+Membership
+Classes
+Booking
+Attendance
+Events
+Wellness CRM
+Payments
+Staff
+Notifications
+Config Center
+AI
+Feedback
+Marketplace

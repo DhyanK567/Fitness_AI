@@ -1,0 +1,105 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-09-29 10:17:00.000000",
+	"custom": 1,
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"correction_details",
+		"attendance",
+		"original_check_in",
+		"original_check_out",
+		"corrected_check_in",
+		"corrected_check_out",
+		"reason",
+		"corrected_by",
+		"tenant"
+	],
+	"fields": [
+		{
+			"fieldname": "correction_details",
+			"fieldtype": "Section Break",
+			"label": "Correction Details"
+		},
+		{
+			"fieldname": "attendance",
+			"fieldtype": "Link",
+			"label": "Attendance Record",
+			"options": "WS Session Attendance",
+			"reqd": 1
+		},
+		{
+			"fieldname": "original_check_in",
+			"fieldtype": "Datetime",
+			"label": "Original Check In",
+			"read_only": 1
+		},
+		{
+			"fieldname": "original_check_out",
+			"fieldtype": "Datetime",
+			"label": "Original Check Out",
+			"read_only": 1
+		},
+		{
+			"fieldname": "corrected_check_in",
+			"fieldtype": "Datetime",
+			"label": "Corrected Check In",
+			"reqd": 1
+		},
+		{
+			"fieldname": "corrected_check_out",
+			"fieldtype": "Datetime",
+			"label": "Corrected Check Out"
+		},
+		{
+			"fieldname": "reason",
+			"fieldtype": "Text",
+			"label": "Reason for Correction",
+			"reqd": 1
+		},
+		{
+			"fieldname": "corrected_by",
+			"fieldtype": "Link",
+			"label": "Corrected By",
+			"options": "User",
+			"read_only": 1
+		},
+		{
+			"fieldname": "tenant",
+			"fieldtype": "Link",
+			"label": "Tenant",
+			"options": "Studio Tenant",
+			"reqd": 1,
+			"read_only": 1,
+			"hidden": 1
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-09-29 10:17:00.000000",
+	"modified_by": "Administrator",
+	"module": "Wellness Studio",
+	"name": "WS Attendance Correction",
+	"naming_series": "ATTC-.#####",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "attendance",
+	"track_changes": 1
+}

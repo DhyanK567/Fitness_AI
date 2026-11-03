@@ -1,0 +1,7 @@
+"dataset","amount","coach","currency","date","email","expiry","id","joined","memberId","method","name","notes","phone","plan","ref","refundedAmount","status","type"
+"members","","Ananya Rao","","","aarav.mehta.demo@example.com","2027-09-01","90000001-0000-4000-8000-000000000001","2026-09-02","","","Aarav Mehta","","+91 98450 10001","Premium","","","Active",""
+"members","","Kabir Shah","","","diya.nair.demo@example.com","2027-03-07","90000001-0000-4000-8000-000000000002","2026-09-08","","","Diya Nair","","+91 98450 10002","Basic","","","Active",""
+"members","","Kabir Shah","","","mira.das.demo@example.com","2027-03-31","90000001-0000-4000-8000-000000000004","2026-10-01","","","Mira Das","","+91 98450 10004","Premium","","","Review",""
+"payments","2500","","INR","2026-10-02T08:15:00.000Z","","","","","90000001-0000-4000-8000-000000000001","UPI","","Demo October membership payment","","","DEMO-FIN-PAY-001","0","Paid","Membership"
+"payments","2500","","INR","2026-10-08T09:10:00.000Z","","","","","90000001-0000-4000-8000-000000000002","Card","","Demo monthly membership payment","","","DEMO-FIN-PAY-002","0","Paid","Membership"
+"payments","6900","","INR","2026-10-21T10:00:00.000Z","","","","","90000001-0000-4000-8000-000000000004","NetBanking","","Demo pending quarterly payment","","","DEMO-FIN-PAY-003","0","Pending","Membership"

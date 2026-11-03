@@ -1,0 +1,231 @@
+/memberships:
+  post:
+    tags:
+      - Memberships
+    summary: Create a new membership
+    operationId: createMembership
+
+    security:
+      - bearerAuth: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/memberships.yaml#/CreateMembershipRequest'
+
+    responses:
+      '201':
+        description: Membership created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/memberships.yaml#/MembershipResponse'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+  get:
+    tags:
+      - Memberships
+    summary: Get all memberships
+    operationId: getMemberships
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Memberships retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/memberships.yaml#/MembershipResponse'
+      '401':
+        description: User not authenticated
+      '403':
+        description: User does not have permission
+
+'/memberships/plans':
+  get:
+    tags: [Memberships]
+    summary: List active membership plans for this tenant
+    operationId: listActiveMembershipPlans
+    security: []
+    responses:
+      '200':
+        description: Active plans available for purchase
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/memberships.yaml#/MembershipPlan'
+      '404': {description: Tenant not found}
+
+'/memberships/me':
+  get:
+    tags: [Memberships]
+    summary: List memberships belonging to the authenticated member
+    operationId: getMyMemberships
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: The authenticated member's memberships only
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/memberships.yaml#/MembershipResponse'
+      '401': {description: User not authenticated}
+      '403': {description: Account is not linked to a member}
+  post:
+    tags: [Memberships]
+    summary: Start a pending membership for the authenticated member
+    description: Creates a pending ERP membership. The member must create and complete a Razorpay order before activation.
+    operationId: createMyMembership
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/memberships.yaml#/CreateOwnMembershipRequest'
+    responses:
+      '201':
+        description: Pending membership created
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/memberships.yaml#/MembershipResponse'
+      '400': {description: Invalid membership selection}
+      '401': {description: User not authenticated}
+      '403': {description: Account is not linked to a member}
+
+      '404':
+        description: Member not found
+
+  get:
+    tags:
+      - Memberships
+/memberships/{id}:
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique membership ID
+      schema:
+        type: string
+        example: MSHP-0012
+
+  get:
+    tags:
+      - Memberships
+    summary: Get membership by ID
+    operationId: getMembershipById
+
+    security:
+      - bearerAuth: []
+
+    responses:
+      '200':
+        description: Membership retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/memberships.yaml#/MembershipResponse'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Membership not found
+
+  put:
+    tags:
+      - Memberships
+    summary: Update membership
+    operationId: updateMembership
+
+    security:
+      - bearerAuth: []
+
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/memberships.yaml#/UpdateMembershipRequest'
+
+    responses:
+      '200':
+        description: Membership updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/memberships.yaml#/MembershipResponse'
+
+      '400':
+        description: Invalid input
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Membership not found
+
+
+/memberships/{id}/cancel:
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Unique membership ID
+      schema:
+        type: string
+        example: MSHP-0012
+
+  post:
+    tags:
+      - Memberships
+    summary: Cancel a membership
+    operationId: cancelMembership
+
+    security:
+      - bearerAuth: []
+
+    responses:
+      '200':
+        description: Membership cancelled successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/memberships.yaml#/MembershipResponse'
+
+      '401':
+        description: User not authenticated
+
+      '403':
+        description: User does not have permission
+
+      '404':
+        description: Membership not found
+
+      '409':
+        description: Membership cannot be cancelled

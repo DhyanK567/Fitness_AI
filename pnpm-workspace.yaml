@@ -1,0 +1,14 @@
+packages:
+  - "frontend-nextjs"
+  - "backend-nestjs-gateway"
+  - "backend-worker"
+  - "shared/*"
+allowBuilds:
+  '@nestjs/core': false
+  '@parcel/watcher': false
+  '@prisma/client': false
+  '@prisma/engines': false
+  '@scarf/scarf': false
+  esbuild: false
+  prisma: false
+  unrs-resolver: false

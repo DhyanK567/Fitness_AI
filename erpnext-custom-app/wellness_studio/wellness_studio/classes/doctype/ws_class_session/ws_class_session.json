@@ -1,0 +1,42 @@
+{
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant","studio","branch","session_title","class_type","schedule","trainer","section_schedule",
+  "session_date","start_time","end_time","section_capacity",
+  "capacity","marketplace_price","confirmed_count","waitlist_count",
+  "section_status","status","notes"
+ ],
+ "fields": [
+  {"fieldname":"tenant","fieldtype":"Link","label":"Wellness Tenant Scope","options":"Wellness Tenant Scope","reqd":1},
+  {"fieldname":"studio","fieldtype":"Link","label":"Studio","options":"WS Studio Scope"},
+  {"fieldname":"branch","fieldtype":"Link","label":"Branch","options":"WS Branch Scope"},
+  {"fieldname":"session_title","fieldtype":"Data","label":"Session Title","reqd":1,"in_list_view":1},
+  {"fieldname":"class_type","fieldtype":"Link","label":"Class Type","options":"WS Class Type","reqd":1,"in_list_view":1},
+  {"fieldname":"schedule","fieldtype":"Link","label":"Class Schedule","options":"WS Class Schedule"},
+  {"fieldname":"trainer","fieldtype":"Link","label":"Trainer","options":"WS Wellness Staff","reqd":1},
+  {"fieldname":"section_schedule","fieldtype":"Section Break","label":"Schedule"},
+  {"fieldname":"session_date","fieldtype":"Date","label":"Date","reqd":1,"in_list_view":1},
+  {"fieldname":"start_time","fieldtype":"Time","label":"Start Time","reqd":1,"in_list_view":1},
+  {"fieldname":"end_time","fieldtype":"Time","label":"End Time","reqd":1},
+  {"fieldname":"section_capacity","fieldtype":"Section Break","label":"Capacity"},
+  {"fieldname":"capacity","fieldtype":"Int","label":"Max Capacity","reqd":1,"default":30},
+  {"fieldname":"marketplace_price","fieldtype":"Currency","label":"Public Marketplace Price","default":0},
+  {"fieldname":"confirmed_count","fieldtype":"Int","label":"Confirmed Bookings","default":0,"read_only":1},
+  {"fieldname":"waitlist_count","fieldtype":"Int","label":"Waitlist Count","default":0,"read_only":1},
+  {"fieldname":"section_status","fieldtype":"Section Break","label":"Status"},
+  {"fieldname":"status","fieldtype":"Select","label":"Status","options":"Scheduled\nOngoing\nCompleted\nCancelled","default":"Scheduled","reqd":1,"in_list_view":1},
+  {"fieldname":"notes","fieldtype":"Small Text","label":"Notes"}
+ ],
+ "module": "Classes",
+ "name": "WS Class Session",
+ "autoname": "WS-SES-.####",
+ "permissions": [
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Owner"},
+  {"read":1,"role":"WS Front Desk"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Admin"},
+  {"create":1,"delete":0,"read":1,"write":1,"role":"WS Trainer"},
+  {"read":1,"role":"WS Member"}
+ ],
+ "track_changes": 1
+}
