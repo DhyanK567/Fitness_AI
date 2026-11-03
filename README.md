@@ -2,29 +2,33 @@
 
 Multi-tenant SaaS for dance, yoga, Zumba, meditation, fitness and other wellness studios. One platform runs leads, members, memberships, classes, bookings, attendance, events, payments, WhatsApp automation and reporting, with a governed AI assistant on top.
 
-> **Status:** project skeleton complete (321 folders, ~502 files, workspace installed). Source files are placeholders and are being filled in module by module.
+> **Release stage:** 🧪 **Beta testing** (Phase 1 scope)
+> **Last updated:** <YYYY-MM-DD> · **Version / tag:** <v0.1.0-beta.1> · **Branch under test:** `main`
+> WhatsApp and Razorpay run in **mock / test mode**. Do not use real customer data.
 
 ---
 
 ## Table of contents
 
 1. [Product summary](#1-product-summary)
-2. [Architecture](#2-architecture)
-3. [Design rules](#3-design-rules)
-4. [Tech stack](#4-tech-stack)
-5. [Repository structure](#5-repository-structure)
-6. [Module map](#6-module-map)
-7. [Data ownership](#7-data-ownership)
-8. [Request and event flows](#8-request-and-event-flows)
-9. [Multi-tenancy and security](#9-multi-tenancy-and-security)
-10. [AI architecture](#10-ai-architecture)
-11. [Automation (n8n)](#11-automation-n8n)
-12. [Getting started (Windows / PowerShell)](#12-getting-started-windows--powershell)
-13. [Scripts](#13-scripts)
-14. [Environments and deployment](#14-environments-and-deployment)
-15. [Naming conventions](#15-naming-conventions)
-16. [Roadmap](#16-roadmap)
-17. [Documentation](#17-documentation)
+2. [Beta status](#2-beta-status)
+3. [Beta setup instructions](#3-beta-setup-instructions)
+4. [Beta test plan](#4-beta-test-plan)
+5. [Architecture](#5-architecture)
+6. [Design rules](#6-design-rules)
+7. [Tech stack](#7-tech-stack)
+8. [Repository structure](#8-repository-structure)
+9. [Module map](#9-module-map)
+10. [Data ownership](#10-data-ownership)
+11. [Request and event flows](#11-request-and-event-flows)
+12. [Multi-tenancy and security](#12-multi-tenancy-and-security)
+13. [AI architecture](#13-ai-architecture)
+14. [Automation (n8n)](#14-automation-n8n)
+15. [Scripts](#15-scripts)
+16. [Environments and deployment](#16-environments-and-deployment)
+17. [Naming conventions](#17-naming-conventions)
+18. [Roadmap](#18-roadmap)
+19. [Documentation](#19-documentation)
 
 ---
 
@@ -38,11 +42,351 @@ Multi-tenant SaaS for dance, yoga, Zumba, meditation, fitness and other wellness
 **Canonical flow (must pass end to end):**
 Member -> Membership -> Class -> Booking -> Attendance -> Payment -> Notification -> Dashboard
 
-**Phase 1 (5-day delivery):** operational core, WhatsApp and Razorpay in test/mock mode, and a narrow AI slice (Admin Assistant with two read queries plus Create Member).
+**Phase 1 scope:** operational core, WhatsApp and Razorpay in test/mock mode, and a narrow AI slice (Admin Assistant with two read queries plus Create Member).
 
 ---
 
-## 2. Architecture
+## 2. Beta status
+
+### 2.1 Legend
+
+| Symbol | Meaning |
+|---|---|
+| ✅ | Working end to end, tested |
+| 🟡 | Partially working or untested |
+| 🔴 | Broken or blocked |
+| ⬜ | Not started / placeholder only |
+
+> **Maintainers:** update this table before each beta drop. Keep `docs/STATUS.md` as the detailed source of truth and keep this table as the summary. See [2.5](#25-how-to-measure-real-status) for a quick way to measure status from the code.
+
+### 2.2 Platform and infrastructure
+
+| Area | Status | Notes |
+|---|---|---|
+| Monorepo (pnpm + Turborepo) | <⬜/🟡/✅> | |
+| Docker Compose local stack (PostgreSQL, n8n) | <⬜/🟡/✅> | |
+| Prisma schema and migrations | <⬜/🟡/✅> | |
+| Row-level security policies | <⬜/🟡/✅> | |
+| Seed data (demo tenant) | <⬜/🟡/✅> | |
+| ERPNext custom app (`wellness_studio`) on Frappe Cloud | <⬜/🟡/✅> | |
+| Outbox worker | <⬜/🟡/✅> | |
+| CI (GitHub Actions) | <⬜/🟡/✅> | |
+
+### 2.3 Staff (B2B) portal
+
+| Module | Status | Notes |
+|---|---|---|
+| Staff login and roles | <⬜/🟡/✅> | |
+| Dashboard | <⬜/🟡/✅> | |
+| Members | <⬜/🟡/✅> | |
+| Memberships and plans | <⬜/🟡/✅> | |
+| Classes and sessions | <⬜/🟡/✅> | |
+| Bookings and waitlist | <⬜/🟡/✅> | |
+| Attendance / check-in | <⬜/🟡/✅> | |
+| Leads (CRM) | <⬜/🟡/✅> | |
+| Events (basic) | <⬜/🟡/✅> | |
+| Payments (Razorpay test mode) | <⬜/🟡/✅> | |
+| Reports | <⬜/🟡/✅> | |
+| Staff management | <⬜/🟡/✅> | |
+| Settings (Configuration Center) | <⬜/🟡/✅> | |
+| Notifications | <⬜/🟡/✅> | |
+| AI Assistant (2 read queries + Create Member) | <⬜/🟡/✅> | |
+
+### 2.4 Member (B2C) portal and public site
+
+| Module | Status | Notes |
+|---|---|---|
+| Member login (phone OTP / Google) | <⬜/🟡/✅> | OTP provider may be mocked |
+| Home and my membership | <⬜/🟡/✅> | |
+| Book class | <⬜/🟡/✅> | |
+| QR check-in | <⬜/🟡/✅> | |
+| My payments / renew | <⬜/🟡/✅> | |
+| Events | <⬜/🟡/✅> | |
+| Profile | <⬜/🟡/✅> | |
+| Recommendations | <⬜/🟡/✅> | |
+| Public site (classes, events, enquiry) | <⬜/🟡/✅> | |
+
+### 2.5 How to measure real status
+
+Run this from the repo root (PowerShell). It lists source files that are still tiny (likely placeholders) and groups them by app, so you can see what is really implemented.
+
+```powershell
+# Files under 200 bytes are almost certainly placeholders
+Get-ChildItem -Recurse -File -Include *.ts,*.tsx,*.py,*.prisma,*.json -Exclude package.json `
+  -Path .\frontend-nextjs\src, .\backend-nestjs-gateway\src, .\backend-worker\src, .\erpnext-custom-app |
+  Where-Object { $_.FullName -notmatch 'node_modules|\.next|dist' } |
+  ForEach-Object {
+    [pscustomobject]@{
+      App    = ($_.FullName -replace [regex]::Escape((Get-Location).Path + '\'), '').Split('\')[0]
+      File   = $_.FullName.Replace((Get-Location).Path + '\', '')
+      Bytes  = $_.Length
+    }
+  } | Group-Object App | ForEach-Object {
+    $total = $_.Count
+    $empty = ($_.Group | Where-Object Bytes -lt 200).Count
+    "{0,-28} total: {1,4}   placeholder: {2,4}   implemented: {3,4}" -f $_.Name, $total, $empty, ($total - $empty)
+  }
+```
+
+Then confirm the build and checks pass:
+
+```powershell
+pnpm install
+pnpm typecheck
+pnpm build
+pnpm test
+```
+
+Record the results (pass/fail and date) in `docs/test-evidence/`.
+
+### 2.6 Known limitations in this beta
+
+- WhatsApp is in **mock mode**: messages are stored as "would-send" records, and nothing reaches a real phone.
+- Razorpay is in **test mode**: use Razorpay test cards and UPI test IDs only.
+- Refunds, invoices, freeze/credits, event waitlist, email, MFA and self-service onboarding are **Phase 2** and are not in this beta.
+- Agents (CRM, Operations, Marketing, Advertising, Growth, Insights, Session Summary) are **not** in this beta.
+- <Add any known bugs, missing screens or unfinished flows here.>
+
+---
+
+## 3. Beta setup instructions
+
+### 3.1 Prerequisites
+
+| Tool | Version | Notes |
+|---|---|---|
+| Node.js | 20 or newer (tested with 24.x) | |
+| pnpm | tested with 12.6.0 | `npm install -g pnpm` |
+| Git | any recent | |
+| Docker Desktop | any recent | Runs local PostgreSQL and n8n |
+| Frappe Cloud site | dev site | The ERP is not run locally |
+| Bash | Git Bash or WSL on Windows | Needed for the `scripts/*.sh` helpers |
+
+Keep the project **outside OneDrive** (for example `C:\dev\fitness-ai`). OneDrive syncing `node_modules` is slow and can lock files.
+
+### 3.2 Clone and install
+
+```powershell
+cd C:\dev
+git clone https://github.com/thirumalaramakrishnagoud-cmd/fitness-ai.git
+cd fitness-ai
+pnpm install
+pnpm approve-builds     # allow: @nestjs/core, @prisma/client, @prisma/engines, prisma
+pnpm install
+pnpm -r list --depth -1 # should list 11 packages
+```
+
+If the repository is private, make sure the tester has been added as a collaborator and is signed in to Git.
+
+### 3.3 Configure environment files
+
+Copy each `.env.example` to `.env`, then fill in the values. Never commit `.env`.
+
+```powershell
+Copy-Item frontend-nextjs\.env.example           frontend-nextjs\.env
+Copy-Item backend-nestjs-gateway\.env.example    backend-nestjs-gateway\.env
+Copy-Item backend-worker\.env.example            backend-worker\.env
+```
+
+Open each `.env.example` for the exact variable names. The values you need, by group:
+
+| Group | What you need | Beta value |
+|---|---|---|
+| Database | PostgreSQL connection string | Local Docker container |
+| Auth | JWT secret, token lifetimes | Any long random string for beta |
+| ERP | Frappe Cloud site URL, integration API key and secret | Dev site credentials (ask the maintainer) |
+| Razorpay | Key ID, key secret, webhook secret | **Test mode** keys |
+| WhatsApp | Cloud API token, phone number ID | Leave unset and use `MOCK` mode |
+| n8n | Webhook URL, signing secret | Local n8n container |
+| LLM | Provider API key | Your key, or disable the AI Assistant |
+| OTP / Google | Provider keys | Mock OTP or test credentials |
+
+Generate a strong secret in PowerShell:
+
+```powershell
+[Convert]::ToBase64String((1..48 | ForEach-Object { Get-Random -Maximum 256 }) -as [byte[]])
+```
+
+### 3.4 Start the local services
+
+```powershell
+docker compose up -d
+docker compose ps       # postgres and n8n should show "running"
+```
+
+### 3.5 Set up the database
+
+```powershell
+pnpm --filter @fitness-ai/backend-nestjs-gateway prisma:generate
+pnpm --filter @fitness-ai/backend-nestjs-gateway exec prisma migrate deploy
+```
+
+Apply the row-level security SQL from `backend-nestjs-gateway/prisma/rls-policies/` if it is not already part of the migrations, then load the demo tenant:
+
+```powershell
+bash scripts/seed-demo-tenant.sh
+```
+
+### 3.6 Set up the ERP (Frappe Cloud)
+
+1. Deploy `erpnext-custom-app/` (the `wellness_studio` app) to your Frappe Cloud bench and install it on the dev site.
+2. Create the restricted **integration user**, generate its API key and secret, and put them in `backend-nestjs-gateway/.env`.
+3. Confirm the `ws_*` DocTypes exist (for example `ws_member`, `ws_booking`).
+4. Run the adapter contract tests: `tests/contract-erp-adapter/`.
+
+### 3.7 Import the n8n workflows
+
+1. Open n8n (<http://localhost:5678> unless you changed the port).
+2. Import the files in `automation-n8n/workflows/` (or run `automation-n8n/deploy/import-workflows.sh`).
+3. Create the credentials listed in `automation-n8n/credentials.template.md`.
+4. Set the `send-message` sub-workflow to **mock** mode.
+
+### 3.8 Run the apps
+
+```powershell
+pnpm dev
+```
+
+Or run them one at a time:
+
+```powershell
+pnpm --filter @fitness-ai/backend-nestjs-gateway dev
+pnpm --filter @fitness-ai/backend-worker dev
+pnpm --filter @fitness-ai/frontend-nextjs dev
+```
+
+| Service | URL (default, confirm in your `.env`) |
+|---|---|
+| Web app | <http://demo.localhost:3000> |
+| API | <http://localhost:<API_PORT>> |
+| API health | <http://localhost:<API_PORT>/health> |
+| n8n | <http://localhost:5678> |
+
+The tenant is resolved from the **host name**. Use `demo.localhost:3000`, not plain `localhost:3000`. Modern browsers resolve `*.localhost` to your machine without any changes. If yours does not, add `127.0.0.1 demo.localhost` to your hosts file.
+
+### 3.9 Verify the install (smoke test)
+
+- [ ] `GET /health` returns OK on the API
+- [ ] Worker starts with no errors in the log
+- [ ] Staff login works with the demo Owner account
+- [ ] Dashboard loads with no console errors
+- [ ] Creating a member in the portal creates a `ws_member` record in ERPNext
+- [ ] A booking creates an outbox event and a mock WhatsApp "would-send" record
+
+### 3.10 Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `pnpm install` fails or is very slow | Move the repo out of OneDrive and re-run |
+| Prisma client not found | Run `prisma:generate`, and run `pnpm approve-builds` if the engines were blocked |
+| Port already in use | Stop the other process, or change the port in `.env` |
+| `Tenant not found` / 404 on every page | Use `demo.localhost:3000` and make sure the demo tenant is seeded |
+| API cannot reach ERP | Check the Frappe Cloud URL, the API key/secret and the integration user's permissions |
+| Events stay in the outbox | Make sure `backend-worker` is running and the n8n webhook URL and signing secret match |
+| Docker containers will not start | Open Docker Desktop and run `docker compose logs <service>` |
+| `.sh` scripts fail on Windows | Run them in Git Bash or WSL |
+
+---
+
+## 4. Beta test plan
+
+### 4.1 Who is testing
+
+| Tester type | Focus |
+|---|---|
+| Studio Owner / Admin | Setup, configuration, reports, staff management |
+| Front Desk | Members, bookings, check-in, payments |
+| Trainer | Class view, attendance |
+| Member | Booking, renewal, check-in, events |
+| Developer / QA | Isolation, concurrency, AI evaluation, API contract |
+
+### 4.2 Test accounts
+
+> Replace with the real demo credentials from your seed script. Never reuse production passwords.
+
+| Role | Login | Password |
+|---|---|---|
+| Owner | <email> | <password> |
+| Admin | <email> | <password> |
+| Front Desk | <email> | <password> |
+| Trainer | <email> | <password> |
+| Member | <phone> (OTP: <mock code>) | n/a |
+| Second tenant (isolation test) | <email> | <password> |
+
+### 4.3 Must-pass scenarios
+
+| ID | Scenario | Expected result | Result |
+|---|---|---|---|
+| B-01 | **Canonical flow:** create member, assign membership, create class, book, check in, pay, check notification, view dashboard | Every step succeeds and the dashboard figures match | ⬜ |
+| B-02 | Booking a full class | Member is waitlisted or rejected with a clear reason | ⬜ |
+| B-03 | Last-seat race: 50 parallel bookings on a class with one seat | Exactly one booking wins | ⬜ |
+| B-04 | Duplicate booking for the same member and session | Rejected | ⬜ |
+| B-05 | Booking with an expired or inactive membership | Rejected with reason | ⬜ |
+| B-06 | Cancel inside and outside the cancellation window | Rules applied from tenant configuration | ⬜ |
+| B-07 | Payment success (Razorpay test) | Payment Paid, posted to ERP, `payment.confirmed` event | ⬜ |
+| B-08 | Delayed or missing Razorpay webhook | Payment stays Pending, never guessed as paid | ⬜ |
+| B-09 | Repeated webhook delivery | Processed once (idempotent) | ⬜ |
+| B-10 | Each role opens a screen it should not access | Hidden in the UI **and** denied by the API | ⬜ |
+| B-11 | Tenant A requests Tenant B data (by ID and by URL) | Not-found style response, audit-logged | ⬜ |
+| B-12 | WhatsApp mock: lead, booking, reminder, renewal, payment, event messages | One would-send record per event, no duplicates | ⬜ |
+| B-13 | n8n or WhatsApp failure | Retries, then Failed status and admin alert; the transaction is not reversed | ⬜ |
+| B-14 | Admin Assistant: both read queries | Figures match the dashboard | ⬜ |
+| B-15 | Admin Assistant: Create Member | Proposed first, runs only after confirmation, audited | ⬜ |
+| B-16 | Assistant asked something out of scope or medical | Politely refused | ⬜ |
+| B-17 | Member portal on a phone screen | Usable on a small viewport | ⬜ |
+| B-18 | Every screen's loading, empty, error and permission-denied states | All four present | ⬜ |
+
+### 4.4 Automated checks
+
+| Suite | Location | Run |
+|---|---|---|
+| Canonical flow (E2E) | `tests/e2e-canonical-flow/` | `pnpm test` |
+| Tenant isolation | `tests/tenant-isolation/` | `pnpm test` |
+| Last-seat concurrency | `tests/concurrency-last-seat/` | `pnpm test` |
+| AI evaluation | `tests/ai-evaluation/` | `pnpm test` |
+| ERP adapter contract | `tests/contract-erp-adapter/` | `pnpm test` |
+
+Save the output of each run in `docs/test-evidence/` with the date and commit hash.
+
+### 4.5 Reporting bugs and feedback
+
+Open a GitHub issue using this template:
+
+```text
+Title:        [Module] Short description
+Environment:  local / staging · browser · OS · commit hash
+Tenant/Role:  e.g. demo / Front Desk
+Steps:        1. ...  2. ...  3. ...
+Expected:     ...
+Actual:       ...
+Correlation ID: (from the error or audit log, if shown)
+Evidence:     screenshot / console log / network response
+Severity:     Blocker / Major / Minor / Cosmetic
+```
+
+| Severity | Definition |
+|---|---|
+| **Blocker** | Data loss, cross-tenant leak, payment error, or the canonical flow cannot finish |
+| **Major** | A core feature is broken and there is no workaround |
+| **Minor** | A feature is broken but there is a workaround |
+| **Cosmetic** | Layout, wording or styling only |
+
+**Never post secrets, real phone numbers or real customer data in issues.**
+
+### 4.6 Beta exit criteria
+
+- [ ] Canonical flow passes end to end on staging
+- [ ] Tenant isolation suite passes with zero leaks
+- [ ] Last-seat test passes (exactly one winner out of 50)
+- [ ] No open Blocker bugs, and Major bugs have an agreed plan
+- [ ] AI evaluation scenarios pass
+- [ ] Every screen has loading, empty, error and permission-denied states
+- [ ] Test evidence recorded in `docs/test-evidence/`
+- [ ] Open decisions in [section 19](#19-documentation) are resolved or consciously deferred
+
+---
+
+## 5. Architecture
 
 ```text
                     ┌──────────────────────┐
@@ -112,7 +456,7 @@ Member -> Membership -> Class -> Booking -> Attendance -> Payment -> Notificatio
 
 ---
 
-## 3. Design rules
+## 6. Design rules
 
 1. **ERP is truth, AI assists.** Payments, memberships, bookings and attendance are deterministic logic. AI drafts, summarises and recommends.
 2. **One front door.** Browsers, AI, n8n and agents always go through the API layer.
@@ -126,7 +470,7 @@ Member -> Membership -> Class -> Booking -> Attendance -> Payment -> Notificatio
 
 ---
 
-## 4. Tech stack
+## 7. Tech stack
 
 | Layer | Technology | Hosting |
 |---|---|---|
@@ -146,7 +490,7 @@ Redis and object storage are intentionally left out and will be added only if ne
 
 ---
 
-## 5. Repository structure
+## 8. Repository structure
 
 ```text
 fitness-ai/
@@ -168,7 +512,7 @@ fitness-ai/
 └── README.md
 ```
 
-### 5.1 `frontend-nextjs/`
+### 8.1 `frontend-nextjs/`
 
 ```text
 frontend-nextjs/
@@ -207,7 +551,7 @@ frontend-nextjs/
 
 Rules: no business rules in components, no secrets in client code, permission-aware UI (hide, but the server enforces), and every screen has loading, empty, error and permission-denied states.
 
-### 5.2 `backend-nestjs-gateway/`
+### 8.2 `backend-nestjs-gateway/`
 
 ```text
 backend-nestjs-gateway/
@@ -246,7 +590,7 @@ backend-nestjs-gateway/
 
 Every domain module has the same shape: `<domain>.controller.ts`, `.service.ts`, `.policy.ts`, `.module.ts`, plus `dto/` and `tests/`. Platform modules also have a `.repository.ts`.
 
-### 5.3 `backend-worker/`
+### 8.3 `backend-worker/`
 
 ```text
 backend-worker/
@@ -262,7 +606,7 @@ backend-worker/
     └── health/
 ```
 
-### 5.4 `erpnext-custom-app/`
+### 8.4 `erpnext-custom-app/`
 
 ```text
 erpnext-custom-app/
@@ -289,9 +633,9 @@ erpnext-custom-app/
         └── report/
 ```
 
-The `ws_` prefix keeps custom DocTypes separate from ERPNext's own. The inner folder uses snake_case because Python packages cannot contain hyphens. The exact DocType mapping is a Day-1 design task.
+The `ws_` prefix keeps custom DocTypes separate from ERPNext's own. The inner folder uses snake_case because Python packages cannot contain hyphens.
 
-### 5.5 `automation-n8n/`
+### 8.5 `automation-n8n/`
 
 ```text
 automation-n8n/
@@ -305,7 +649,7 @@ automation-n8n/
 └── deploy/                         # import-workflows.sh, export-workflows.sh
 ```
 
-### 5.6 `shared/`
+### 8.6 `shared/`
 
 ```text
 shared/
@@ -318,7 +662,7 @@ shared/
 └── test-utils/             # Factories, fixtures, mocks         (@fitness-ai/test-utils)
 ```
 
-### 5.7 `infrastructure/`, `tests/`, `docs/`, `scripts/`
+### 8.7 `infrastructure/`, `tests/`, `docs/`, `scripts/`
 
 ```text
 infrastructure/
@@ -345,13 +689,13 @@ scripts/
 └── setup-local.sh  seed-demo-tenant.sh  generate-api-client.sh  check-secrets.sh
 ```
 
-### 5.8 Workspace packages
+### 8.8 Workspace packages
 
 pnpm sees 11 packages: the root `fitness-ai`, `@fitness-ai/frontend-nextjs`, `@fitness-ai/backend-nestjs-gateway`, `@fitness-ai/backend-worker`, and the 7 `@fitness-ai/*` packages under `shared/`.
 
 ---
 
-## 6. Module map
+## 9. Module map
 
 **Staff (B2B) modules:** Dashboard, CRM (leads), Members, Memberships, Classes, Bookings, Attendance, Events, Payments, Reports, Staff Management, Settings (Configuration Center), Notifications, AI Assistant, Tenant Management.
 
@@ -361,7 +705,7 @@ Every module is tenant-scoped, permission-checked, audit-logged and has loading,
 
 ---
 
-## 7. Data ownership
+## 10. Data ownership
 
 | Data | Owner |
 |---|---|
@@ -379,7 +723,7 @@ There is no bidirectional entity sync. All ERP-owned reads and writes go through
 
 ---
 
-## 8. Request and event flows
+## 11. Request and event flows
 
 **Write path (booking example)**
 
@@ -398,7 +742,7 @@ There is no bidirectional entity sync. All ERP-owned reads and writes go through
 
 ---
 
-## 9. Multi-tenancy and security
+## 12. Multi-tenancy and security
 
 **Hierarchy:** Tenant -> Studio -> Branch, carried on every record from day one.
 
@@ -417,13 +761,13 @@ There is no bidirectional entity sync. All ERP-owned reads and writes go through
 - Roles: Owner, Admin, Front Desk, Trainer, Member, Visitor, plus a platform administrator.
 - Central policy service, with no inline `role === "admin"` checks.
 - Webhooks: signature verification, replay window and idempotency.
-- Secrets live in a secret store, never in Git or client code. Only `.env.example` files are committed.
+- Secrets live in a secret store, never in Git or client code. Only `.env.example` files are committed. Run `scripts/check-secrets.sh` before pushing.
 - Cross-tenant attempts return not-found style responses and are audit-logged.
 - Audit records are append-only and carry a correlation ID from UI to API to ERP to n8n to WhatsApp.
 
 ---
 
-## 10. AI architecture
+## 13. AI architecture
 
 The AI module lives inside the NestJS API in Phase 1.
 
@@ -440,7 +784,7 @@ AI never reads or writes the database directly. It calls the same services as th
 
 ---
 
-## 11. Automation (n8n)
+## 14. Automation (n8n)
 
 n8n orchestrates and never owns business state.
 
@@ -455,38 +799,7 @@ Phase 1 automations: lead confirmation, booking confirmation, class reminders (1
 
 ---
 
-## 12. Getting started (Windows / PowerShell)
-
-**Prerequisites**
-
-- Node.js 20 or newer (tested with 24.x)
-- pnpm (tested with 12.6.0): `npm install -g pnpm`
-- Git
-- Docker Desktop (for the local PostgreSQL and n8n stack)
-- A Frappe Cloud site for the ERP (avoid heavy local ERP runtimes)
-
-**Setup**
-
-```powershell
-cd C:\dev\fitness-ai
-pnpm install
-pnpm approve-builds     # allow: @nestjs/core, @prisma/client, @prisma/engines, prisma
-pnpm install
-```
-
-Keep the project **outside OneDrive** (for example `C:\dev\fitness-ai`), because OneDrive syncing `node_modules` is slow and can lock files.
-
-**Verify the workspace**
-
-```powershell
-pnpm -r list --depth -1     # should list 11 packages
-```
-
-**Environment files:** copy each `.env.example` to `.env` and fill in the values. Never commit `.env`.
-
----
-
-## 13. Scripts
+## 15. Scripts
 
 Run from the repository root.
 
@@ -499,11 +812,11 @@ Run from the repository root.
 
 Per package: `pnpm --filter @fitness-ai/frontend-nextjs dev` (port 3000), `pnpm --filter @fitness-ai/backend-nestjs-gateway dev`, and `pnpm --filter @fitness-ai/backend-nestjs-gateway prisma:generate`.
 
-Note: builds and dev servers will only work once the placeholder source files have real code.
+Helper scripts (`scripts/`, run with Git Bash or WSL on Windows): `setup-local.sh`, `seed-demo-tenant.sh`, `generate-api-client.sh`, `check-secrets.sh`.
 
 ---
 
-## 14. Environments and deployment
+## 16. Environments and deployment
 
 | | Development | Staging (UAT, demo) | Production |
 |---|---|---|---|
@@ -520,7 +833,7 @@ Rollback: redeploy the previous container tags, roll back the Frappe app, and us
 
 ---
 
-## 15. Naming conventions
+## 17. Naming conventions
 
 - **Folders and files:** kebab-case (`my-membership`, `send-message.json`). The exception is the Frappe app, which uses snake_case.
 - **NestJS files:** `<domain>.<role>.ts` (for example `bookings.service.ts`, `bookings.policy.ts`).
@@ -533,11 +846,11 @@ Rollback: redeploy the previous container tags, roll back the Frappe app, and us
 
 ---
 
-## 16. Roadmap
+## 18. Roadmap
 
 | Phase | Scope |
 |---|---|
-| **Phase 1 (5 days)** | Tenant/studio/branch, six-role access, audit, members, memberships, classes, bookings, attendance, events (basic), payments (test), CRM, configuration center, dashboards, WhatsApp mock automations, member portal, Admin AI Assistant slice |
+| **Phase 1 (current, in beta)** | Tenant/studio/branch, six-role access, audit, members, memberships, classes, bookings, attendance, events (basic), payments (test), CRM, configuration center, dashboards, WhatsApp mock automations, member portal, Admin AI Assistant slice |
 | **Phase 2** | Freeze/credits/upgrades, refunds and invoices, event waitlist, email, MFA, production WhatsApp and Razorpay, self-service onboarding, CRM and Operations agents |
 | **Phase 3** | Marketing, Advertising, Growth Optimization and Studio Insights agents, forecasting |
 | **Future** | Multi-branch and franchise, white-label domains, native apps, marketplace, regional languages |
@@ -546,11 +859,11 @@ Rollback: redeploy the previous container tags, roll back the Frappe app, and us
 
 ---
 
-## 17. Documentation
+## 19. Documentation
 
-Place the project documents in `docs/`:
+Project documents live in `docs/`:
 
-- `STATUS.md` — **Current working status & pending production-readiness work** (single source of truth)
+- `STATUS.md` — **Current working status and pending production-readiness work** (single source of truth; section 2 above is the summary)
 - `docs/product/` - Master PRD, module specification
 - `docs/architecture/` - Solution architecture document
 - `docs/database/` - Database design document
