@@ -8,8 +8,3 @@ Events
 Wellness CRM
 Payments
 Staff
-Notifications
-Config Center
-AI
-Feedback
-Marketplace
