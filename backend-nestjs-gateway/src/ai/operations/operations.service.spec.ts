@@ -14,6 +14,7 @@ const mockErpService = {
 
 const createMockContext = (overrides: Partial<ToolContext> = {}): ToolContext => ({
   tenantId: 'tenant-1',
+  tenantCode: 'TEST',
   userId: 'admin-1',
   role: 'admin',
   correlationId: 'corr-1',

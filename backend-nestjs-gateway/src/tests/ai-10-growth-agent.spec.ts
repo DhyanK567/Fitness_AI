@@ -54,6 +54,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
     role: string = 'admin',
   ): ToolContext => ({
     tenantId,
+    tenantCode: 'TEST',
     userId,
     role,
     correlationId: `corr-${Date.now()}`,
@@ -677,6 +678,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
     it('should dispatch upsell-opportunities and record an audit outbox event', async () => {
       const result = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'upsell-opportunities',
         { limit: 10 },
@@ -703,6 +705,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
     it('should dispatch referral-metrics successfully', async () => {
       const result = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'referral-metrics',
         {},
@@ -716,6 +719,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
     it('should dispatch growth-experiments successfully', async () => {
       const result = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'growth-experiments',
         {},
@@ -729,6 +733,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
     it('should dispatch ltv-analytics successfully', async () => {
       const result = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'ltv-analytics',
         {},
@@ -744,6 +749,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
       for (const role of roles) {
         const res = await agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'growth-agent',
           'upsell-opportunities',
           {},
@@ -759,6 +765,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
         await expect(
           agentRegistryService.executeAgentAction(
             TENANT_A,
+            'TEST',
             'growth-agent',
             'upsell-opportunities',
             {},
@@ -772,6 +779,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'growth-agent',
           'non-existent-action',
           {},
@@ -828,6 +836,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
 
       await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'upsell-opportunities',
         {},
@@ -835,6 +844,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
       );
       await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'referral-metrics',
         {},
@@ -842,6 +852,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
       );
       await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'growth-experiments',
         {},
@@ -849,6 +860,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
       );
       await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'ltv-analytics',
         {},
@@ -867,6 +879,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
     it('should never return hardcoded synthetic candidate Priya Sharma when real tenant data is queried', async () => {
       const res = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'upsell-opportunities',
         {},
@@ -884,6 +897,7 @@ describe('AI-10: Growth Optimization Agent Specification Suite', () => {
     it('should never return static $1,860 LTV when actual tenant billing produces a calculated result', async () => {
       const res = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'growth-agent',
         'ltv-analytics',
         {},

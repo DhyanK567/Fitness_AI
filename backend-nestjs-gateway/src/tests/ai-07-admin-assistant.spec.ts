@@ -121,7 +121,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { daysAhead: 7 },
       );
 
@@ -165,7 +165,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { daysAhead: 7 },
       );
 
@@ -188,7 +188,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { daysAhead: 7 },
       );
 
@@ -208,7 +208,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { daysAhead: 7 },
       );
 
@@ -280,7 +280,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { daysAhead: 7 },
       );
 
@@ -292,14 +292,14 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
     it('enforces RBAC authorization: reports.read is required (staff allowed, visitor denied)', async () => {
       const staffResult = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'c-staff' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-staff' },
         {},
       );
       expect(staffResult.errorCode).not.toBe('PERMISSION_DENIED');
 
       const visitorResult = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: 'v-1', role: 'visitor', correlationId: 'c-vis' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: 'v-1', role: 'visitor', correlationId: 'c-vis' },
         {},
       );
       expect(visitorResult.success).toBe(false);
@@ -311,7 +311,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { daysAhead: 7 },
       );
 
@@ -342,7 +342,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getLowAttendanceClasses',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { thresholdPercent: 50, periodDays: 30 },
       );
 
@@ -386,7 +386,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getLowAttendanceClasses',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { thresholdPercent: 50 },
       );
 
@@ -410,7 +410,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getLowAttendanceClasses',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { thresholdPercent: 50 },
       );
 
@@ -424,7 +424,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'getLowAttendanceClasses',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         { thresholdPercent: 50 },
       );
 
@@ -442,7 +442,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('extracts complete member fields with valid E.164 phone from natural language text', async () => {
         const result = await toolRegistry.execute(
           'extractCreateMemberFields',
-          { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
           { message: 'Create member named Sunita Rao, phone +919876543210 and email sunita@test.com' },
         );
 
@@ -459,7 +459,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('detects malformed phone numbers (missing + / non-E.164) and explains expected format without assuming +91 (Finding 3)', async () => {
         const result = await toolRegistry.execute(
           'extractCreateMemberFields',
-          { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
           { message: 'Create member named Sunita Rao, phone 9876543210' },
         );
 
@@ -473,7 +473,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('detects ambiguous phone numbers (multiple candidates) and triggers clarification prompt (Finding 2)', async () => {
         const result = await toolRegistry.execute(
           'extractCreateMemberFields',
-          { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
           { message: 'Create member named Sunita Rao, phone +919876543210 or +919876543211' },
         );
 
@@ -486,7 +486,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('identifies missing phone number and asks for it rather than inventing a phone value', async () => {
         const result = await toolRegistry.execute(
           'extractCreateMemberFields',
-          { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
           { message: 'Register a new member named Amit Kumar' },
         );
 
@@ -500,7 +500,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('identifies missing full name when only valid phone is provided', async () => {
         const result = await toolRegistry.execute(
           'extractCreateMemberFields',
-          { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-1' },
           { message: 'Create member with phone +919876543210' },
         );
 
@@ -515,7 +515,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('blocks direct execution of createMember in ToolRegistry without confirmed pending action', async () => {
         const result = await toolRegistry.execute(
           'createMember',
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
           { fullName: 'Sunita Rao', phone: '+919876543210' },
           { isConfirmedPendingAction: false },
         );
@@ -529,7 +529,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('blocks direct execution inside CreateMemberTool itself if isConfirmedPendingAction is false', async () => {
         const tool = new CreateMemberTool(mockErpService);
         const result = await tool.execute(
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: false },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: false },
           { fullName: 'Sunita Rao', phone: '+919876543210' },
         );
 
@@ -544,14 +544,14 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
         const tool = new CreateMemberTool(mockErpService);
 
         const noPhone = await tool.execute(
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
           { fullName: 'Rahul' } as any,
         );
         expect(noPhone.success).toBe(false);
         expect(noPhone.errorCode).toBe('INVALID_ARGUMENTS');
 
         const noName = await tool.execute(
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
           { phone: '+919876543210' } as any,
         );
         expect(noName.success).toBe(false);
@@ -565,7 +565,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
         const negatives = ['9876543210', '123', '09876543210', '+0123456789', 'invalid-phone'];
         for (const badPhone of negatives) {
           const res = await tool.execute(
-            { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
+            { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
             { fullName: 'Sunita Rao', phone: badPhone },
           );
           expect(res.success).toBe(false);
@@ -576,7 +576,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
         // Positive case
         mockErpService.call.mockResolvedValueOnce({ id: 'MEM-E164', duplicate: false });
         const positive = await tool.execute(
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
           { fullName: 'Sunita Rao', phone: '+919876543210' },
         );
         expect(positive.success).toBe(true);
@@ -585,7 +585,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       it('rejects invalid email format', async () => {
         const tool = new CreateMemberTool(mockErpService);
         const result = await tool.execute(
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1', isConfirmedPendingAction: true },
           { fullName: 'Rahul', phone: '+919876543210', email: 'not-an-email' },
         );
 
@@ -634,7 +634,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
         });
 
         const response = await controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { confirm_token: confirmToken },
         );
@@ -680,7 +680,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
         });
 
         const response = await controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { confirm_token: confirmToken },
         );
@@ -730,7 +730,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
         await expect(
           controller.confirmAssistantAction(
-            { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+            { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
             pendingId,
             { confirm_token: 'wrong-token' },
           ),
@@ -756,7 +756,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
         await expect(
           controller.confirmAssistantAction(
-            { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+            { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
             pendingId,
             {},
           ),
@@ -777,7 +777,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
         await expect(
           controller.confirmAssistantAction(
-            { id: USER_B, tenantId: TENANT_B, role: 'admin' },
+            { id: USER_B, tenantId: TENANT_B, tenantCode: 'TEST', role: 'admin' },
             pendingId,
             {},
           ),
@@ -860,7 +860,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
         const prompt = 'Create member named Sunita Rao, phone +919876543210';
 
         const proposal = await orchestrator.processMessage(
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-prompt' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-prompt' },
           prompt,
         );
 
@@ -884,7 +884,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
         });
 
         const confirmResult = await orchestrator.confirmPendingAction(
-          { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-confirm' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-confirm' },
           proposal.pendingActionId!,
           proposal.confirmToken!,
         );
@@ -918,7 +918,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
         const prompt = 'Create member named Sunita Rao, phone +919876543210';
         const response = await orchestrator.processMessage(
-          { tenantId: TENANT_A, userId: 'guest-1', role: 'member', correlationId: 'c-unauth' },
+          { tenantId: TENANT_A, tenantCode: 'TEST', userId: 'guest-1', role: 'member', correlationId: 'c-unauth' },
           prompt,
         );
 
@@ -965,7 +965,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const result = await toolRegistry.execute(
         'bookSession' as any,
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         {},
       );
 
@@ -977,7 +977,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
     it('verifies unknown tools fail safely with UNKNOWN_TOOL error without application crash', async () => {
       const result = await toolRegistry.execute(
         'nonExistentTool',
-        { tenantId: TENANT_A, userId: USER_A, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-1' },
         {},
       );
 

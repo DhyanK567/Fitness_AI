@@ -42,6 +42,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
     role: string = 'admin',
   ): ToolContext => ({
     tenantId,
+    tenantCode: 'TEST',
     userId,
     role,
     correlationId: `corr-${Date.now()}`,
@@ -1054,6 +1055,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
 
       const actionRes = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'studio-insights',
         'revenue-trends',
         { periodDays: 30, referenceDate: REF_DATE },
@@ -1083,6 +1085,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
       // Execute with unsupported period to trigger failure
       const actionRes = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'studio-insights',
         'revenue-trends',
         { periodDays: 45 }, // Invalid periodDays
@@ -1161,6 +1164,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
         await expect(
           agentRegistryService.executeAgentAction(
             TENANT_A,
+            'TEST',
             'studio-insights',
             'revenue-trends',
             {},
@@ -1178,6 +1182,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
     it('proves old fabricated financial mock values are never returned', async () => {
       const actionRes = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'studio-insights',
         'revenue-summary',
         { referenceDate: REF_DATE },
@@ -1211,6 +1216,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'studio-insights',
           'unknown-analytics-action',
           {},
@@ -1223,6 +1229,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'studio-insights',
           'create-winback-campaign',
           {},
@@ -1252,6 +1259,7 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
       for (const actionId of actions) {
         const res = await agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'studio-insights',
           actionId,
           { referenceDate: REF_DATE },

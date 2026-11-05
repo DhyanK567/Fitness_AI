@@ -928,6 +928,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
   describe('Approval Architecture: Write Tools Two-Phase Confirmation', () => {
     const adminContext = {
       tenantId: TENANT_A,
+      tenantCode: 'TEST',
       userId: USER_ADMIN_ID,
       role: 'admin',
       correlationId: 'corr-approval-test',
@@ -1007,6 +1008,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
     it('blocks direct execution of move-stage action via AgentRegistryService', async () => {
       const res = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'crm-agent',
         'move-stage',
         { leadId: LEAD_A_ID, toStage: 'Trial scheduled' },
@@ -1046,6 +1048,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
 
         const execResult = await toolRegistry.execute('scoreLead', {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: 'unauthorized-user',
           role,
           correlationId: 'corr-denied-test',
@@ -1061,6 +1064,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
 
       const execResult = await toolRegistry.execute('createCrmCampaign', {
         tenantId: TENANT_A,
+        tenantCode: 'TEST',
         userId: 'unauthorized-user',
         role: 'front_desk',
         correlationId: 'corr-denied-test',
@@ -1074,6 +1078,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
       await expect(
         agentRegistry.executeAgentAction(
           TENANT_A,
+          'TEST',
           'crm-agent',
           'score-lead',
           { leadId: LEAD_A_ID },
@@ -1092,6 +1097,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
 
         const stageExec = await toolRegistry.execute('createPipelineStage', {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: 'unauthorized-user',
           role,
           correlationId: 'corr-denied-pipeline',
@@ -1114,6 +1120,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
   describe('End-to-End Tool Dispatch via ToolRegistry', () => {
     const adminCtx = {
       tenantId: TENANT_A,
+      tenantCode: 'TEST',
       userId: USER_ADMIN_ID,
       role: 'admin',
       correlationId: 'corr-e2e',
@@ -1145,6 +1152,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
     it('executes supported read agent actions (score-lead, pipeline-overview, active-campaigns)', async () => {
       const scoreResult = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'crm-agent',
         'score-lead',
         { leadId: LEAD_A_ID },
@@ -1155,6 +1163,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
 
       const pipelineResult = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'crm-agent',
         'pipeline-overview',
         {},
@@ -1165,6 +1174,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
 
       const campaignsResult = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'crm-agent',
         'active-campaigns',
         {},
@@ -1177,6 +1187,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
     it('rejects move-stage action via executeAgentAction requiring two-phase confirmation', async () => {
       const result = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'crm-agent',
         'move-stage',
         { leadId: LEAD_A_ID, fromStageId: STAGE_1_ID, toStageId: STAGE_2_ID },
@@ -1194,6 +1205,7 @@ describe('AI-06: CRM Agent (crm-agent) Specification & Verification Suite', () =
         await expect(
           agentRegistry.executeAgentAction(
             TENANT_A,
+            'TEST',
             'crm-agent',
             actionId,
             {},

@@ -197,6 +197,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
       // 1. listKnowledgeBases (read)
       const listRes = await registry.execute('listKnowledgeBases', {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: USER_ADMIN,
         role: 'admin',
         correlationId: 'corr-rag-1',
@@ -211,6 +212,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
         'deleteDocument',
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: USER_ADMIN,
           role: 'admin',
           correlationId: 'corr-rag-2',
@@ -225,6 +227,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
         'deleteDocument',
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: USER_ADMIN,
           role: 'admin',
           correlationId: 'corr-rag-2',
@@ -244,6 +247,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
         'getDocumentStatus',
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: USER_ADMIN,
           role: 'admin',
           correlationId: 'corr-rag-3',
@@ -306,6 +310,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
 
       const summaryRes = await registry.execute('getRevenueSummary', {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: USER_ADMIN,
         role: 'admin',
         correlationId: 'corr-rev-1',
@@ -319,6 +324,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
         'getRevenueTrends',
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: USER_ADMIN,
           role: 'admin',
           correlationId: 'corr-rev-2',
@@ -395,6 +401,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
       const response = await orchestrator.processMessage(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: USER_ADMIN,
           role: 'admin',
           correlationId: 'corr-false-success-test',
@@ -439,6 +446,7 @@ describe('Component 1 Remediation: AI Orchestrator and Tool Registry', () => {
       const response = await orchestrator.processMessage(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: USER_ADMIN,
           role: 'admin',
           correlationId: 'corr-llm-fail-after-tool',

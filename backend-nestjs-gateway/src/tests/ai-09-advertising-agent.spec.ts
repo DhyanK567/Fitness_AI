@@ -43,6 +43,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
     role: string = 'admin',
   ): ToolContext => ({
     tenantId,
+    tenantCode: 'TEST',
     userId,
     role,
     correlationId: `corr-${Date.now()}`,
@@ -290,6 +291,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
     it('should route "attribution-report" to getAttributionReport', async () => {
       const res = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'advertising-agent',
         'attribution-report',
         { periodDays: 30, attributionModel: 'data_driven' },
@@ -305,6 +307,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
     it('should route "roas-metrics" to getRoasMetrics', async () => {
       const res = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'advertising-agent',
         'roas-metrics',
         { periodDays: 30, channel: 'all' },
@@ -320,6 +323,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
     it('should route "channel-recommendations" to getChannelRecommendations', async () => {
       const res = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'advertising-agent',
         'channel-recommendations',
         { periodDays: 30 },
@@ -336,6 +340,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'advertising-agent',
           'unknown-action-xyz',
           {},
@@ -348,6 +353,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'advertising-agent',
           'create-campaign',
           {},
@@ -710,6 +716,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
     it('should allow owner and admin roles to execute advertising actions', async () => {
       const resAdmin = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'advertising-agent',
         'roas-metrics',
         {},
@@ -721,6 +728,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
     it('should allow front_desk role to execute read-only advertising actions', async () => {
       const resFrontDesk = await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'advertising-agent',
         'attribution-report',
         {},
@@ -733,6 +741,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'advertising-agent',
           'roas-metrics',
           {},
@@ -745,6 +754,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_A,
+          'TEST',
           'advertising-agent',
           'channel-recommendations',
           {},
@@ -761,6 +771,7 @@ describe('AI-09: Advertising & Attribution Agent Specification Suite', () => {
     it('should record structured audit outbox events on action execution', async () => {
       await agentRegistryService.executeAgentAction(
         TENANT_A,
+        'TEST',
         'advertising-agent',
         'roas-metrics',
         { periodDays: 30 },

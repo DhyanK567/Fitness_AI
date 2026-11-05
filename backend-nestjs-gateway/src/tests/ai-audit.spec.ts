@@ -117,7 +117,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       ]);
 
       const logs = await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         undefined,
         USER_ADMIN,
         'createMember',
@@ -141,7 +141,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       mockTx.auditLog.findMany.mockResolvedValue([]);
 
       const logs = await controller.getAiAudit(
-        { id: 'owner-uuid', tenantId: TENANT_A, role: 'owner' },
+        { id: 'owner-uuid', tenantId: TENANT_A, tenantCode: 'TEST', role: 'owner' },
       );
 
       expect(Array.isArray(logs)).toBe(true);
@@ -185,7 +185,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       ]);
 
       const logs = await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
       );
 
       expect(logs[0].tool).toBe('freezeMembership');
@@ -205,21 +205,21 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       ).rejects.toThrow(UnauthorizedException);
 
       await expect(
-        controller.getAiAudit({ id: USER_ADMIN, tenantId: '', role: 'admin' }),
+        controller.getAiAudit({ id: USER_ADMIN, tenantId: '', tenantCode: 'TEST', role: 'admin' }),
       ).rejects.toThrow(UnauthorizedException);
     });
 
     it('throws ForbiddenException when role lacks audit:read (member, trainer, front_desk)', async () => {
       await expect(
-        controller.getAiAudit({ id: USER_MEMBER, tenantId: TENANT_A, role: 'member' }),
+        controller.getAiAudit({ id: USER_MEMBER, tenantId: TENANT_A, tenantCode: 'TEST', role: 'member' }),
       ).rejects.toThrow(ForbiddenException);
 
       await expect(
-        controller.getAiAudit({ id: 'trainer-id', tenantId: TENANT_A, role: 'trainer' }),
+        controller.getAiAudit({ id: 'trainer-id', tenantId: TENANT_A, tenantCode: 'TEST', role: 'trainer' }),
       ).rejects.toThrow(ForbiddenException);
 
       await expect(
-        controller.getAiAudit({ id: USER_FRONTDESK, tenantId: TENANT_A, role: 'front_desk' }),
+        controller.getAiAudit({ id: USER_FRONTDESK, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' }),
       ).rejects.toThrow(ForbiddenException);
     });
   });
@@ -229,7 +229,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       mockTx.auditLog.findMany.mockResolvedValue([]);
 
       await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         { user_id: USER_ADMIN, tool: 'createMember' } as any,
       );
 
@@ -247,7 +247,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       mockTx.auditLog.findMany.mockResolvedValue([]);
 
       await controller.getAiAudit(
-        { id: 'admin-b', tenantId: TENANT_B, role: 'admin' },
+        { id: 'admin-b', tenantId: TENANT_B, tenantCode: 'TEST', role: 'admin' },
       );
 
       expect(mockPrisma.withTenant).toHaveBeenCalledWith(TENANT_B, expect.any(Function));
@@ -266,7 +266,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       mockTx.auditLog.findMany.mockResolvedValue([]);
 
       await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         {
           'filter[user_id]': 'usr_target_123',
           'filter[tool]': 'member_freeze',
@@ -287,7 +287,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
     it('validates ISO-8601 from date and rejects invalid formats with 400', async () => {
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           { from: 'invalid-date-string' } as any,
         ),
       ).rejects.toThrow(BadRequestException);
@@ -296,7 +296,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
     it('validates ISO-8601 to date and rejects invalid formats with 400', async () => {
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           { to: 'not-a-real-date' } as any,
         ),
       ).rejects.toThrow(BadRequestException);
@@ -305,7 +305,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
     it('rejects date ranges where from date is later than to date with 400', async () => {
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           {
             from: '2026-10-20T00:00:00Z',
             to: '2026-10-10T00:00:00Z',
@@ -318,7 +318,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       mockTx.auditLog.findMany.mockResolvedValue([]);
 
       await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         {
           from: '2026-10-01T00:00:00Z',
           to: '2026-10-15T23:59:59Z',
@@ -341,21 +341,21 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
     it('rejects limit < 1 or > 100 or non-integer with 400', async () => {
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           { limit: 0 } as any,
         ),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           { limit: 101 } as any,
         ),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           { limit: 12.5 } as any,
         ),
       ).rejects.toThrow(BadRequestException);
@@ -364,14 +364,14 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
     it('rejects page < 1 or non-integer with 400', async () => {
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           { page: 0 } as any,
         ),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
         controller.getAiAudit(
-          { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           { page: -5 } as any,
         ),
       ).rejects.toThrow(BadRequestException);
@@ -382,7 +382,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
 
       // Test offset pagination: page 3, limit 15 -> skip 30, take 15
       await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         { page: 3, limit: 15 } as any,
       );
 
@@ -396,7 +396,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
 
       // Test cursor pagination: cursor provided -> skip 1, cursor object
       await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         { cursor: 'cursor-id-999', limit: 20 } as any,
       );
 
@@ -416,7 +416,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       mockTx.auditLog.findMany.mockResolvedValue([]);
 
       const result = await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
       );
 
       expect(result).toEqual([]);
@@ -426,7 +426,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       mockTx.auditLog.findMany.mockRejectedValue(new Error('Connection to PostgreSQL lost'));
 
       await expect(
-        controller.getAiAudit({ id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' }),
+        controller.getAiAudit({ id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' }),
       ).rejects.toThrow(InternalServerErrorException);
     });
   });
@@ -459,7 +459,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       ]);
 
       const logs = await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
       );
 
       const args = logs[0].arguments_redacted;
@@ -505,7 +505,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       ]);
 
       const logs = await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
       );
 
       const args = logs[0].arguments_redacted;
@@ -599,7 +599,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       ]);
 
       const logs = await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
       );
 
       const args = logs[0].arguments_redacted;
@@ -636,7 +636,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
       ]);
 
       const logs = await controller.getAiAudit(
-        { id: USER_ADMIN, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_ADMIN, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
       );
 
       const args = logs[0].arguments_redacted;
@@ -719,6 +719,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
 
       const result = await toolRegistry.execute('getRevenueSummary', {
         tenantId: TENANT_A,
+        tenantCode: 'TEST',
         userId: USER_MEMBER,
         role: 'member',
         correlationId: 'sec-corr-1',
@@ -756,6 +757,7 @@ describe('AI-05: AI Audit Log Retrieval, Filtering, and Security', () => {
 
       const result = await toolRegistry.execute('getMemberCount', {
         tenantId: TENANT_A,
+        tenantCode: 'TEST',
         userId: USER_ADMIN,
         role: 'admin',
         correlationId: 'fail-corr-1',

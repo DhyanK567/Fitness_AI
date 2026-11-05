@@ -169,6 +169,7 @@ describe('AI-05: Public Enquiry Assistant Backend Foundation & Contract Suite', 
       const result = await eventTool.execute(
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: 'visitor-001',
           role: 'visitor',
           correlationId: 'corr-evt-1',
@@ -192,6 +193,7 @@ describe('AI-05: Public Enquiry Assistant Backend Foundation & Contract Suite', 
       const result = await eventTool.execute(
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: 'visitor-001',
           role: 'visitor',
           correlationId: 'corr-evt-2',
@@ -212,6 +214,7 @@ describe('AI-05: Public Enquiry Assistant Backend Foundation & Contract Suite', 
       const result = await eventTool.execute(
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: 'visitor-001',
           role: 'visitor',
           correlationId: 'corr-evt-3',

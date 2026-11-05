@@ -131,7 +131,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const response = await controller.sendAssistantMessage(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         sessionId,
         { message: 'Create member Sunita Rao' },
       );
@@ -167,7 +167,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const response = await controller.sendAssistantMessage(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         sessionId,
         { message: 'Show low attendance classes' },
       );
@@ -196,7 +196,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const response = await controller.sendAssistantMessage(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         sessionId,
         { message: 'Check expiring memberships' },
       );
@@ -225,7 +225,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { confirm_token: token },
         ),
@@ -253,7 +253,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       // Role 'trainer' does NOT have 'members:create' or 'members:write'
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'trainer' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'trainer' },
           pendingId,
           { confirm_token: token },
         ),
@@ -284,7 +284,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { confirm_token: token },
         ),
@@ -316,7 +316,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       await controller.confirmAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirm_token: token },
       );
@@ -347,7 +347,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           {},
         ),
@@ -383,7 +383,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const response = await controller.confirmAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirm_token: token },
       );
@@ -424,7 +424,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_B, tenantId: TENANT_B, role: 'admin' },
+          { id: USER_B, tenantId: TENANT_B, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { confirm_token: 'any-token' },
         ),
@@ -442,7 +442,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.rejectAssistantAction(
-          { id: USER_B, tenantId: TENANT_B, role: 'admin' },
+          { id: USER_B, tenantId: TENANT_B, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { reason: 'Unauthorized attempt' },
         ),
@@ -469,7 +469,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       // User B is front_desk (not owner of action, not admin/owner)
       await expect(
         controller.approveAction(
-          { id: USER_B, tenantId: TENANT_A, role: 'front_desk' },
+          { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
           pendingId,
           { confirmToken: token },
         ),
@@ -497,7 +497,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       // User A with 'trainer' role lacks 'members:create' or 'members:write'
       await expect(
         controller.approveAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'trainer' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'trainer' },
           pendingId,
           { confirmToken: token },
         ),
@@ -525,7 +525,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       try {
         await controller.approveAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { confirmToken: token },
         );
@@ -560,7 +560,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.approveAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           { confirmToken: 'tok-123' },
         ),
@@ -591,7 +591,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const response = await controller.approveAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirmToken: token },
       );
@@ -628,7 +628,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.rejectAction(
-          { id: USER_B, tenantId: TENANT_A, role: 'front_desk' },
+          { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
           pendingId,
           { reason: 'Unauthorized reject attempt' },
         ),
@@ -651,7 +651,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       // Role 'trainer' lacks members:create
       await expect(
         controller.executeAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'trainer' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'trainer' },
           pendingId,
           {},
         ),
@@ -675,7 +675,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.executeAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
           {},
         ),
@@ -786,7 +786,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       // Caller is USER_B with role 'front_desk'
       const result = await controller.listPendingActions(
-        { id: USER_B, tenantId: TENANT_A, role: 'front_desk' },
+        { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
         1,
         20,
       );
@@ -819,7 +819,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const result = await controller.listPendingActions(
-        { id: USER_B, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         1,
         20,
       );
@@ -839,7 +839,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const result = await controller.getPendingAction(
-        { id: USER_B, tenantId: TENANT_A, role: 'front_desk' },
+        { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
         'pa-detail-1',
       );
 
@@ -858,7 +858,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const result = await controller.getPendingAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'front_desk' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
         'pa-detail-owner',
       );
 
@@ -882,7 +882,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       const result = await controller.requestApprovalToken(
-        { id: USER_B, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
       );
 
@@ -914,7 +914,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.requestApprovalToken(
-          { id: USER_B, tenantId: TENANT_A, role: 'front_desk' },
+          { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
           pendingId,
         ),
       ).rejects.toThrow(ForbiddenException);
@@ -936,7 +936,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       try {
         await controller.requestApprovalToken(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
         );
         throw new Error('Expected 410 GONE');
@@ -961,7 +961,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.requestApprovalToken(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           pendingId,
         ),
       ).rejects.toThrow(ConflictException);
@@ -983,7 +983,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       // Role 'trainer' lacks members:create
       await expect(
         controller.requestApprovalToken(
-          { id: USER_A, tenantId: TENANT_A, role: 'trainer' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'trainer' },
           pendingId,
         ),
       ).rejects.toThrow(ForbiddenException);
@@ -994,7 +994,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
 
       await expect(
         controller.requestApprovalToken(
-          { id: USER_B, tenantId: TENANT_B, role: 'admin' },
+          { id: USER_B, tenantId: TENANT_B, tenantCode: 'TEST', role: 'admin' },
           'pa-tenant-a-action',
         ),
       ).rejects.toThrow(NotFoundException);
@@ -1027,7 +1027,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       });
 
       await controller.confirmAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirm_token: token },
       );
@@ -1073,7 +1073,7 @@ describe('Component 2 — Admin AI Assistant and Two-Phase Write Approvals', () 
       mockTx.pendingAction.update.mockResolvedValueOnce({});
 
       const response = await controller.confirmAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirm_token: token },
       );

@@ -531,7 +531,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
   describe('1. Capacity & Occupancy Utilization (getClassCapacityUtilization)', () => {
     it('calculates deterministic studio capacity utilization and fill rate from real classes', async () => {
       const res = await operationsService.getClassCapacityUtilization(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-1' },
         { startDate: '2026-10-15', endDate: '2026-10-25' },
       );
 
@@ -553,7 +553,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('enforces strict tenant isolation: Tenant B never sees Tenant A sessions', async () => {
       const resB = await operationsService.getClassCapacityUtilization(
-        { tenantId: TENANT_B, userId: 'user-b', role: 'admin', correlationId: 'c-b' },
+        { tenantId: TENANT_B, tenantCode: 'TEST', userId: 'user-b', role: 'admin', correlationId: 'c-b' },
         { startDate: '2026-10-15', endDate: '2026-10-25' },
       );
 
@@ -569,7 +569,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('rejects capacity utilization query with UNSUPPORTED_FILTER when branchId or classTypeId is provided', async () => {
       const resBranch = await operationsService.getClassCapacityUtilization(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-unsupported-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-unsupported-1' },
         { startDate: '2026-10-15', endDate: '2026-10-25', branchId: BRANCH_A_ID },
       );
 
@@ -578,7 +578,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
       expect(resBranch.error).toContain('Filtering by branchId is not supported by the studio class schema');
 
       const resBoth = await operationsService.getClassCapacityUtilization(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-unsupported-2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-unsupported-2' },
         { startDate: '2026-10-15', endDate: '2026-10-25', branchId: BRANCH_A_ID, classTypeId: 'ct-1' },
       );
 
@@ -594,7 +594,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
   describe('2. Equipment Status and Lifecycle (getEquipmentStatus)', () => {
     it('retrieves real equipment inventory, operational counts, and maintenance logs', async () => {
       const res = await equipmentService.getEquipmentStatus(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-2' },
         {},
       );
 
@@ -609,7 +609,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('filters equipment by equipmentType and status', async () => {
       const res = await equipmentService.getEquipmentStatus(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-3' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-3' },
         { status: 'maintenance' },
       );
 
@@ -621,7 +621,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('enforces tenant boundary on equipment status', async () => {
       const resB = await equipmentService.getEquipmentStatus(
-        { tenantId: TENANT_B, userId: 'user-b', role: 'admin', correlationId: 'c-4' },
+        { tenantId: TENANT_B, tenantCode: 'TEST', userId: 'user-b', role: 'admin', correlationId: 'c-4' },
         {},
       );
 
@@ -638,7 +638,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
   describe('3. Equipment Maintenance Scheduling (scheduleEquipmentMaintenance)', () => {
     it('schedules maintenance work order, updates nextMaintenanceAt, and records audit trail', async () => {
       const res = await equipmentService.scheduleEquipmentMaintenance(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-5' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-5' },
         {
           equipmentId: EQUIPMENT_A1_ID,
           maintenanceType: 'routine',
@@ -670,7 +670,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('sets equipment status to maintenance if maintenanceType is repair', async () => {
       const res = await equipmentService.scheduleEquipmentMaintenance(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-6' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-6' },
         {
           equipmentId: EQUIPMENT_A1_ID,
           maintenanceType: 'repair',
@@ -688,7 +688,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
     it('rejects cross-tenant equipment maintenance request with NOT_FOUND', async () => {
       // Tenant B user attempts to schedule maintenance on Tenant A's equipment
       const res = await equipmentService.scheduleEquipmentMaintenance(
-        { tenantId: TENANT_B, userId: 'user-b', role: 'admin', correlationId: 'c-cross' },
+        { tenantId: TENANT_B, tenantCode: 'TEST', userId: 'user-b', role: 'admin', correlationId: 'c-cross' },
         {
           equipmentId: EQUIPMENT_A1_ID,
           maintenanceType: 'routine',
@@ -709,7 +709,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
   describe('4. Operational Bottleneck Alerts (getOperationalAlerts, acknowledgeOperationalAlert)', () => {
     it('retrieves open operational alerts filtered by tenant', async () => {
       const res = await operationsService.getOperationalAlerts(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-7' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-7' },
         {},
       );
 
@@ -724,7 +724,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('filters operational alerts by severity and category', async () => {
       const res = await operationsService.getOperationalAlerts(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-8' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-8' },
         { severity: 'critical', category: 'capacity' },
       );
 
@@ -736,7 +736,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('acknowledges operational alert, updates resolution status, and records audit event', async () => {
       const res = await operationsService.acknowledgeOperationalAlert(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-9' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-9' },
         {
           alertId: ALERT_A1_ID,
           action: 'resolve',
@@ -768,7 +768,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
       });
 
       const res = await operationsService.acknowledgeOperationalAlert(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-err' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-err' },
         {
           alertId: ALERT_A1_ID,
           action: 'resolve',
@@ -787,7 +787,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('rejects acknowledging an alert belonging to another tenant', async () => {
       const res = await operationsService.acknowledgeOperationalAlert(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-cross-alert' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-cross-alert' },
         {
           alertId: ALERT_B1_ID, // Belongs to Tenant B
           action: 'acknowledge',
@@ -805,7 +805,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
   describe('5. Class Cancellation Impact (getClassCancellationImpact)', () => {
     it('evaluates cancellation impact severity and affected members count', async () => {
       const res = await operationsService.getClassCancellationImpact(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-10' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-10' },
         { sessionId: CLASS_A1_ID },
       );
 
@@ -820,7 +820,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
 
     it('returns NOT_FOUND for cross-tenant session cancellation check', async () => {
       const res = await operationsService.getClassCancellationImpact(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-11' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'c-11' },
         { sessionId: CLASS_B1_ID },
       );
 
@@ -836,6 +836,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
     it('dispatches capacity-utilization read action to OperationsService without mock fallbacks', async () => {
       const res = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'operations-agent',
         'capacity-utilization',
         { startDate: '2026-10-15', endDate: '2026-10-25' },
@@ -855,6 +856,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
     it('dispatches equipment-status read action to EquipmentService without mock fallbacks', async () => {
       const res = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'operations-agent',
         'equipment-status',
         {},
@@ -871,6 +873,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
     it('dispatches operational-alerts read action to OperationsService without mock fallbacks', async () => {
       const res = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'operations-agent',
         'operational-alerts',
         {},
@@ -885,6 +888,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
     it('strictly REJECTS direct unconfirmed execution of schedule-maintenance write action', async () => {
       const res = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'operations-agent',
         'schedule-maintenance',
         {
@@ -904,6 +908,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
       await expect(
         agentRegistry.executeAgentAction(
           TENANT_A,
+          'TEST',
           'operations-agent',
           'non-existent-action',
           {},
@@ -935,7 +940,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
     it('executes GetClassCapacityUtilizationTool (T-42) via ToolRegistry', async () => {
       const res = await toolRegistry.execute(
         'getClassCapacityUtilization',
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'tool-c1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'tool-c1' },
         { startDate: '2026-10-15', endDate: '2026-10-25' },
       );
 
@@ -946,7 +951,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
     it('blocks direct unconfirmed execution of ScheduleEquipmentMaintenanceTool (T-46)', async () => {
       const res = await toolRegistry.execute(
         'scheduleEquipmentMaintenance',
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'tool-c2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'tool-c2' },
         {
           equipmentId: EQUIPMENT_A1_ID,
           maintenanceType: 'routine',
@@ -965,6 +970,7 @@ describe('AI-07: Studio Operations Agent (operations-agent) Specification Suite'
         'scheduleEquipmentMaintenance',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_ADMIN_ID,
           role: 'admin',
           correlationId: 'tool-c3',

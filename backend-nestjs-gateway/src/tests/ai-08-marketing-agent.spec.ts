@@ -684,7 +684,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
   describe('1. Tenant Boundary Isolation', () => {
     it('isolates marketing campaign performance queries by tenant boundary', async () => {
       const res = await marketingAnalyticsService.getCampaignPerformance(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         {},
       );
 
@@ -698,7 +698,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('isolates audience segments by tenant boundary', async () => {
       const res = await audienceService.getAudienceSegments(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         {},
       );
 
@@ -711,7 +711,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('isolates content calendar items by tenant boundary', async () => {
       const res = await contentService.getContentCalendar(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { startDate: '2026-03-01', endDate: '2026-03-31' },
       );
 
@@ -724,7 +724,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('isolates competitor intelligence by tenant boundary', async () => {
       const res = await competitorIntelligenceService.getCompetitorIntelligence(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         {},
       );
 
@@ -737,7 +737,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('isolates review management view and mutations by tenant boundary', async () => {
       const viewRes = await reviewManagementService.manageReviewResponse(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { action: 'view' },
       );
       expect(viewRes.success).toBe(true);
@@ -747,7 +747,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
       // Attempting to respond to Tenant B's review from Tenant A context fails with NOT_FOUND
       const respondRes = await reviewManagementService.manageReviewResponse(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { action: 'respond', reviewId: REVIEW_B1_ID, response: 'Thank you!' },
       );
       expect(respondRes.success).toBe(false);
@@ -761,7 +761,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
   describe('2. Marketing Analytics Performance Calculation', () => {
     it('calculates deterministic campaign metrics (CTR, CPA, ROAS) accurately', async () => {
       const res = await marketingAnalyticsService.getCampaignPerformance(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { channel: 'meta' },
       );
 
@@ -781,7 +781,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('handles zero-activity campaigns gracefully without NaN or division by zero', async () => {
       const res = await marketingAnalyticsService.getCampaignPerformance(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { status: 'draft' },
       );
 
@@ -796,7 +796,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('returns empty list gracefully when no campaigns match filters', async () => {
       const res = await marketingAnalyticsService.getCampaignPerformance(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { channel: 'tiktok' },
       );
 
@@ -813,7 +813,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
   describe('3. Campaign Service (createMarketingCampaign)', () => {
     it('creates marketing campaign in draft status and records transactional audit event', async () => {
       const res = await campaignService.createMarketingCampaign(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-camp-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-camp-1' },
         {
           name: 'Flash Weekend Pass Promo',
           channel: 'meta',
@@ -854,7 +854,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
       });
 
       const res = await erpOnlyCampaignService.createMarketingCampaign(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-erp' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-erp' },
         {
           name: 'ERP Fallback Campaign',
           channel: 'google',
@@ -883,7 +883,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
   describe('4. Audience Service (getAudienceSegments, createAudienceSegment)', () => {
     it('filters audience segments by minSize and segmentType', async () => {
       const res = await audienceService.getAudienceSegments(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { minSize: 100 },
       );
 
@@ -895,7 +895,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('creates audience segment and logs transactional audit event', async () => {
       const res = await audienceService.createAudienceSegment(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-seg-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-seg-1' },
         {
           name: 'Evening Reformer Enthusiasts',
           description: 'Members booking after 17:00 at least 3x/week',
@@ -922,7 +922,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
   describe('5. Content Service (getContentCalendar, scheduleContent)', () => {
     it('filters content calendar by channel and status within date window', async () => {
       const res = await contentService.getContentCalendar(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { startDate: '2026-03-01', endDate: '2026-03-31', channel: 'email' },
       );
 
@@ -934,7 +934,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('schedules content and records transactional audit event', async () => {
       const res = await contentService.scheduleContent(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-cnt-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-cnt-1' },
         {
           channel: 'social',
           contentType: 'post',
@@ -963,7 +963,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
   describe('6. Competitor Intelligence Service', () => {
     it('retrieves active competitors ordered by radius proximity', async () => {
       const res = await competitorIntelligenceService.getCompetitorIntelligence(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { radiusKm: 10 },
       );
 
@@ -979,7 +979,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('filters competitors within narrow radius threshold', async () => {
       const res = await competitorIntelligenceService.getCompetitorIntelligence(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-1' },
         { radiusKm: 3 },
       );
 
@@ -996,7 +996,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
   describe('7. Review Management Service (manageReviewResponse)', () => {
     it('responds to a review, updating status to responded with transactional audit logging', async () => {
       const res = await reviewManagementService.manageReviewResponse(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-rev-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-rev-1' },
         {
           action: 'respond',
           reviewId: REVIEW_A1_ID,
@@ -1018,7 +1018,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('escalates a negative review and updates status to escalated', async () => {
       const res = await reviewManagementService.manageReviewResponse(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-rev-2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-rev-2' },
         { action: 'escalate', reviewId: REVIEW_A2_ID },
       );
 
@@ -1034,7 +1034,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
 
     it('returns validation error when required parameters are missing', async () => {
       const res = await reviewManagementService.manageReviewResponse(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-rev-3' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-rev-3' },
         { action: 'respond', reviewId: REVIEW_A1_ID }, // missing response body
       );
 
@@ -1050,6 +1050,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
     it('executes read action campaign-performance and returns real tenant data', async () => {
       const result = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'marketing-agent',
         'campaign-performance',
         {},
@@ -1065,6 +1066,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
     it('executes read action audience-segments and returns real tenant segments', async () => {
       const result = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'marketing-agent',
         'audience-segments',
         {},
@@ -1079,6 +1081,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
     it('executes read action content-calendar and returns upcoming content', async () => {
       const result = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'marketing-agent',
         'content-calendar',
         { startDate: '2026-03-01', endDate: '2026-03-31' },
@@ -1093,6 +1096,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
     it('executes read action competitor-intelligence and returns local competitors', async () => {
       const result = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'marketing-agent',
         'competitor-intelligence',
         {},
@@ -1122,6 +1126,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
         await expect(
           agentRegistry.executeAgentAction(
             TENANT_A,
+            'TEST',
             'marketing-agent',
             actionId,
             {},
@@ -1135,6 +1140,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
       await expect(
         agentRegistry.executeAgentAction(
           TENANT_A,
+          'TEST',
           'marketing-agent',
           'non-existent-action',
           {},
@@ -1187,7 +1193,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
       expect(tool).toBeDefined();
 
       const result = await tool!.execute(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-t-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-t-1' },
         { channel: 'meta' },
       );
 
@@ -1246,7 +1252,7 @@ describe('AI-08: Marketing & Social Media Agent Specification Suite', () => {
       const initialOutboxCount = inMemoryOutboxEvents.length;
 
       const res = await campaignService.createMarketingCampaign(
-        { tenantId: TENANT_A, userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-err' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_ADMIN_ID, role: 'admin', correlationId: 'corr-err' },
         {
           name: 'Failing Campaign',
           channel: 'meta',
