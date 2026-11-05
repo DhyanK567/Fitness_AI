@@ -96,7 +96,7 @@ export class AiController {
     description: 'Process a natural language query and return AI response with optional tool calls or pending action proposal.',
   })
   async chat(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Body() dto: ChatRequestDto,
   ): Promise<ChatResponseDto> {
     const correlationId = randomUUID();
@@ -105,6 +105,7 @@ export class AiController {
     const result = await this.orchestrator.processMessage(
       {
         tenantId,
+        tenantCode: user.tenantCode,
         userId: user.id,
         role: user.role,
         correlationId,
@@ -172,7 +173,7 @@ export class AiController {
       'Single conversational endpoint for all admin AI interactions. Supports general admin chat, explicit agent routing, and page context awareness. Handles answers, clarifications, pending approvals, action results, and out-of-scope responses.',
   })
   async adminChat(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Body() dto: AdminChatRequestDto,
   ): Promise<AdminChatResponseDto> {
     const correlationId = randomUUID();
@@ -215,6 +216,7 @@ export class AiController {
       }
       result = await this.agentRegistry.chatWithAgent(
         tenantId,
+        user.tenantCode,
         dto.agentId,
         dto.message,
         dto.history || [],
@@ -226,6 +228,7 @@ export class AiController {
       const orchestratorResult = await this.orchestrator.processMessage(
         {
           tenantId,
+          tenantCode: user.tenantCode,
           userId: user.id,
           role: user.role,
           correlationId,
@@ -333,7 +336,7 @@ export class AiController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'status', required: false, enum: ['proposed', 'approved', 'rejected', 'executing', 'executed', 'failed', 'expired', 'cancelled'] })
   async listPendingActions(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Query('page') page = 1,
     @Query('limit') limit = 20,
     @Query('status') status?: string,
@@ -359,7 +362,7 @@ export class AiController {
   @RequirePermission('ai:approve')
   @ApiOperation({ summary: 'Get pending action details' })
   async getPendingAction(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
   ) {
     const action = await this.pendingActionService.findById(user.tenantId, id);
@@ -379,7 +382,7 @@ export class AiController {
     description: 'Generates or retrieves a single-use approval token for authorized administrators reviewing actions in the queue. Audits token issuance.',
   })
   async requestApprovalToken(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
   ): Promise<{ confirm_token: string }> {
     const action = await this.prisma.withTenant(user.tenantId, async (tx) => {
@@ -461,7 +464,7 @@ export class AiController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Approve and execute a pending action' })
   async approveAction(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
     @Body() dto: ApproveActionDto,
   ) {
@@ -482,7 +485,7 @@ export class AiController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reject a pending action' })
   async rejectAction(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
     @Body() dto: RejectActionDto,
   ) {
@@ -495,7 +498,7 @@ export class AiController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Execute an already approved action' })
   async executeAction(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
     @Body() dto: ExecuteActionDto,
   ) {
@@ -552,6 +555,7 @@ export class AiController {
           action.actionType,
           {
             tenantId: user.tenantId,
+            tenantCode: user.tenantCode,
             userId: user.id,
             role: user.role,
             correlationId: randomUUID(),
@@ -570,6 +574,7 @@ export class AiController {
         erpResult = await this.orchestrator.callErpTool(
           {
             tenantId: user.tenantId,
+            tenantCode: user.tenantCode,
             userId: user.id,
             role: user.role,
             correlationId: randomUUID(),
@@ -669,7 +674,7 @@ export class AiController {
     description: 'Initializes a session tied to the caller with permitted tools, expiry, and governance disclaimer.',
   })
   async createAssistantSession(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Body() dto: CreateAssistantSessionDto,
   ): Promise<AssistantSessionResponseDto> {
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h expiry
@@ -703,7 +708,7 @@ export class AiController {
     description: 'Processes input message within session context, validates tenant ownership, and returns standard message envelope.',
   })
   async sendAssistantMessage(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
     @Body() dto: PostAssistantMessageDto,
   ): Promise<AssistantMessageResponseDto> {
@@ -730,6 +735,7 @@ export class AiController {
     const result = await this.orchestrator.processMessage(
       {
         tenantId: user.tenantId,
+        tenantCode: user.tenantCode,
         userId: user.id,
         role: user.role,
         correlationId,
@@ -819,7 +825,7 @@ export class AiController {
   @RequirePermission('ai:query')
   @ApiOperation({ summary: 'Get assistant session turns and pending actions' })
   async getAssistantSession(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
   ) {
     const session = await this.conversationService.findById(user.tenantId, id);
@@ -862,7 +868,7 @@ export class AiController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Purge assistant session' })
   async deleteAssistantSession(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
   ) {
     const session = await this.conversationService.findById(user.tenantId, id);
@@ -891,7 +897,7 @@ export class AiController {
     description: 'Executes frozen action payload using durable pending-action lifecycle with tenant isolation, expiry check, and atomic transition.',
   })
   async confirmAssistantAction(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('pending_id') pendingId: string,
     @Body() dto: ConfirmActionContractDto,
   ): Promise<ActionExecutionResponseDto> {
@@ -906,7 +912,7 @@ export class AiController {
    * frozen database argument execution, and tamper-evident audit logging.
    */
   private async executeConfirmedAction(
-    user: { id: string; tenantId: string; role: string },
+    user: { id: string; tenantId: string; tenantCode: string; role: string },
     pendingId: string,
     confirmToken?: string,
     correlationId?: string,
@@ -996,6 +1002,7 @@ export class AiController {
           action.actionType,
           {
             tenantId: user.tenantId,
+            tenantCode: user.tenantCode,
             userId: user.id,
             role: user.role,
             correlationId: correlationId || randomUUID(),
@@ -1017,6 +1024,7 @@ export class AiController {
         erpResult = await this.orchestrator.callErpTool(
           {
             tenantId: user.tenantId,
+            tenantCode: user.tenantCode,
             userId: user.id,
             role: user.role,
             correlationId: correlationId || randomUUID(),
@@ -1189,7 +1197,7 @@ export class AiController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reject a pending action' })
   async rejectAssistantAction(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('pending_id') pendingId: string,
     @Body() dto: RejectActionContractDto,
   ) {
@@ -1267,7 +1275,7 @@ export class AiController {
     description: 'Retrieves live status, capabilities, and metrics across all 12 platform agents.',
   })
   async listAgents(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
   ) {
     if (!this.agentRegistry) {
       throw new InternalServerErrorException('AgentRegistryService not initialized');
@@ -1282,7 +1290,7 @@ export class AiController {
     description: 'Retrieves capabilities, live health, and metrics for one agent.',
   })
   async getAgent(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
   ) {
     if (!this.agentRegistry) {
@@ -1299,7 +1307,7 @@ export class AiController {
     description: 'Dispatches action to the agent backend service with audit logging.',
   })
   async executeAgentAction(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
     @Body() dto: ExecuteAgentActionDto,
   ) {
@@ -1308,6 +1316,7 @@ export class AiController {
     }
     return this.agentRegistry.executeAgentAction(
       user.tenantId,
+      user.tenantCode,
       id,
       dto.actionId,
       dto.payload || {},
@@ -1323,7 +1332,7 @@ export class AiController {
     description: 'Processes message through conversation loop scoped to agent persona and tools.',
   })
   async chatWithAgent(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Param('id') id: string,
     @Body() dto: AgentChatDto,
   ) {
@@ -1355,6 +1364,7 @@ export class AiController {
     // Process message through agent
     const result = await this.agentRegistry.chatWithAgent(
       user.tenantId,
+      user.tenantCode,
       id,
       dto.message,
       dto.history || [],
@@ -1389,7 +1399,7 @@ export class AiController {
     description: 'Retrieves tenant-scoped audit records subject to authorization, tool filtering, and pagination.',
   })
   async getAiAudit(
-    @CurrentUser() user: { id: string; tenantId: string; role: string },
+    @CurrentUser() user: { id: string; tenantId: string; tenantCode: string; role: string },
     @Query('cursor') cursor?: string | Record<string, unknown>,
     @Query('user_id') userId?: string,
     @Query('tool') tool?: string,
@@ -1530,10 +1540,16 @@ export class AiController {
       } else if (typeof result === 'string') {
         result = PiiRedaction.redactTextForAudit(result);
       } else if (result === undefined) {
-        result =
-          log.action.includes('error') || log.action.includes('failed') || log.action.includes('unauthorized')
-            ? 'failed'
-            : 'succeeded';
+        // Check action type and eventType for failure indicators
+        const afterDataObj = (log.afterData as Record<string, unknown>) || {};
+        const eventType = afterDataObj.eventType as string | undefined;
+        const isFailureAction =
+          log.action.includes('.error.') ||
+          log.action.includes('.failed') ||
+          log.action.includes('.unauthorized') ||
+          eventType === 'ai.action.failed' ||
+          eventType === 'ai.tool.failed';
+        result = isFailureAction ? 'failed' : 'succeeded';
       }
 
       const toolName =

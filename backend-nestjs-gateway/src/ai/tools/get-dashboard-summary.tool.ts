@@ -4,6 +4,10 @@ import { ToolContext } from './base-tool';
 import { StudioInsightsService } from '../analytics/studio-insights.service';
 import { ErpnextService } from '../../erpnext/erpnext.service';
 
+interface ErpMemberListResponse {
+  members: Array<{ id: string; status?: string; [key: string]: any }>;
+}
+
 interface DashboardErrorDetails {
   source: 'local' | 'erpnext';
   errorCode: string;

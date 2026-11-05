@@ -16,7 +16,7 @@ export const ERP_METHODS = {
   // ============================================
   MEMBER_LIST: 'wellness_studio.api.member.list',
   MEMBER_GET: 'wellness_studio.api.member.get',
-  MEMBER_CREATE: 'wellness_studio.api.member.create',
+  MEMBER_CREATE: 'wellness_studio.api.member.create_member',
   MEMBER_UPDATE: 'wellness_studio.api.member.update',
   MEMBER_DELETE: 'wellness_studio.api.member.delete',
   MEMBER_SEARCH: 'wellness_studio.api.member.search',

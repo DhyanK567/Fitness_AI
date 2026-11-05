@@ -32,10 +32,12 @@ import {
 
 export interface ConversationContext {
   tenantId: string;
+  tenantCode: string;
   userId: string;
   role: string;
   correlationId: string;
   sessionId?: string;
+  isConfirmedPendingAction?: boolean;
 }
 
 export interface ConversationTurn {
@@ -441,7 +443,7 @@ export class ConversationOrchestrator {
     const toolResults: ToolResult[] = [];
 
     for (const toolCall of llmResponse.toolCalls.slice(0, this.config.maxToolCallsPerTurn)) {
-      const result = await this.executeTool(context, toolCall, availableTools);
+      const result = await this.executeTool(context, toolCall, availableTools, toolResults);
       toolResults.push(result);
     }
 
@@ -652,8 +654,29 @@ export class ConversationOrchestrator {
     context: ConversationContext,
     toolCall: ToolCall,
     availableTools: ToolDefinition[],
+    turnToolResults: ToolResult[] = [], // Track tool results from current turn
   ): Promise<ToolResult> {
     const { id, name, arguments: args } = toolCall;
+
+    // Orchestrator guard: enforce extractCreateMemberFields before createMember
+    // Skip guard for confirmed pending actions (already validated through workflow)
+    if (name === 'createMember' && !context.isConfirmedPendingAction) {
+      const extractCalled = turnToolResults.some(
+        (r) => r.name === 'extractCreateMemberFields' && !r.error
+      );
+      if (!extractCalled) {
+        this.logger.warn('createMember called without prior extractCreateMemberFields in same turn');
+        await this.auditSecurityEvent(context, 'create_member_without_extraction', {
+          toolName: name,
+        });
+        return {
+          toolCallId: id,
+          name,
+          result: null,
+          error: 'Call extractCreateMemberFields first, then use its output for createMember.',
+        };
+      }
+    }
 
     // 1. Prioritize canonical ToolRegistry if available
     if (this.toolRegistry) {
@@ -661,6 +684,7 @@ export class ConversationOrchestrator {
         name,
         {
           tenantId: context.tenantId,
+          tenantCode: context.tenantCode,
           userId: context.userId,
           role: context.role,
           correlationId: context.correlationId,
@@ -790,6 +814,7 @@ export class ConversationOrchestrator {
         toolName,
         {
           tenantId: context.tenantId,
+          tenantCode: context.tenantCode,
           userId: context.userId,
           role: context.role,
           correlationId: context.correlationId,

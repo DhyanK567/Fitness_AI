@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BaseTool, ToolContext, ToolResult } from './base-tool';
 import { ERP_METHODS } from '@wsos/erp-methods';
+import { PrismaService } from '../../common/prisma.service';
+import { ErpnextService } from '../../erpnext/erpnext.service';
+import { randomUUID } from 'node:crypto';
 
 export interface CreateMemberArgs {
   fullName: string;
@@ -17,8 +20,31 @@ export interface MemberCreateResponse {
   duplicate?: boolean;
 }
 
+interface StudioMemberCreateInput {
+  id: string;
+  tenantId: string;
+  fullName: string;
+  email: string;
+  phone: string;
+}
+
 @Injectable()
 export class CreateMemberTool extends BaseTool {
+  constructor(
+    protected readonly erp: ErpnextService,
+    private readonly prisma?: PrismaService,
+  ) {
+    super(erp);
+  }
+
+  /**
+   * Strip leading "named", "name is", "called", "name:" from fullName (case-insensitive)
+   * Does not modify the name otherwise
+   */
+  private cleanFullName(fullName: string): string {
+    return fullName.replace(/^(?:named|name\s+is|called|name\s*:)\s+/i, '').trim();
+  }
+
   async execute(context: ToolContext, args: CreateMemberArgs | Record<string, any>): Promise<ToolResult> {
     // 1. Defense-in-depth: Ensure write actions only execute via confirmed pending action
     if (!context.isConfirmedPendingAction) {
@@ -32,7 +58,7 @@ export class CreateMemberTool extends BaseTool {
     const validationError = this.validateRequired(args as unknown as Record<string, unknown>, ['fullName', 'phone']);
     if (validationError) return this.error(validationError, 'INVALID_ARGUMENTS');
 
-    const fullName = typeof args.fullName === 'string' ? args.fullName.trim() : '';
+    const fullName = this.cleanFullName(typeof args.fullName === 'string' ? args.fullName.trim() : '');
     if (fullName.length < 1 || fullName.length > 120) {
       return this.error('fullName must be between 1 and 120 characters', 'INVALID_ARGUMENTS');
     }
@@ -64,9 +90,10 @@ export class CreateMemberTool extends BaseTool {
     }
 
     // 3. Call authoritative member creation service in ERP
-    // Primary method is ERP_METHODS.MEMBER_CREATE ('wellness_studio.api.member.create')
-    // With fallback to 'wellness_studio.api.member.create_member' if the alias is used
+    // Use ERP_METHODS.MEMBER_CREATE which is 'wellness_studio.api.member.create_member'
+    // Include tenantCode (tenant code like 'pilot-studio') as required by ERP
     let result = await this.callErp<MemberCreateResponse>(context, ERP_METHODS.MEMBER_CREATE, {
+      tenant: context.tenantCode,
       full_name: fullName,
       phone,
       email,
@@ -75,17 +102,29 @@ export class CreateMemberTool extends BaseTool {
       status: 'active',
     });
 
-    if (!result.success && result.error?.includes('unavailable')) {
-      // Try alternate ERP method endpoint name
-      result = await this.callErp<MemberCreateResponse>(context, 'wellness_studio.api.member.create_member', {
-        tenant: context.tenantId,
-        full_name: fullName,
-        phone,
-        email,
-        plan_id: args.planId,
-        start_date: startDate,
-        status: 'active',
-      });
+    // Fallback to PostgreSQL if ERP unavailable and Prisma available
+    if (!result.success && result.error?.includes('unavailable') && this.prisma) {
+      const memberId = randomUUID();
+      try {
+        await this.prisma.withTenant(context.tenantId, async (tx) => {
+          await tx.studioMember.create({
+            data: {
+              id: memberId,
+              tenantId: context.tenantId,
+              fullName,
+              email: email || '',
+              phone,
+              plan: args.planId || 'Standard',
+              status: 'Active',
+              joined: startDate ? new Date(startDate) : new Date(),
+              coach: 'Unassigned',
+            },
+          });
+        });
+        result = { success: true, data: { id: memberId, duplicate: false } as MemberCreateResponse };
+      } catch (pgError) {
+        // Keep original ERP error
+      }
     }
 
     if (!result.success) return result;

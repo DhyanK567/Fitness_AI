@@ -7,6 +7,7 @@ interface JwtPayload {
   sub: string;
   tenantId?: string;
   tenant?: string;
+  tenantCode?: string;
   role?: string;
   roles?: string[];
   userId?: string;
@@ -18,6 +19,7 @@ interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
     tenantId: string;
+    tenantCode: string;
     role: string;
   };
 }
@@ -51,6 +53,7 @@ export class AuthGuard implements CanActivate {
       request.user = {
         id: (payload.userId || payload.sub) as string,
         tenantId: (payload.tenantId || payload.tenant) as string,
+        tenantCode: payload.tenantCode as string,
         role: (payload.role || payload.roles?.[0]) as string,
       };
 

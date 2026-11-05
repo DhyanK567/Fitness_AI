@@ -227,7 +227,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
 
       // Verify tool was blocked with confirmation required
       expect(mockErpService.call).not.toHaveBeenCalled();
-      expect(response.error).toContain('requires pending-action confirmation before execution');
+      expect(response.error).toContain('extractCreateMemberFields');
     });
 
     it('allows confirmed write tool execution in fallback mode when isConfirmedPendingAction is true', async () => {

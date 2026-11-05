@@ -392,6 +392,7 @@ export class PublicEnquiryAiController {
       const orchestratorResponse = await this.orchestrator.processMessage(
         {
           tenantId,
+          tenantCode: req.tenantCode as string,
           userId: session.userId,
           role: 'visitor',
           correlationId,

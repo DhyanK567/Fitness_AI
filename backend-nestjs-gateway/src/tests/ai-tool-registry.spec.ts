@@ -625,5 +625,128 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
       );
     });
   });
+
+  describe('10. createMember Name Parsing & Orchestrator Guard', () => {
+    const TENANT_A = '11111111-1111-1111-1111-111111111111';
+    const USER_STAFF = '33333333-3333-3333-3333-333333333333';
+
+    let registry: ToolRegistry;
+    let mockAuditOutbox: any;
+    let mockErpService: any;
+    let mockModuleRef: any;
+
+    beforeEach(() => {
+      mockAuditOutbox = {
+        record: jest.fn<any>().mockResolvedValue({
+          audit: { id: 'audit-log-uuid-1' },
+          outbox: { id: 'outbox-log-uuid-1' },
+        }),
+      };
+
+      mockErpService = {
+        call: jest.fn<any>().mockResolvedValue({
+          id: 'erp-record-123',
+          status: 'success',
+        }),
+      };
+
+      mockModuleRef = {
+        get: jest.fn<any>(),
+      };
+
+      registry = new ToolRegistry(mockModuleRef, mockAuditOutbox, mockErpService);
+    });
+
+    it('CreateMemberTool.cleanFullName strips "named" prefix', () => {
+      const tool = new (require('../ai/tools/create-member.tool').CreateMemberTool)(mockErpService);
+      expect(tool['cleanFullName']('named John Doe')).toBe('John Doe');
+      expect(tool['cleanFullName']('Named Jane Smith')).toBe('Jane Smith');
+    });
+
+    it('CreateMemberTool.cleanFullName strips "name is" prefix', () => {
+      const tool = new (require('../ai/tools/create-member.tool').CreateMemberTool)(mockErpService);
+      expect(tool['cleanFullName']('name is John Doe')).toBe('John Doe');
+      expect(tool['cleanFullName']('Name Is Jane Smith')).toBe('Jane Smith');
+    });
+
+    it('CreateMemberTool.cleanFullName strips "called" prefix', () => {
+      const tool = new (require('../ai/tools/create-member.tool').CreateMemberTool)(mockErpService);
+      expect(tool['cleanFullName']('called John Doe')).toBe('John Doe');
+      expect(tool['cleanFullName']('Called Jane Smith')).toBe('Jane Smith');
+    });
+
+    it('CreateMemberTool.cleanFullName strips "name:" prefix', () => {
+      const tool = new (require('../ai/tools/create-member.tool').CreateMemberTool)(mockErpService);
+      expect(tool['cleanFullName']('name: John Doe')).toBe('John Doe');
+      expect(tool['cleanFullName']('Name: Jane Smith')).toBe('Jane Smith');
+    });
+
+    it('CreateMemberTool.cleanFullName does not modify clean names', () => {
+      const tool = new (require('../ai/tools/create-member.tool').CreateMemberTool)(mockErpService);
+      expect(tool['cleanFullName']('John Doe')).toBe('John Doe');
+      expect(tool['cleanFullName']('Jane Smith')).toBe('Jane Smith');
+    });
+
+    it('ConversationOrchestrator auto-extracts fields for member creation and proposes pending action', async () => {
+      const mockLlmGateway = {
+        chat: jest.fn<any>().mockResolvedValue({ 
+          content: '', 
+          toolCalls: [] 
+        }),
+        estimateTokens: jest.fn<any>().mockReturnValue(100),
+      };
+
+      const mockAuditOutbox = {
+        record: jest.fn<any>().mockResolvedValue({
+          audit: { id: 'audit-log-uuid-1' },
+          outbox: { id: 'outbox-log-uuid-1' },
+        }),
+      };
+
+      const mockErpService = {
+        call: jest.fn<any>().mockResolvedValue({ id: 'erp-record-123', status: 'success' }),
+      };
+
+      const mockObservability = {
+        recordToolCall: jest.fn<any>().mockResolvedValue(undefined),
+        recordLlmCall: jest.fn<any>().mockResolvedValue(undefined),
+      };
+
+      const orchestrator = new ConversationOrchestrator(
+        mockLlmGateway,
+        mockAuditOutbox,
+        mockErpService,
+        mockObservability,
+        undefined, // no PendingActionService
+        undefined, // no stateMachineInstance
+        undefined, // no ToolRegistry - uses fallback mode
+      );
+
+      const context = {
+        tenantId: TENANT_A,
+        tenantCode: 'demo',
+        userId: USER_STAFF,
+        role: 'admin',
+        correlationId: 'corr-1',
+      };
+
+      // The orchestrator should auto-extract fields and propose pending action
+      const result = await orchestrator.processMessage(
+        context,
+        'Create a new member named John Doe, phone +919876543210, email john.doe@example.com',
+        []
+      );
+
+      // The orchestrator proposes a pending action with clean fullName
+      expect(result).toBeDefined();
+      expect(result.pendingActionId).toBeDefined();
+      expect(result.confirmToken).toBeDefined();
+      expect(result.requiresConfirmation).toBe(true);
+      expect(result.state).toBe('proposed');
+      // The pending action arguments should have clean fullName
+      // Note: The actual arguments are in the pendingActionId which we can't verify here
+      // but the extraction logic is tested in the CreateMemberTool.cleanFullName tests
+    });
+  });
 });
 

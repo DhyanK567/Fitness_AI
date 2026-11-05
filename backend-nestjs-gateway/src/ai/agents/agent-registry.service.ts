@@ -690,14 +690,18 @@ export class AgentRegistryService {
    */
   async executeAgentAction(
     tenantId: string,
+    tenantCode: string,
     agentId: string,
     actionId: string,
     payload: Record<string, unknown> = {},
     user: { id: string; role: string; correlationId?: string },
   ): Promise<AgentExecutionResult> {
     const startTime = Date.now();
-    const correlationId = user.correlationId || randomUUID();
+    const correlationId = user?.correlationId || randomUUID();
 
+    if (!user?.id || !user?.role) {
+      throw new BadRequestException('User identity (id, role) is required for agent action execution');
+    }
     const agent = await this.getAgent(tenantId, agentId, user.role);
     const capability = agent.capabilities.find((c) => c.id === actionId);
     if (!capability) {
@@ -713,40 +717,40 @@ export class AgentRegistryService {
       // 1. Dispatch action to appropriate backend domain service or tool
       switch (agentId) {
         case 'admin-copilot':
-          actionData = await this.handleAdminCopilotAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleAdminCopilotAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'public-enquiry':
-          actionData = await this.handlePublicEnquiryAction(tenantId, actionId, payload, correlationId);
+          actionData = await this.handlePublicEnquiryAction(tenantId, tenantCode, actionId, payload, correlationId);
           break;
         case 'booking-assistant':
-          actionData = await this.handleBookingAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleBookingAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'recommendation-assistant':
-          actionData = await this.handleRecommendationAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleRecommendationAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'feedback-intelligence':
-          actionData = await this.handleFeedbackAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleFeedbackAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'crm-agent':
-          actionData = await this.handleCrmAction(tenantId, actionId, payload, user);
+          actionData = await this.handleCrmAction(tenantId, tenantCode, actionId, payload, user);
           break;
         case 'operations-agent':
-          actionData = await this.handleOperationsAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleOperationsAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'marketing-agent':
-          actionData = await this.handleMarketingAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleMarketingAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'advertising-agent':
-          actionData = await this.handleAdvertisingAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleAdvertisingAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'growth-agent':
-          actionData = await this.handleGrowthAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleGrowthAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'studio-insights':
-          actionData = await this.handleStudioInsightsAction(tenantId, actionId, payload, user, correlationId);
+          actionData = await this.handleStudioInsightsAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'session-summary':
-          actionData = await this.handleSessionSummaryAction(tenantId, actionId, payload, correlationId);
+          actionData = await this.handleSessionSummaryAction(tenantId, tenantCode, actionId, payload, correlationId);
           break;
         default:
           throw new NotFoundException(`No handler configured for agent '${agentId}'`);
@@ -820,6 +824,7 @@ export class AgentRegistryService {
    */
   async chatWithAgent(
     tenantId: string,
+    tenantCode: string,
     agentId: string,
     message: string,
     history: ConversationTurn[] = [],
@@ -833,6 +838,7 @@ export class AgentRegistryService {
     return this.orchestrator.processMessage(
       {
         tenantId,
+        tenantCode,
         userId: user.id,
         role: user.role,
         correlationId,
@@ -849,6 +855,7 @@ export class AgentRegistryService {
 
   private async handleAdminCopilotAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -859,7 +866,7 @@ export class AgentRegistryService {
       if (this.toolRegistry) {
         const res = await this.toolRegistry.execute(
           'getExpiringMemberships',
-          { tenantId, userId: user.id, role: user.role, correlationId },
+          { tenantId, tenantCode, userId: user.id, role: user.role, correlationId },
           { daysAhead: days },
         );
         return res.data;
@@ -872,7 +879,7 @@ export class AgentRegistryService {
       if (this.toolRegistry) {
         const res = await this.toolRegistry.execute(
           'getLowAttendanceClasses',
-          { tenantId, userId: user.id, role: user.role, correlationId },
+          { tenantId, tenantCode, userId: user.id, role: user.role, correlationId },
           { threshold },
         );
         return res.data;
@@ -884,7 +891,7 @@ export class AgentRegistryService {
       if (this.toolRegistry) {
         const res = await this.toolRegistry.execute(
           'getMemberCount',
-          { tenantId, userId: user.id, role: user.role, correlationId },
+          { tenantId, tenantCode, userId: user.id, role: user.role, correlationId },
           {},
         );
         return res.data;
@@ -896,7 +903,7 @@ export class AgentRegistryService {
       if (this.toolRegistry) {
         const res = await this.toolRegistry.execute(
           'getDashboardSummary',
-          { tenantId, userId: user.id, role: user.role, correlationId },
+          { tenantId, tenantCode, userId: user.id, role: user.role, correlationId },
           {},
         );
         return res.data;
@@ -909,6 +916,7 @@ export class AgentRegistryService {
 
   private async handlePublicEnquiryAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     correlationId: string,
@@ -932,6 +940,7 @@ export class AgentRegistryService {
       if (this.toolRegistry) {
         const res = await this.toolRegistry.execute('getPublicEventList', {
           tenantId,
+          tenantCode,
           userId: 'system',
           role: 'visitor',
           correlationId,
@@ -947,6 +956,7 @@ export class AgentRegistryService {
       if (this.toolRegistry) {
         const res = await this.toolRegistry.execute('getActivePlansPublic', {
           tenantId,
+          tenantCode,
           userId: 'system',
           role: 'visitor',
           correlationId,
@@ -963,6 +973,7 @@ export class AgentRegistryService {
 
   private async handleBookingAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -974,6 +985,7 @@ export class AgentRegistryService {
 
     const context: ToolContext = {
       tenantId,
+      tenantCode,
       userId: user.id,
       role: user.role,
       correlationId,
@@ -1060,6 +1072,7 @@ export class AgentRegistryService {
 
   private async handleRecommendationAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -1123,12 +1136,13 @@ export class AgentRegistryService {
 
   private async handleFeedbackAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
     correlationId: string,
   ) {
-    const context = { tenantId, userId: user.id, roles: [user.role], correlationId };
+    const context = { tenantId, tenantCode, userId: user.id, roles: [user.role], correlationId };
 
     if (actionId === 'classify-text') {
       const text = (payload.text as string) || '';
@@ -1203,6 +1217,7 @@ export class AgentRegistryService {
    */
   private async handleCrmAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -1259,6 +1274,7 @@ export class AgentRegistryService {
    */
   private async handleOperationsAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -1266,6 +1282,7 @@ export class AgentRegistryService {
   ) {
     const context: ToolContext = {
       tenantId,
+      tenantCode,
       userId: user.id,
       role: user.role,
       correlationId,
@@ -1338,6 +1355,7 @@ export class AgentRegistryService {
 
   private async handleMarketingAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -1345,6 +1363,7 @@ export class AgentRegistryService {
   ) {
     const context: ToolContext = {
       tenantId,
+      tenantCode,
       userId: user.id,
       role: user.role,
       correlationId,
@@ -1440,6 +1459,7 @@ export class AgentRegistryService {
 
   private async handleAdvertisingAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -1451,6 +1471,7 @@ export class AgentRegistryService {
 
     const context: ToolContext = {
       tenantId,
+      tenantCode,
       userId: user.id,
       role: user.role,
       correlationId,
@@ -1499,6 +1520,7 @@ export class AgentRegistryService {
 
   private async handleGrowthAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -1506,6 +1528,7 @@ export class AgentRegistryService {
   ) {
     const context: ToolContext = {
       tenantId,
+      tenantCode,
       userId: user.id,
       role: user.role,
       correlationId,
@@ -1592,6 +1615,7 @@ export class AgentRegistryService {
 
   private async handleStudioInsightsAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     user: { id: string; role: string },
@@ -1599,6 +1623,7 @@ export class AgentRegistryService {
   ) {
     const context: ToolContext = {
       tenantId,
+      tenantCode,
       userId: user.id,
       role: user.role,
       correlationId,
@@ -1637,6 +1662,7 @@ export class AgentRegistryService {
 
   private async handleSessionSummaryAction(
     tenantId: string,
+    tenantCode: string,
     actionId: string,
     payload: Record<string, unknown>,
     correlationId: string,

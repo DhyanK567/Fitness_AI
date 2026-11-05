@@ -263,7 +263,7 @@ export class StudioInsightsService {
             tx.studioMember.count({
               where: {
                 tenantId: context.tenantId,
-                status: 'Active',
+                status: { equals: 'Active', mode: 'insensitive' },
               },
             }),
           ]);
@@ -368,7 +368,7 @@ export class StudioInsightsService {
           const activeMembers = await tx.studioMember.findMany({
             where: {
               tenantId: context.tenantId,
-              status: 'Active',
+              status: { equals: 'Active', mode: 'insensitive' },
             },
           });
 
@@ -578,10 +578,11 @@ export class StudioInsightsService {
                 status: { in: ['Confirmed', 'Attended', 'Completed'] },
               },
             }),
+            // Use case-insensitive match for 'Active' status to handle data inconsistencies
             tx.studioMember.findMany({
               where: {
                 tenantId: context.tenantId,
-                status: 'Active',
+                status: { equals: 'Active', mode: 'insensitive' },
               },
             }),
             tx.studioPayment.findMany({

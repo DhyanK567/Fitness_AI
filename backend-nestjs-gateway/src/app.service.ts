@@ -133,9 +133,11 @@ export class AppService {
   private async checkErp(): Promise<ComponentHealth> {
     const start = Date.now();
     try {
-      const result = await this.erpService.health({ tenantId: 'health-check', correlationId: 'health-check' });
-      const success = (result as any)?.success;
-      if (success) {
+      // Use a valid tenant code that exists in ERPNext
+      const result = await this.erpService.health({ tenantId: 'demo', correlationId: 'health-check' });
+      // ERP health endpoint returns { status: "ok", app: "wellness_studio" }
+      const isHealthy = (result as any)?.status === 'ok' || (result as any)?.success === true;
+      if (isHealthy) {
         return { status: 'healthy', latencyMs: Date.now() - start };
       }
       return { status: 'unhealthy', latencyMs: Date.now() - start, error: 'ERP returned non-success' };

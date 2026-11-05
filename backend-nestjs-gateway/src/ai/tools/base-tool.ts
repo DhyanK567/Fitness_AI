@@ -4,6 +4,7 @@ import { ERP_METHODS } from '@wsos/erp-methods';
 
 export interface ToolContext {
   tenantId: string;
+  tenantCode: string;
   userId: string;
   role: string;
   correlationId: string;
