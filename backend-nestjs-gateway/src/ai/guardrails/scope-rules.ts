@@ -92,6 +92,13 @@ export const TOOL_PERMISSIONS: Record<string, string | null> = {
   'getRevenueSummary': 'reports:read',
   'getRevenueTrends': 'reports:read',
 
+  // Staff Assistant tools (P1)
+  'getPublicClassScheduleStaff': 'classes:read',
+  'manageWaitlist': 'bookings:write',
+  'getOperationalAlerts': 'operations:read',
+  'acknowledgeOperationalAlert': 'operations:write',
+  'getClassCancellationImpact': 'operations:read',
+
   // Enquiry tools (P1)
   'getPublicEventList': null,
   'getPublicClassSchedule': null,
@@ -150,10 +157,6 @@ export const TOOL_PERMISSIONS: Record<string, string | null> = {
   'getEquipmentStatus': 'equipment:read',
   'scheduleEquipmentMaintenance': 'equipment:write',
   'getFacilityUtilization': 'facility:read',
-  'manageWaitlist': 'bookings:write',
-  'getOperationalAlerts': 'operations:read',
-  'acknowledgeOperationalAlert': 'operations:write',
-  'getClassCancellationImpact': 'operations:read',
   'optimizeClassSchedule': 'operations:read',
 
   // Growth Agent Tools (Phase 5)
@@ -178,6 +181,8 @@ export const TOOL_PERMISSIONS: Record<string, string | null> = {
   'getBrandHealthMetrics': 'marketing:read',
   'manageReviewResponse': 'marketing:write',
   'getCompetitorIntelligence': 'marketing:read',
+  'getRoasMetrics': 'marketing:read',
+  'getChannelRecommendations': 'marketing:read',
 };
 
 /**
@@ -185,7 +190,8 @@ export const TOOL_PERMISSIONS: Record<string, string | null> = {
  * Which roles can access which assistant type
  */
 const ASSISTANT_ROLES: Record<string, StaffRole[]> = {
-  admin: ['owner', 'admin', 'front_desk'],
+  admin: ['owner', 'admin'],
+  staff: ['owner', 'admin', 'front_desk', 'trainer'],
   enquiry: ['owner', 'admin', 'front_desk', 'trainer', 'member', 'visitor'],
   booking: ['owner', 'admin', 'front_desk', 'trainer', 'member'],
   recommendation: ['owner', 'admin', 'front_desk', 'trainer', 'member'],

@@ -55,7 +55,7 @@ describe('AI Agents Hub: 12-Agent Ecosystem Contract Suite', () => {
       const result = await AiApi.getAgents();
 
       assert.equal(requestedUrl, 'http://localhost:3001/api/v1/ai/agents');
-      assert.ok(requestedHeaders['Host'] === 'pilot-studio.fitness.local' || requestedHeaders['Host'] === 'demo.fitness.local');
+      assert.ok(requestedHeaders['Host'] === 'ranayaa.fitness.local' || requestedHeaders['Host'] === 'pilot-studio.fitness.local' || requestedHeaders['Host'] === 'demo.fitness.local');
       assert.equal(result.length, 12);
       assert.equal(result[0].id, 'admin-copilot');
       assert.equal(result[11].id, 'session-summary');

@@ -32,6 +32,7 @@ describe('AI Evaluation - Cross-Tenant Tool Tests', () => {
 
   const tenant1Context = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'admin-1',
     role: 'admin' as const,
     correlationId: 'corr-1',
@@ -39,6 +40,7 @@ describe('AI Evaluation - Cross-Tenant Tool Tests', () => {
 
   const tenant2Context = {
     tenantId: 'tenant-2',
+    tenantCode: 'TEST',
     userId: 'admin-2',
     role: 'admin' as const,
     correlationId: 'corr-2',
@@ -46,6 +48,7 @@ describe('AI Evaluation - Cross-Tenant Tool Tests', () => {
 
   const tenant1MemberContext = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'member-1',
     role: 'member' as const,
     correlationId: 'corr-3',
@@ -53,6 +56,7 @@ describe('AI Evaluation - Cross-Tenant Tool Tests', () => {
 
   const tenant2MemberContext = {
     tenantId: 'tenant-2',
+    tenantCode: 'TEST',
     userId: 'member-2',
     role: 'member' as const,
     correlationId: 'corr-4',
@@ -384,7 +388,7 @@ describe('AI Evaluation - Cross-Tenant Tool Tests', () => {
         const tenantId = tenants[i % 3];
         promises.push(
           orchestrator.processMessage(
-            { tenantId, userId: `user-${i}`, role: 'admin', correlationId: `corr-${i}` },
+            { tenantId, tenantCode: 'TEST', userId: `user-${i}`, role: 'admin', correlationId: `corr-${i}` },
             'Concurrent query',
             []
           )

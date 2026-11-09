@@ -43,6 +43,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
     it('returns structured failure when tool name is missing or empty', async () => {
       const result = await registry.execute('', {
         tenantId: TENANT_A,
+        tenantCode: 'TEST',
         userId: USER_STAFF,
         role: 'admin',
         correlationId: 'corr-1',
@@ -56,6 +57,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
     it('fails safely without crashing when an unknown tool is invoked', async () => {
       const result = await registry.execute('unknownTool_xyz', {
         tenantId: TENANT_A,
+        tenantCode: 'TEST',
         userId: USER_STAFF,
         role: 'admin',
         correlationId: 'corr-2',
@@ -96,6 +98,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
 
       const result = await registry.execute('testTool', {
         tenantId: '',
+        tenantCode: 'TEST',
         userId: USER_STAFF,
         role: 'admin',
         correlationId: 'corr-3',
@@ -121,6 +124,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'testTool',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-4',
@@ -145,6 +149,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_MEMBER,
           role: 'member',
           correlationId: 'corr-5',
@@ -178,6 +183,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-6',
@@ -203,6 +209,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-7',
@@ -228,6 +235,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'getMemberCount',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-8',
@@ -249,6 +257,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-9',
@@ -270,6 +279,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
 
       const result = await registry.execute('bookSession', {
         tenantId: TENANT_A,
+        tenantCode: 'TEST',
         userId: USER_STAFF,
         role: 'admin',
         correlationId: 'corr-10',
@@ -292,6 +302,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-11',
@@ -316,6 +327,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-12',
@@ -349,6 +361,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-13',
@@ -367,6 +380,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-14',
@@ -397,7 +411,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
       // Tenant A
       await registry.execute(
         'createMember',
-        { tenantId: TENANT_A, userId: USER_STAFF, role: 'admin', correlationId: 'corr-15', isConfirmedPendingAction: true },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_STAFF, role: 'admin', correlationId: 'corr-15', isConfirmedPendingAction: true },
         { fullName: 'Alice', phone: '+919876543210' },
         { isConfirmedPendingAction: true, idempotencyKey },
       );
@@ -406,7 +420,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
       // Tenant B with same idempotency key executes independently
       await registry.execute(
         'createMember',
-        { tenantId: TENANT_B, userId: USER_STAFF, role: 'admin', correlationId: 'corr-16', isConfirmedPendingAction: true },
+        { tenantId: TENANT_B, tenantCode: 'TEST', userId: USER_STAFF, role: 'admin', correlationId: 'corr-16', isConfirmedPendingAction: true },
         { fullName: 'Bob', phone: '+919876543211' },
         { isConfirmedPendingAction: true, idempotencyKey },
       );
@@ -425,6 +439,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'createMember',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-audit-1',
@@ -463,6 +478,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
 
       const result = await registry.execute('getMemberCount', {
         tenantId: TENANT_A,
+        tenantCode: 'TEST',
         userId: USER_STAFF,
         role: 'admin',
         correlationId: 'corr-fail-1',
@@ -495,6 +511,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
         'getExpiringMemberships',
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'corr-erp-1',
@@ -551,6 +568,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
       const response = await orchestrator.processMessage(
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_STAFF,
           role: 'admin',
           correlationId: 'orch-corr-1',
@@ -606,7 +624,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
       );
 
       const result = await controller.confirmAssistantAction(
-        { id: USER_STAFF, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_STAFF, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         'pa-uuid-1',
         { confirm_token: 'tok-123' },
       );
@@ -694,23 +712,47 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
           toolCalls: [] 
         }),
         estimateTokens: jest.fn<any>().mockReturnValue(100),
-      };
+        logger: { log: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+        geminiGateway: null,
+        groqGateway: null,
+        queue: [],
+        activeRequests: 0,
+        isRunning: false,
+        budgets: new Map(),
+        redis: { get: jest.fn(), set: jest.fn() },
+        observability: { recordLlmCall: jest.fn() },
+        cooldownManager: { check: jest.fn(), set: jest.fn(), clear: jest.fn() },
+        onModuleInit: jest.fn(),
+        onModuleDestroy: jest.fn(),
+        isAvailable: jest.fn().mockReturnValue(true),
+        healthCheck: jest.fn<() => Promise<{ status: string; provider: string }>>().mockResolvedValue({ status: 'healthy', provider: 'test' }),
+      } as any;
 
       const mockAuditOutbox = {
         record: jest.fn<any>().mockResolvedValue({
           audit: { id: 'audit-log-uuid-1' },
           outbox: { id: 'outbox-log-uuid-1' },
         }),
-      };
+        recordInTransaction: jest.fn<any>().mockResolvedValue({ id: 'audit-log-uuid-1' }),
+        prisma: {},
+      } as any;
 
       const mockErpService = {
         call: jest.fn<any>().mockResolvedValue({ id: 'erp-record-123', status: 'success' }),
-      };
+        getEnv: jest.fn(),
+        onModuleInit: jest.fn(),
+        getLoggedInUser: jest.fn(),
+        health: jest.fn(),
+        version: jest.fn(),
+      } as any;
 
       const mockObservability = {
         recordToolCall: jest.fn<any>().mockResolvedValue(undefined),
         recordLlmCall: jest.fn<any>().mockResolvedValue(undefined),
-      };
+        recordPendingAction: jest.fn<any>().mockResolvedValue(undefined),
+        getLlmUsageStats: jest.fn<() => Promise<any>>().mockResolvedValue({}),
+        logger: { log: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+      } as any;
 
       const orchestrator = new ConversationOrchestrator(
         mockLlmGateway,
@@ -724,7 +766,7 @@ describe('AI-04: Unified AI Tool Execution Registry Specification & Regression T
 
       const context = {
         tenantId: TENANT_A,
-        tenantCode: 'demo',
+        tenantCode: 'TEST',
         userId: USER_STAFF,
         role: 'admin',
         correlationId: 'corr-1',

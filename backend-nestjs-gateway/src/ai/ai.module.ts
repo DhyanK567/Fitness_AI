@@ -87,6 +87,14 @@ import { GetLeadAttributionTool } from './tools/marketing-tools';
 import { GetBrandHealthMetricsTool } from './tools/marketing-tools';
 import { ManageReviewResponseTool } from './tools/marketing-tools';
 import { GetCompetitorIntelligenceTool } from './tools/marketing-tools';
+import { GetRoasMetricsTool } from './tools/marketing-tools';
+import { GetChannelRecommendationsTool } from './tools/marketing-tools';
+
+// Session Summary Agent Tools
+import { SessionDebriefTool } from './tools/session-summary-tools';
+import { TrainerNotesTool } from './tools/session-summary-tools';
+import { MemberMilestonesTool } from './tools/session-summary-tools';
+import { SessionSummaryService } from './operations/session-summary.service';
 
 import { AiController } from './ai.controller';
 import { PublicEnquiryAiController } from './public-enquiry-ai.controller';
@@ -125,6 +133,7 @@ import { FeedbackModule } from '../modules/feedback/feedback.module';
     LlmObservabilityService,
     FaqKnowledgeService,
     AgentRegistryService,
+    SessionSummaryService,
 
     // Guardrails
     ScopeRules,
@@ -217,6 +226,13 @@ import { FeedbackModule } from '../modules/feedback/feedback.module';
     GetBrandHealthMetricsTool,
     ManageReviewResponseTool,
     GetCompetitorIntelligenceTool,
+    GetRoasMetricsTool,
+    GetChannelRecommendationsTool,
+
+    // Session Summary Agent tools (Phase 3)
+    SessionDebriefTool,
+    TrainerNotesTool,
+    MemberMilestonesTool,
   ],
   exports: [
     ToolRegistry,
@@ -304,6 +320,13 @@ import { FeedbackModule } from '../modules/feedback/feedback.module';
     GetBrandHealthMetricsTool,
     ManageReviewResponseTool,
     GetCompetitorIntelligenceTool,
+    GetRoasMetricsTool,
+    GetChannelRecommendationsTool,
+    // Export Session Summary tools
+    SessionDebriefTool,
+    TrainerNotesTool,
+    MemberMilestonesTool,
+    SessionSummaryService,
   ],
 })
 export class AiModule {}

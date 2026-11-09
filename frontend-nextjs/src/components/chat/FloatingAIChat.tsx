@@ -28,10 +28,16 @@ export interface FloatingAIChatProps {
   studioName?: string;
   theme?: 'light' | 'dark' | 'auto';
   /**
-   * Integration point for Harish to connect the backend AI endpoint:
-   * e.g. POST /api/v1/ai/chat or WebSocket stream
+   * Callback invoked when user sends a message.
+   * Should send the message to the backend and return the assistant's response.
+   * If not provided, the chat runs in preview mode.
    */
-  onSendMessage?: (message: string) => Promise<void> | void;
+  onSendMessage?: (message: string) => Promise<{ text: string; type?: string; pending_action?: any; tools_used?: any[] } | void> | void;
+  /**
+   * Callback invoked when an assistant response is received.
+   * Use this to add the assistant message to the chat history.
+   */
+  onMessageReceived?: (response: { text: string; type?: string; pending_action?: any; tools_used?: any[] }) => void;
   /**
    * Whether the live AI backend is connected.
    * When false (default), the UI renders in preview mode with clear "Coming Soon" indicators.
@@ -194,6 +200,7 @@ export function FloatingAIChat({
   studioName,
   theme = 'auto',
   onSendMessage,
+  onMessageReceived,
   isBackendConnected = false,
   initialMessages,
   className = '',
@@ -240,18 +247,46 @@ export function FloatingAIChat({
 
     setMessages((prev) => [...prev, userMsg]);
 
-    // If external onSendMessage callback was passed by Harish, invoke it
+    // If external onSendMessage callback was passed, invoke it
     if (onSendMessage) {
       try {
-        await onSendMessage(content);
+        const response = await onSendMessage(content);
+        
+        // If the callback returns a response, add it to messages
+        if (response && response.text) {
+          const assistantMsg: ChatMessage = {
+            id: `assistant_${Date.now()}`,
+            sender: 'assistant',
+            content: response.text,
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          };
+          setMessages((prev) => [...prev, assistantMsg]);
+        }
+        
+        // Also call onMessageReceived if provided (for external handling)
+        if (onMessageReceived && response && response.text) {
+          onMessageReceived(response);
+        }
       } catch (err) {
         console.error('Error invoking chat backend handler:', err);
+        
+        // Add error message to chat
+        const errorMsg: ChatMessage = {
+          id: `error_${Date.now()}`,
+          sender: 'system',
+          content: '⚠️ Failed to get response. Please try again.',
+          timestamp: 'System',
+        };
+        setMessages((prev) => [...prev, errorMsg]);
       }
     }
 
     // In preview mode (no backend connected yet):
     // Do NOT simulate fake AI answers. Give an honest system status note.
-    if (!isBackendConnected) {
+    if (!isBackendConnected && !onSendMessage) {
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,

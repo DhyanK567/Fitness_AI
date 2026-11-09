@@ -602,7 +602,7 @@ describe('AI-05 Component 5 — Feedback Intelligence Assistant Specification', 
     it('executes ClassifyFeedbackTool successfully via DI container', async () => {
       const tool = new ClassifyFeedbackTool({} as any, feedbackService, mockLlmGateway);
       const result = await tool.execute(
-        { tenantId: TENANT_A, userId: USER_A_ID, role: 'admin', correlationId: 'corr-tool-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A_ID, role: 'admin', correlationId: 'corr-tool-1' },
         { feedbackId: FEEDBACK_ID },
       );
 
@@ -613,7 +613,7 @@ describe('AI-05 Component 5 — Feedback Intelligence Assistant Specification', 
     it('executes StoreFeedbackClassificationTool successfully', async () => {
       const tool = new StoreFeedbackClassificationTool({} as any, feedbackService);
       const result = await tool.execute(
-        { tenantId: TENANT_A, userId: USER_A_ID, role: 'admin', correlationId: 'corr-tool-2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A_ID, role: 'admin', correlationId: 'corr-tool-2' },
         {
           feedbackId: FEEDBACK_ID,
           sentiment: 'positive',
@@ -629,7 +629,7 @@ describe('AI-05 Component 5 — Feedback Intelligence Assistant Specification', 
     it('executes GetFeedbackSummaryTool successfully', async () => {
       const tool = new GetFeedbackSummaryTool({} as any, feedbackService);
       const result = await tool.execute(
-        { tenantId: TENANT_A, userId: USER_A_ID, role: 'admin', correlationId: 'corr-tool-3' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A_ID, role: 'admin', correlationId: 'corr-tool-3' },
         { scope: 'week', weekStart: '2026-10-19' },
       );
 
@@ -651,7 +651,7 @@ describe('AI-05 Component 5 — Feedback Intelligence Assistant Specification', 
 
       const result = await toolRegistry.execute(
         'getFeedbackSummary',
-        { tenantId: TENANT_A, userId: TRAINER_USER_ID, role: 'trainer', correlationId: 'corr-tr-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: TRAINER_USER_ID, role: 'trainer', correlationId: 'corr-tr-1' },
         { scope: 'session', sessionId: SESSION_UUID },
       );
 
@@ -677,6 +677,7 @@ describe('AI-05 Component 5 — Feedback Intelligence Assistant Specification', 
       // 1. Tests default sentiment-summary action without explicit weekStart (computes Monday default)
       const summaryResult = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'feedback-intelligence',
         'sentiment-summary',
         {}, // No weekStart provided
@@ -690,6 +691,7 @@ describe('AI-05 Component 5 — Feedback Intelligence Assistant Specification', 
       // 2. Tests classify-text action
       const classifyResult = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'feedback-intelligence',
         'classify-text',
         { text: 'Great music and awesome workout!' },
@@ -702,6 +704,7 @@ describe('AI-05 Component 5 — Feedback Intelligence Assistant Specification', 
       // 3. Tests trend-analysis action
       const trendResult = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'feedback-intelligence',
         'trend-analysis',
         {},

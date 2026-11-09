@@ -43,6 +43,7 @@ describe('Debug LLM Gateway Mock - front_desk role', () => {
 
     const context = {
       tenantId: 'tenant-1',
+      tenantCode: 'TEST',
       userId: 'user-1',
       role: 'front_desk' as const,
       correlationId: 'corr-1',

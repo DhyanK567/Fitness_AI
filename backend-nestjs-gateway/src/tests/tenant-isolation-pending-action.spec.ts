@@ -559,6 +559,7 @@ describe('Phase 2 - PostgreSQL Tenant Isolation & Pending-Action Persistence', (
       const response = await orchestrator.processMessage(
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_A,
           role: 'front_desk',
           correlationId: 'corr-001',
@@ -593,6 +594,7 @@ describe('Phase 2 - PostgreSQL Tenant Isolation & Pending-Action Persistence', (
       const proposalResponse = await orchestrator.processMessage(
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_A,
           role: 'front_desk',
           correlationId: 'corr-002',
@@ -616,6 +618,7 @@ describe('Phase 2 - PostgreSQL Tenant Isolation & Pending-Action Persistence', (
       const confirmResponse = await restartedOrchestrator.confirmPendingAction(
         {
           tenantId: TENANT_A,
+          tenantCode: 'TEST',
           userId: USER_A,
           role: 'front_desk',
           correlationId: 'corr-003',
@@ -652,13 +655,13 @@ describe('Phase 2 - PostgreSQL Tenant Isolation & Pending-Action Persistence', (
       });
 
       const proposal = await orchestrator.processMessage(
-        { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'corr-004' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'corr-004' },
         'Create member Double Confirm, phone +919876543210',
       );
 
       // First confirmation succeeds
       const firstConfirm = await orchestrator.confirmPendingAction(
-        { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'corr-005' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'corr-005' },
         proposal.pendingActionId!,
         proposal.confirmToken!,
       );
@@ -666,7 +669,7 @@ describe('Phase 2 - PostgreSQL Tenant Isolation & Pending-Action Persistence', (
 
       // Second confirmation fails
       const secondConfirm = await orchestrator.confirmPendingAction(
-        { tenantId: TENANT_A, userId: USER_A, role: 'front_desk', correlationId: 'corr-006' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'corr-006' },
         proposal.pendingActionId!,
         proposal.confirmToken!,
       );

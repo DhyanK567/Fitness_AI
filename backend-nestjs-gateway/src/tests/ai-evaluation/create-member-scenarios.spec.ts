@@ -44,6 +44,7 @@ describe('AI Evaluation - Create Member Scenarios (Target: 95% first-time-correc
 
   const context = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'user-1',
     role: 'front_desk' as const,
     correlationId: 'corr-1',

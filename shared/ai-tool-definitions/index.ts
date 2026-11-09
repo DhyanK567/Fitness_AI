@@ -8,7 +8,7 @@ import { z } from 'zod';
  */
 
 export type RiskClass = 'read' | 'write' | 'internal';
-export type Assistant = 'admin' | 'enquiry' | 'booking' | 'recommendation' | 'feedback' | 'rag' | 'operations' | 'growth' | 'marketing';
+export type Assistant = 'admin' | 'staff' | 'enquiry' | 'booking' | 'recommendation' | 'feedback' | 'rag' | 'operations' | 'growth' | 'marketing';
 export type Principal = 'staff' | 'member' | 'visitor' | 'system';
 
 export interface ToolDefinition<S extends z.ZodTypeAny = z.ZodTypeAny> {
@@ -41,13 +41,13 @@ export const TOOLS = [
     args: z.object({ thresholdPercent: z.number().min(0).max(100).default(50), periodDays: z.number().int().min(1).max(90).default(30) }).strict() }),
 
   def({ id: 'T-03', name: 'extractCreateMemberFields', purpose: 'Extract member fields from free text; missing mandatory fields are reported, never inferred.',
-    assistant: 'admin', risk: 'internal', requiresConfirmation: false, principals: ['staff'],
-    requiredPermission: 'members.create', featureFlag: 'ai.admin', owningService: 'AI Orchestrator', phase: 'P0',
+    assistant: 'staff', risk: 'internal', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'members.create', featureFlag: 'ai.booking', owningService: 'AI Orchestrator', phase: 'P0',
     args: z.object({ message: z.string().min(1).max(1000) }).strict() }),
 
   def({ id: 'T-04', name: 'createMember', purpose: 'Create a member via the same MembersService as the UI. Executes only from a confirmed pending action.',
-    assistant: 'admin', risk: 'write', requiresConfirmation: true, principals: ['staff'],
-    requiredPermission: 'members.create', featureFlag: 'ai.admin', owningService: 'MembersService', phase: 'P0',
+    assistant: 'staff', risk: 'write', requiresConfirmation: true, principals: ['staff'],
+    requiredPermission: 'members.create', featureFlag: 'ai.booking', owningService: 'MembersService', phase: 'P0',
     // plan/start date optionality to be confirmed with AIQ
     args: z.object({
       fullName: z.string().min(1).max(120),
@@ -65,6 +65,50 @@ export const TOOLS = [
   def({ id: 'T-06', name: 'getDashboardSummary', purpose: 'Return the same KPI payload the dashboard shows.',
     assistant: 'admin', risk: 'read', requiresConfirmation: false, principals: ['staff'],
     requiredPermission: 'reports.read', featureFlag: 'ai.admin', owningService: 'ReportingService', phase: 'P1', args: none }),
+
+  // ============================================
+  // Staff Assistant Tools (Phase 1)
+  // ============================================
+  def({ id: 'T-06A', name: 'getPublicClassScheduleStaff', purpose: 'Staff view of class schedule for the next N days.',
+    assistant: 'staff', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'classes.read', featureFlag: 'ai.booking', owningService: 'ClassesService', phase: 'P1',
+    args: z.object({ days: z.number().int().min(1).max(14).default(7), classTypeId: z.string().optional() }).strict() }),
+
+  def({ id: 'T-06B', name: 'manageWaitlist', purpose: 'Manage waitlist operations - view, promote, notify, or remove waitlist entries.',
+    assistant: 'staff', risk: 'write', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'bookings.write', featureFlag: 'ai.operations', owningService: 'WaitlistService', phase: 'P1',
+    args: z.object({
+      action: z.enum(['view', 'promote', 'notify', 'remove', 'clear_expired']),
+      sessionId: z.string().uuid().optional(),
+      bookingId: z.string().uuid().optional(),
+      notifyCount: z.number().int().min(1).max(10).default(3),
+    }).strict() }),
+
+  def({ id: 'T-06C', name: 'getOperationalAlerts', purpose: 'Get operational alerts - low capacity, no-shows, equipment issues, staffing gaps.',
+    assistant: 'staff', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'operations.read', featureFlag: 'ai.operations', owningService: 'OperationsService', phase: 'P1',
+    args: z.object({
+      severity: z.enum(['info', 'warning', 'critical']).optional(),
+      category: z.enum(['capacity', 'staffing', 'equipment', 'attendance', 'payment']).optional(),
+      acknowledged: z.boolean().optional(),
+      limit: z.number().int().min(1).max(100).default(50),
+    }).strict() }),
+
+  def({ id: 'T-06D', name: 'acknowledgeOperationalAlert', purpose: 'Acknowledge or resolve an operational alert.',
+    assistant: 'staff', risk: 'write', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'operations.write', featureFlag: 'ai.operations', owningService: 'OperationsService', phase: 'P1',
+    args: z.object({
+      alertId: z.string().uuid(),
+      action: z.enum(['acknowledge', 'resolve', 'dismiss']),
+      resolutionNotes: z.string().max(1000).optional(),
+    }).strict() }),
+
+  def({ id: 'T-06E', name: 'getClassCancellationImpact', purpose: 'Analyze impact of cancelling a class - affected members, revenue loss, waitlist promotions.',
+    assistant: 'staff', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'operations.read', featureFlag: 'ai.operations', owningService: 'OperationsService', phase: 'P1',
+    args: z.object({
+      sessionId: z.string().uuid(),
+    }).strict() }),
 
   def({ id: 'T-07', name: 'getPublicEventList', purpose: 'List public upcoming events.',
     assistant: 'enquiry', risk: 'read', requiresConfirmation: false, principals: ['visitor', 'member'],
@@ -229,14 +273,14 @@ export const TOOLS = [
   // CRM Agent Tools (Phase 3)
   // ============================================
   def({ id: 'T-26', name: 'scoreLead', purpose: 'Calculate lead conversion probability score based on engagement, source, and behavior signals.',
-    assistant: 'admin', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    assistant: 'staff', risk: 'read', requiresConfirmation: false, principals: ['staff'],
     requiredPermission: 'leads.read', featureFlag: 'ai.crm', owningService: 'LeadScoringService', phase: 'P2',
     args: z.object({
       leadId: z.string().uuid(),
     }).strict() }),
 
   def({ id: 'T-27', name: 'getPipelineOverview', purpose: 'Get complete pipeline overview with lead counts and conversion metrics per stage.',
-    assistant: 'admin', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    assistant: 'staff', risk: 'read', requiresConfirmation: false, principals: ['staff'],
     requiredPermission: 'pipeline.read', featureFlag: 'ai.crm', owningService: 'PipelineService', phase: 'P2',
     args: z.object({}).strict() }),
 
@@ -722,6 +766,24 @@ export const TOOLS = [
     }).strict() }),
 
   // ============================================
+  // Advertising Agent Tools (Phase 5)
+  // ============================================
+  def({ id: 'T-77', name: 'getRoasMetrics', purpose: 'Get ROAS and CPA metrics for paid advertising campaigns across channels.',
+    assistant: 'marketing', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'marketing.read', featureFlag: 'ai.marketing', owningService: 'AdvertisingService', phase: 'P2',
+    args: z.object({
+      periodDays: z.number().int().min(1).max(365).default(30),
+      channel: z.enum(['meta', 'google', 'tiktok', 'all']).optional(),
+    }).strict() }),
+
+  def({ id: 'T-78', name: 'getChannelRecommendations', purpose: 'Get deterministic budget reallocation recommendations based on ROAS efficiency analysis.',
+    assistant: 'marketing', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'marketing.read', featureFlag: 'ai.marketing', owningService: 'AdvertisingService', phase: 'P2',
+    args: z.object({
+      periodDays: z.number().int().min(1).max(365).default(30),
+    }).strict() }),
+
+  // ============================================
   // Revenue Intelligence Tools (Phase 1)
   // ============================================
   def({ id: 'T-72', name: 'getRevenueSummary', purpose: 'Get comprehensive revenue summary including monthly, yearly, and average transaction metrics.',
@@ -735,6 +797,33 @@ export const TOOLS = [
     args: z.object({
       period_type: z.enum(['daily', 'weekly', 'monthly']).optional(),
       periods: z.number().int().min(1).max(60).optional(),
+    }).strict() }),
+
+  // ============================================
+  // Session Summary Agent Tools (Phase 3)
+  // ============================================
+  def({ id: 'T-74', name: 'sessionDebrief', purpose: 'Generate automated post-class debrief with attendance, no-shows, occupancy, and follow-up actions.',
+    assistant: 'operations', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'operations.read', featureFlag: 'ai.operations', owningService: 'SessionSummaryService', phase: 'P2',
+    args: z.object({
+      sessionId: z.string().uuid(),
+      includeMemberDetails: z.boolean().default(false),
+    }).strict() }),
+
+  def({ id: 'T-75', name: 'trainerNotes', purpose: 'Retrieve or create trainer performance notes and observations for a session.',
+    assistant: 'operations', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'operations.read', featureFlag: 'ai.operations', owningService: 'SessionSummaryService', phase: 'P2',
+    args: z.object({
+      sessionId: z.string().uuid(),
+    }).strict() }),
+
+  def({ id: 'T-76', name: 'memberMilestones', purpose: 'Identify members hitting attendance milestones (10th, 50th, 100th, etc.) in a session or period.',
+    assistant: 'operations', risk: 'read', requiresConfirmation: false, principals: ['staff'],
+    requiredPermission: 'operations.read', featureFlag: 'ai.operations', owningService: 'SessionSummaryService', phase: 'P2',
+    args: z.object({
+      sessionId: z.string().uuid().optional(),
+      periodDays: z.number().int().min(1).max(365).default(30),
+      milestoneIntervals: z.array(z.number().int().min(1)).default([10, 25, 50, 75, 100, 200, 300]),
     }).strict() }),
 ] as const;
 

@@ -14,6 +14,7 @@ import {
 } from '@/features/settings';
 import { LandingPageFeaturesSection } from '@/features/settings/components/LandingPageFeaturesSection';
 import { FloatingAIChat } from '@/components/chat/FloatingAIChat';
+import { useAIChat } from '@/features/ai/hooks/useAIChat';
 
 function EditorialStory({
   story,
@@ -58,6 +59,17 @@ function EditorialStory({
 
 export default function PublicHomePage() {
   const [config, setConfig] = useState<LandingPageConfig>(DEFAULT_LANDING_PAGE_CONFIG);
+
+  // AI Chat integration for public enquiry
+  const { sendMessage, isLoading, error, sessionId } = useAIChat({
+    variant: 'enquiry',
+    onMessageReceived: (response) => {
+      console.log('Public AI Response:', response);
+    },
+    onError: (err) => {
+      console.error('Public AI Chat Error:', err);
+    },
+  });
 
   useEffect(() => {
     async function initTenantLandingPage() {
@@ -282,6 +294,11 @@ export default function PublicHomePage() {
         subtitle="Your studio assistant"
         welcomeMessage="Hi there! 👋 Welcome to Fitness AI. How can we help you today?"
         studioName={config.header.studioName || 'Fitness AI'}
+        onSendMessage={sendMessage}
+        onMessageReceived={(response) => {
+          console.log('Public AI Response:', response);
+        }}
+        isBackendConnected={!!sessionId}
       />
     </div>
   );

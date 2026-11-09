@@ -26,6 +26,7 @@ export class ReportsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth?.roles[0] ?? '',
       correlationId: `revenue_${Date.now()}`,
@@ -44,6 +45,7 @@ export class ReportsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth?.roles[0] ?? '',
       correlationId: `trends_${Date.now()}`,
@@ -61,6 +63,7 @@ export class ReportsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth?.roles[0] ?? '',
       correlationId: `attendance_${Date.now()}`,
@@ -78,6 +81,7 @@ export class ReportsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth?.roles[0] ?? '',
       correlationId: `memberships_${Date.now()}`,
@@ -94,6 +98,7 @@ export class ReportsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth?.roles[0] ?? '',
       correlationId: `dashboard_${Date.now()}`,

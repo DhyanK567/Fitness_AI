@@ -36,6 +36,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
 
   const adminContext = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'admin-1',
     role: 'admin' as const,
     correlationId: 'corr-1',
@@ -43,6 +44,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
 
   const memberContext = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'member-1',
     role: 'member' as const,
     correlationId: 'corr-2',
@@ -50,6 +52,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
 
   const visitorContext = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'visitor-1',
     role: 'visitor' as const,
     correlationId: 'corr-3',
@@ -68,6 +71,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
       it(`should ${shouldRefuse ? 'refuse' : 'allow'} ${tool} for ${role}`, async () => {
         const context = {
           tenantId: 'tenant-1',
+          tenantCode: 'TEST',
           userId: 'user-1',
           role: role as 'visitor' | 'member' | 'front_desk',
           correlationId: 'corr-1',
@@ -141,7 +145,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
       });
 
       const response = await orchestrator.processMessage(
-        { tenantId: 'tenant-1', userId: 'admin-1', role: 'admin', correlationId: 'corr-1' },
+        { tenantId: 'tenant-1', tenantCode: 'TEST', userId: 'admin-1', role: 'admin', correlationId: 'corr-1' },
         injection,
         []
       );
@@ -214,6 +218,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
       // Context without isConfirmedPendingAction
       const unconfirmedContext = {
         tenantId: 'tenant-1',
+        tenantCode: 'TEST',
         userId: 'admin-1',
         role: 'admin' as const,
         correlationId: 'corr-unconfirmed',
@@ -249,6 +254,7 @@ describe('AI Evaluation - Adversarial Tests (Scope Refusal & Injection)', () => 
       // Context with isConfirmedPendingAction flag
       const confirmedContext = {
         tenantId: 'tenant-1',
+        tenantCode: 'TEST',
         userId: 'admin-1',
         role: 'admin' as const,
         correlationId: 'corr-confirmed',

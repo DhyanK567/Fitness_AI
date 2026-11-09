@@ -289,13 +289,21 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
       expect(result.data.memberships[0].membershipId).toBe('MEM-ACTIVE');
     });
 
-    it('enforces RBAC authorization: reports.read is required (staff allowed, visitor denied)', async () => {
-      const staffResult = await toolRegistry.execute(
+    it('enforces RBAC authorization: reports.read is required (admin allowed, front_desk denied due to assistant gating)', async () => {
+      const adminResult = await toolRegistry.execute(
         'getExpiringMemberships',
-        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-staff' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'admin', correlationId: 'c-admin' },
         {},
       );
-      expect(staffResult.errorCode).not.toBe('PERMISSION_DENIED');
+      expect(adminResult.errorCode).not.toBe('PERMISSION_DENIED');
+
+      const frontDeskResult = await toolRegistry.execute(
+        'getExpiringMemberships',
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: USER_A, role: 'front_desk', correlationId: 'c-fd' },
+        {},
+      );
+      expect(frontDeskResult.success).toBe(false);
+      expect(frontDeskResult.errorCode).toBe('PERMISSION_DENIED');
 
       const visitorResult = await toolRegistry.execute(
         'getExpiringMemberships',
@@ -954,7 +962,7 @@ describe('AI-07 — Admin Assistant Implementation and Verification', () => {
 
       const createDef = TOOLS.find((t) => t.name === 'createMember');
       expect(createDef).toBeDefined();
-      expect(createDef?.assistant).toBe('admin');
+      expect(createDef?.assistant).toBe('staff');
       expect(createDef?.risk).toBe('write');
       expect(createDef?.requiresConfirmation).toBe(true);
     });

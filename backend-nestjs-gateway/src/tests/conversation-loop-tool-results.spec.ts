@@ -33,6 +33,7 @@ import { makeToolCall } from './ai-evaluation/test-doubles';
 
 const adminContext = {
   tenantId: 'tenant-1',
+  tenantCode: 'TEST',
   userId: 'admin-1',
   role: 'admin' as const,
   correlationId: 'corr-1',

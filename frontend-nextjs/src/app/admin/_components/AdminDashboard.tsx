@@ -12,6 +12,8 @@ import { ApiClient } from '@/lib/api-client';
 import { currentStaffStudio, staffAssistantName, staffAssistantPromptMarker, staffAssistantPrompts, useAdminWorkspaceData, generateAdminAuraResponse, type LocalAuraAnswer, type StaffClassAttendance, type StaffClassBooking, type StaffMember, type StaffPayment, type StaffStudioClass } from './AdminDataProvider';
 import { StatusBadge } from './AdminWorkspacePages';
 import { listTeamInvitations } from '@/lib/auth/team-invitations';
+import { FloatingAIChat } from '@/components/chat/FloatingAIChat';
+import { useAIChat } from '@/features/ai/hooks/useAIChat';
 
 type Range = '7D' | '30D' | '90D' | '12M';
 type ActivityCategory = 'Payments' | 'Attendance' | 'Bookings' | 'Memberships';
@@ -86,6 +88,18 @@ export function AdminDashboardPage() {
   const activeRole = 'admin' as const;
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => { const update = () => setNow(new Date()); update(); const timer = window.setInterval(update, 60_000); return () => window.clearInterval(timer); }, []);
+  
+  // AI Chat integration for Admin
+  const { sendMessage, isLoading, error, sessionId } = useAIChat({
+    variant: 'member',
+    onMessageReceived: (response) => {
+      console.log('Admin AI Response:', response);
+    },
+    onError: (err) => {
+      console.error('Admin AI Chat Error:', err);
+    },
+  });
+
   const today = now ?? new Date();
   const todayKey = localDateKey(today);
   const todayLabel = formatDate(today, true);
@@ -1926,6 +1940,19 @@ export function AdminDashboardPage() {
           </Card>
       </>
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-4 text-[10px] text-slate-400"><span>{currentStaffStudio.name} · {currentStaffStudio.city} · Main Branch</span><span>Summaries come from workspace records. Historical dates follow the stored schedule reference date.</span></div>
+      {/* ── Floating Admin AI Assistant ── */}
+      <FloatingAIChat
+        variant="member"
+        title="Ask AI"
+        subtitle="Your admin studio assistant"
+        welcomeMessage="Hi! 👋 I'm your admin studio assistant. I can help with studio operations, memberships, bookings, staff management, and more."
+        studioName={currentStaffStudio.name}
+        onSendMessage={sendMessage}
+        onMessageReceived={(response) => {
+          console.log('Admin AI Response:', response);
+        }}
+        isBackendConnected={!!sessionId}
+      />
     </div>
   );
 }

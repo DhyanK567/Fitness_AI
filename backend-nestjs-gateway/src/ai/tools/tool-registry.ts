@@ -92,6 +92,8 @@ import {
   GetBrandHealthMetricsTool,
   ManageReviewResponseTool,
   GetCompetitorIntelligenceTool,
+  GetRoasMetricsTool,
+  GetChannelRecommendationsTool,
 } from './marketing-tools';
 import {
   SearchKnowledgeBaseTool,
@@ -101,6 +103,11 @@ import {
   DeleteDocumentTool,
   GetDocumentStatusTool,
 } from './rag-tools';
+import {
+  SessionDebriefTool,
+  TrainerNotesTool,
+  MemberMilestonesTool,
+} from './session-summary-tools';
 
 export interface ToolExecutionOptions {
   isConfirmedPendingAction?: boolean;
@@ -158,6 +165,7 @@ export class ToolRegistry implements OnModuleInit {
     getDashboardSummary: GetDashboardSummaryTool,
     getPublicEventList: GetPublicEventListTool,
     getPublicClassSchedule: GetPublicClassScheduleTool,
+    getPublicClassScheduleStaff: GetPublicClassScheduleTool,
     getActivePlansPublic: GetActivePlansPublicTool,
     captureLead: CaptureLeadTool,
     getEligibleSchedule: GetEligibleScheduleTool,
@@ -228,6 +236,13 @@ export class ToolRegistry implements OnModuleInit {
     getBrandHealthMetrics: GetBrandHealthMetricsTool,
     manageReviewResponse: ManageReviewResponseTool,
     getCompetitorIntelligence: GetCompetitorIntelligenceTool,
+    getRoasMetrics: GetRoasMetricsTool,
+    getChannelRecommendations: GetChannelRecommendationsTool,
+
+    // Session Summary
+    sessionDebrief: SessionDebriefTool,
+    trainerNotes: TrainerNotesTool,
+    memberMilestones: MemberMilestonesTool,
 
     // RAG
     searchKnowledgeBase: SearchKnowledgeBaseTool,
@@ -250,6 +265,7 @@ export class ToolRegistry implements OnModuleInit {
     getDashboardSummary: ERP_METHODS.REPORT_DASHBOARD_STATS,
     getPublicEventList: ERP_METHODS.EVENT_LIST,
     getPublicClassSchedule: ERP_METHODS.SCHEDULE_LIST,
+    getPublicClassScheduleStaff: ERP_METHODS.SCHEDULE_LIST,
     getActivePlansPublic: ERP_METHODS.MEMBERSHIP_LIST,
     captureLead: ERP_METHODS.LEAD_CREATE,
     getEligibleSchedule: ERP_METHODS.SCHEDULE_LIST,
@@ -299,6 +315,8 @@ export class ToolRegistry implements OnModuleInit {
     getBrandHealthMetrics: ERP_METHODS.GET_BRAND_HEALTH_METRICS,
     manageReviewResponse: ERP_METHODS.MANAGE_REVIEW_RESPONSE,
     getCompetitorIntelligence: ERP_METHODS.GET_COMPETITOR_INTELLIGENCE,
+    getRoasMetrics: ERP_METHODS.GET_CAMPAIGN_PERFORMANCE,
+    getChannelRecommendations: ERP_METHODS.GET_CAMPAIGN_PERFORMANCE,
   };
 
   constructor(

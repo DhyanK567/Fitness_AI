@@ -23,6 +23,7 @@ export class StaffController {
   ): Promise<any> {
     const context = {
       tenantId: req.user.tenantId,
+      tenantCode: req.user.tenantCode,
       userId: req.user.id,
       role: req.user.role,
       correlationId: `staff_${Date.now()}`,
@@ -39,6 +40,7 @@ export class StaffController {
   ): Promise<any> {
     const context = {
       tenantId: req.user.tenantId,
+      tenantCode: req.user.tenantCode,
       userId: req.user.id,
       role: req.user.role,
       correlationId: `list_${Date.now()}`,
@@ -55,6 +57,7 @@ export class StaffController {
   ): Promise<any> {
     const context = {
       tenantId: req.user.tenantId,
+      tenantCode: req.user.tenantCode,
       userId: req.user.id,
       role: req.user.role,
       correlationId: `get_${Date.now()}`,
@@ -72,6 +75,7 @@ export class StaffController {
   ): Promise<any> {
     const context = {
       tenantId: req.user.tenantId,
+      tenantCode: req.user.tenantCode,
       userId: req.user.id,
       role: req.user.role,
       correlationId: `update_${Date.now()}`,
@@ -88,6 +92,7 @@ export class StaffController {
   ): Promise<ToolResult<void>> {
     const context = {
       tenantId: req.user.tenantId,
+      tenantCode: req.user.tenantCode,
       userId: req.user.id,
       role: req.user.role,
       correlationId: `delete_${Date.now()}`,

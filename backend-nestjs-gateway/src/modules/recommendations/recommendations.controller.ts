@@ -38,6 +38,7 @@ export class RecommendationsController {
 
     const context = {
       tenantId,
+      tenantCode: req.user?.tenantCode,
       userId: targetMemberId,
       role: callerRole,
       correlationId: req.headers?.['x-correlation-id'] || randomUUID(),

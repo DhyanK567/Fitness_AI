@@ -61,7 +61,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockPrisma.studioClass.findMany.mockResolvedValue([]);
 
       await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-1' },
         { days: 7 },
       );
 
@@ -93,7 +93,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockPrisma.studioAttendance.findMany.mockResolvedValue([]);
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-2' },
         { goal: 'flexibility' },
       );
 
@@ -118,7 +118,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockPrisma.studioAttendance.findMany.mockResolvedValue([]);
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-3' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-3' },
         { goal: 'flexibility & posture' },
       );
 
@@ -137,7 +137,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockPrisma.studioAttendance.findMany.mockResolvedValue([]);
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-4' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-4' },
         { goal: 'recovery' },
       );
 
@@ -151,7 +151,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockPrisma.studioClass.findMany.mockResolvedValue([]);
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-5' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-5' },
         {},
       );
 
@@ -176,7 +176,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
 
       // Test with flexibility goal -> Yoga must rank #1
       const flexResult = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-rank-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-rank-1' },
         { goal: 'flexibility & mobility' },
       );
 
@@ -186,7 +186,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
 
       // Test with strength & conditioning goal -> HIIT must rank #1
       const strengthResult = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-rank-2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-rank-2' },
         { goal: 'strength & muscle' },
       );
 
@@ -220,7 +220,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       ]);
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-variety' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-variety' },
         { goal: 'flexibility' },
       );
 
@@ -244,7 +244,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
 
       // Call without declaring a goal
       const res = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-neutral-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-neutral-1' },
         {},
       );
 
@@ -381,7 +381,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       });
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-erp-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-erp-1' },
         { days: 7 },
       );
 
@@ -404,7 +404,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockErpService.call.mockRejectedValue(new Error('Frappe offline network partition'));
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-erp-exclusive' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-erp-exclusive' },
         { days: 7 },
       );
 
@@ -419,7 +419,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockPrisma.studioClass.findMany.mockResolvedValue([]);
 
       const result = await recommendationsService.getRecommendations(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 'c-pg-exclusive' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 'c-pg-exclusive' },
         { days: 7 },
       );
 
@@ -438,7 +438,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
 
       // Explicit input
       const explicit = await tool.execute(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 't-14-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 't-14-1' },
         { goal: 'weight loss', level: 'Intermediate' },
       );
       expect(explicit.success).toBe(true);
@@ -448,7 +448,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       // Fallback: undeclared goal must NOT impute 'strength & endurance'
       mockErpService.call.mockRejectedValue(new Error('ERP down'));
       const fallback = await tool.execute(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 't-14-2' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 't-14-2' },
         {},
       );
       expect(fallback.success).toBe(true);
@@ -473,7 +473,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       ]);
 
       const res = await tool.execute(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 't-15-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 't-15-1' },
         { days: 30 },
       );
 
@@ -493,7 +493,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
       mockPrisma.studioAttendance.findMany.mockResolvedValue([]);
 
       const res = await tool.execute(
-        { tenantId: TENANT_A, userId: MEMBER_A, role: 'member', correlationId: 't-16-1' },
+        { tenantId: TENANT_A, tenantCode: 'TEST', userId: MEMBER_A, role: 'member', correlationId: 't-16-1' },
         { goal: 'flexibility' },
       );
 
@@ -528,6 +528,7 @@ describe('AI-04 Component 4 — Recommendation Assistant Gateway Specification',
 
       const result = await agentRegistry.executeAgentAction(
         TENANT_A,
+        'TEST',
         'recommendation-assistant',
         'recommend-sessions',
         { goal: 'strength & conditioning' },

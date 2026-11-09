@@ -3,9 +3,13 @@ import { ErpnextService } from '../erpnext/erpnext.service';
 
 export interface ToolContext {
   tenantId: string;
+  tenantCode: string;
   userId: string;
   role: string;
   correlationId: string;
+  isConfirmedPendingAction?: boolean;
+  idempotencyKey?: string;
+  memberRef?: string;
 }
 
 export interface ToolResult<T = unknown> {

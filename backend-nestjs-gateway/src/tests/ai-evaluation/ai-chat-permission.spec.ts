@@ -38,6 +38,7 @@ describe('AI Chat - PermissionGuard Integration (Unit)', () => {
 
   const makeContext = (role: string) => ({
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'user-1',
     role: role as any,
     correlationId: 'corr-1',

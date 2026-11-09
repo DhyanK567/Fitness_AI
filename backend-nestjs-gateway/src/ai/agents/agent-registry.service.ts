@@ -44,6 +44,7 @@ import {
   RevenueSummaryArgs,
   ChurnRiskModelingArgs,
 } from '../analytics/studio-insights.service';
+import { SessionSummaryService } from '../operations/session-summary.service';
 
 export type AgentType = 'assistant' | 'agent';
 export type AgentCategory =
@@ -101,7 +102,7 @@ const AUTHORITATIVE_12_AGENTS = [
     category: 'Administration' as AgentCategory,
     description:
       'Natural-language studio administrative copilot with 2-phase write confirmations, member provisioning, schedule reviews, and audit tracking.',
-    requiredRoles: ['owner', 'admin', 'front_desk'],
+    requiredRoles: ['owner', 'admin'],
     capabilities: [
       {
         id: 'expiring-memberships',
@@ -133,6 +134,50 @@ const AUTHORITATIVE_12_AGENTS = [
         description: 'Server-side validated two-phase member creation',
         risk: 'write',
         requiresConfirmation: true,
+      },
+    ] as AgentCapability[],
+  },
+  {
+    id: 'staff-assistant',
+    name: 'Staff Assistant',
+    type: 'assistant' as AgentType,
+    category: 'Administration' as AgentCategory,
+    description:
+      'Front-desk and trainer operational assistant for class management, member check-ins, booking operations, and studio floor workflows.',
+    requiredRoles: ['owner', 'admin', 'front_desk', 'trainer'],
+    capabilities: [
+      {
+        id: 'class-schedule',
+        name: 'Today\'s Class Schedule',
+        description: 'View and manage today\'s scheduled classes and sessions',
+        risk: 'read',
+      },
+      {
+        id: 'member-checkin',
+        name: 'Member Check-in',
+        description: 'Record member attendance for classes',
+        risk: 'write',
+        requiresConfirmation: true,
+      },
+      {
+        id: 'booking-operations',
+        name: 'Booking Operations',
+        description: 'Create, modify, and cancel bookings on behalf of members',
+        risk: 'write',
+        requiresConfirmation: true,
+      },
+      {
+        id: 'waitlist-management',
+        name: 'Waitlist Management',
+        description: 'View and promote members from waitlists',
+        risk: 'write',
+        requiresConfirmation: true,
+      },
+      {
+        id: 'operational-alerts',
+        name: 'Operational Alerts',
+        description: 'View and acknowledge operational alerts (capacity, staffing, equipment)',
+        risk: 'read',
       },
     ] as AgentCapability[],
   },
@@ -561,6 +606,7 @@ export class AgentRegistryService {
     @Optional() private readonly competitorIntelligenceService?: CompetitorIntelligenceService,
     @Optional() private readonly advertisingService?: AdvertisingService,
     @Optional() private readonly studioInsightsService?: StudioInsightsService,
+    @Optional() private readonly sessionSummaryService?: SessionSummaryService,
   ) {}
 
   /**
@@ -718,6 +764,9 @@ export class AgentRegistryService {
       switch (agentId) {
         case 'admin-copilot':
           actionData = await this.handleAdminCopilotAction(tenantId, tenantCode, actionId, payload, user, correlationId);
+          break;
+        case 'staff-assistant':
+          actionData = await this.handleStaffAssistantAction(tenantId, tenantCode, actionId, payload, user, correlationId);
           break;
         case 'public-enquiry':
           actionData = await this.handlePublicEnquiryAction(tenantId, tenantCode, actionId, payload, correlationId);
@@ -914,6 +963,91 @@ export class AgentRegistryService {
     return { result: 'Action completed' };
   }
 
+  private async handleStaffAssistantAction(
+    tenantId: string,
+    tenantCode: string,
+    actionId: string,
+    payload: Record<string, unknown>,
+    user: { id: string; role: string },
+    correlationId: string,
+  ) {
+    if (!this.toolRegistry) {
+      throw new BadRequestException('Tool registry unavailable for staff assistant dispatch');
+    }
+
+    const context: ToolContext = {
+      tenantId,
+      tenantCode,
+      userId: user.id,
+      role: user.role,
+      correlationId,
+    };
+
+    if (actionId === 'class-schedule') {
+      // Use getEligibleSchedule or getPublicClassSchedule for staff view
+      const res = await this.toolRegistry.execute('getPublicClassSchedule', context, { days: 7 });
+      if (!res.success) {
+        throw new BadRequestException(res.error || 'Failed to retrieve class schedule');
+      }
+      return res.data;
+    }
+
+    if (actionId === 'member-checkin') {
+      if (!payload.sessionId || !payload.memberId) {
+        throw new BadRequestException('sessionId and memberId are required for member check-in');
+      }
+      // This would use attendance/booking tools - for now return acknowledgment
+      return { status: 'acknowledged', message: 'Check-in requires two-phase confirmation' };
+    }
+
+    if (actionId === 'booking-operations') {
+      if (!payload.action || !['create', 'cancel', 'modify'].includes(String(payload.action))) {
+        throw new BadRequestException('booking-operations requires action: create, cancel, or modify');
+      }
+      if (payload.action === 'create') {
+        throw new BadRequestException('create-booking requires two-phase confirmation via pending actions');
+      }
+      if (payload.action === 'cancel') {
+        throw new BadRequestException('cancel-booking requires two-phase confirmation via pending actions');
+      }
+      return { status: 'acknowledged' };
+    }
+
+    if (actionId === 'waitlist-management') {
+      if (!payload.action) {
+        throw new BadRequestException('waitlist-management requires an action (view, promote, notify, remove, clear_expired)');
+      }
+      const res = await this.toolRegistry.execute('manageWaitlist', context, {
+        action: String(payload.action),
+        sessionId: payload.sessionId ? String(payload.sessionId) : undefined,
+        bookingId: payload.bookingId ? String(payload.bookingId) : undefined,
+        notifyCount: payload.notifyCount ? Number(payload.notifyCount) : undefined,
+      });
+      if (!res.success) {
+        throw new BadRequestException(res.error || 'Failed to manage waitlist');
+      }
+      return res.data;
+    }
+
+    if (actionId === 'operational-alerts') {
+      if (!this.operationsService) {
+        throw new BadRequestException('OperationsService is unavailable');
+      }
+      const res = await this.operationsService.getOperationalAlerts(context, {
+        severity: payload.severity ? (String(payload.severity) as any) : undefined,
+        category: payload.category ? String(payload.category) : undefined,
+        acknowledged: payload.acknowledged !== undefined ? Boolean(payload.acknowledged) : false,
+        limit: payload.limit ? Number(payload.limit) : 50,
+      });
+      if (!res.success) {
+        throw new BadRequestException(res.error || 'Failed to retrieve operational alerts');
+      }
+      return res.data;
+    }
+
+    throw new BadRequestException(`Unsupported Staff Assistant action '${actionId}'`);
+  }
+
   private async handlePublicEnquiryAction(
     tenantId: string,
     tenantCode: string,
@@ -1086,6 +1220,7 @@ export class AgentRegistryService {
       const result = await this.recommendationsService.getRecommendations(
         {
           tenantId,
+          tenantCode,
           userId: user.id,
           role: user.role,
           correlationId,
@@ -1667,23 +1802,53 @@ export class AgentRegistryService {
     payload: Record<string, unknown>,
     correlationId: string,
   ) {
-    const className = (payload.className as string) || 'Vinyasa Flow (60 min)';
-    return {
-      className,
-      sessionDate: new Date().toISOString().split('T')[0],
-      trainerName: 'Elena Rostova',
-      totalBooked: 16,
-      checkedIn: 15,
-      noShows: 1,
-      occupancyRate: '93.7%',
-      trainerNotes: 'High energy session. Focused on hip mobility and breath pacing. All participants executed sequences safely.',
-      milestonesHonored: [
-        { memberName: 'Daniel Vance', milestone: '50th Studio Workout completed' },
-      ],
-      followupActions: [
-        'Send congratulations push notification to Daniel Vance',
-        'Check in with 1 no-show member via friendly SMS',
-      ],
+    if (!this.sessionSummaryService) {
+      throw new BadRequestException('SessionSummaryService is unavailable');
+    }
+
+    const context: ToolContext = {
+      tenantId,
+      tenantCode,
+      userId: 'system',
+      role: 'system',
+      correlationId,
     };
+
+    if (actionId === 'session-debrief') {
+      const result = await this.sessionSummaryService.getSessionDebrief(context, {
+        sessionId: payload.sessionId as string,
+        includeMemberDetails: payload.includeMemberDetails as boolean,
+      });
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Failed to generate session debrief');
+      }
+      return result.data;
+    }
+
+    if (actionId === 'trainer-notes') {
+      const result = await this.sessionSummaryService.getTrainerNotes(context, {
+        sessionId: payload.sessionId as string,
+      });
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Failed to get trainer notes');
+      }
+      return result.data;
+    }
+
+    if (actionId === 'member-milestones') {
+      const result = await this.sessionSummaryService.getMemberMilestones(context, {
+        sessionId: payload.sessionId as string,
+        periodDays: payload.periodDays !== undefined ? Number(payload.periodDays) : 30,
+        milestoneIntervals: Array.isArray(payload.milestoneIntervals) ? payload.milestoneIntervals : [10, 25, 50, 75, 100, 200, 300],
+      });
+      if (!result.success) {
+        throw new BadRequestException(result.error || 'Failed to get member milestones');
+      }
+      return result.data;
+    }
+
+    throw new BadRequestException(
+      `Unsupported Session Summary action '${actionId}'. Supported actions are 'session-debrief', 'trainer-notes', and 'member-milestones'.`,
+    );
   }
 }

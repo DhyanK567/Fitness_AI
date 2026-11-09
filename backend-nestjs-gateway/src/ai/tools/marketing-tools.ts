@@ -8,6 +8,7 @@ import { AttributionService } from '../marketing/attribution.service';
 import { BrandService } from '../marketing/brand.service';
 import { ReviewManagementService } from '../marketing/review-management.service';
 import { CompetitorIntelligenceService } from '../marketing/competitor-intelligence.service';
+import { AdvertisingService } from '../marketing/advertising.service';
 import { BaseTool, ToolContext, ToolResult, AiTool } from './base-tool';
 import { ToolDefinition } from '@wsos/ai-tool-definitions';
 
@@ -458,6 +459,72 @@ export class GetCompetitorIntelligenceTool extends BaseTool implements AiTool {
       competitorId: z.string().uuid().optional(),
       radiusKm: z.number().int().min(1).max(50).default(10),
       includeOnline: z.boolean().default(true),
+    }).strict(),
+  };
+}
+
+@Injectable()
+export class GetRoasMetricsTool extends BaseTool implements AiTool {
+  constructor(private readonly advertisingService: AdvertisingService) {
+    super(null as any);
+  }
+
+  async execute(context: ToolContext, args: Record<string, unknown>): Promise<ToolResult> {
+    const parsedArgs = z.object({
+      periodDays: z.number().int().min(1).max(365).default(30),
+      channel: z.enum(['meta', 'google', 'tiktok', 'all']).optional(),
+    }).parse(args);
+
+    return this.advertisingService.getRoasMetrics(context, parsedArgs);
+  }
+
+  static definition: ToolDefinition = {
+    id: 'T-77',
+    name: 'getRoasMetrics',
+    purpose: 'Get ROAS and CPA metrics for paid advertising campaigns across channels.',
+    assistant: 'marketing',
+    risk: 'read',
+    requiresConfirmation: false,
+    principals: ['staff'],
+    requiredPermission: 'marketing.read',
+    featureFlag: 'ai.marketing',
+    owningService: 'AdvertisingService',
+    phase: 'P2',
+    args: z.object({
+      periodDays: z.number().int().min(1).max(365).default(30),
+      channel: z.enum(['meta', 'google', 'tiktok', 'all']).optional(),
+    }).strict(),
+  };
+}
+
+@Injectable()
+export class GetChannelRecommendationsTool extends BaseTool implements AiTool {
+  constructor(private readonly advertisingService: AdvertisingService) {
+    super(null as any);
+  }
+
+  async execute(context: ToolContext, args: Record<string, unknown>): Promise<ToolResult> {
+    const parsedArgs = z.object({
+      periodDays: z.number().int().min(1).max(365).default(30),
+    }).parse(args);
+
+    return this.advertisingService.getChannelRecommendations(context, parsedArgs);
+  }
+
+  static definition: ToolDefinition = {
+    id: 'T-78',
+    name: 'getChannelRecommendations',
+    purpose: 'Get deterministic budget reallocation recommendations based on ROAS efficiency analysis.',
+    assistant: 'marketing',
+    risk: 'read',
+    requiresConfirmation: false,
+    principals: ['staff'],
+    requiredPermission: 'marketing.read',
+    featureFlag: 'ai.marketing',
+    owningService: 'AdvertisingService',
+    phase: 'P2',
+    args: z.object({
+      periodDays: z.number().int().min(1).max(365).default(30),
     }).strict(),
   };
 }

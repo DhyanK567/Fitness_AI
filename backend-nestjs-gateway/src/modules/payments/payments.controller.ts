@@ -27,6 +27,7 @@ export class PaymentsController {
   ): Promise<any> {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth!.roles[0],
       correlationId: `payment_${Date.now()}`,
@@ -43,6 +44,7 @@ export class PaymentsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth!.roles[0],
       correlationId: `list_${Date.now()}`,
@@ -59,6 +61,7 @@ export class PaymentsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth!.roles[0],
       correlationId: `get_${Date.now()}`,
@@ -76,6 +79,7 @@ export class PaymentsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth!.roles[0],
       correlationId: `update_${Date.now()}`,
@@ -92,6 +96,7 @@ export class PaymentsController {
   ) {
     const context = {
       tenantId: req.tenantId as string,
+      tenantCode: req.tenantCode as string,
       userId: req.auth!.userId,
       role: req.auth!.roles[0],
       correlationId: `refund_${Date.now()}`,
@@ -118,6 +123,7 @@ export class PaymentsWebhookController {
     const correlationId = req.headers['x-correlation-id'] as string;
     const context = {
       tenantId: tenantId || 'default',
+      tenantCode: tenantId || 'default',
       userId: 'webhook',
       role: 'system',
       correlationId: correlationId || `webhook_${Date.now()}`,

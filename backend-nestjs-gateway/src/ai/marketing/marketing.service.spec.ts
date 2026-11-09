@@ -39,7 +39,7 @@ describe('Marketing Agent - Unit Tests', () => {
     audienceService = new AudienceService(mockErpService);
     contentService = new ContentService(mockErpService);
     attributionService = new AttributionService(mockErpService);
-    brandService = new BrandService(mockErpService);
+    brandService = new BrandService(undefined, mockErpService);
     reviewManagementService = new ReviewManagementService(mockErpService);
     competitorIntelligenceService = new CompetitorIntelligenceService(mockErpService);
 

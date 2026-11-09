@@ -19,6 +19,8 @@ import {
 import { AlertCircle, AlertTriangle, ArrowRight, Check, Loader2, Sparkles, UserCheck, X, XCircle } from 'lucide-react';
 import { getStudioSession } from '@/lib/auth/studio-session';
 import { currentStaffStudio } from '@/app/admin/_components/AdminDataProvider';
+import { FloatingAIChat } from '@/components/chat/FloatingAIChat';
+import { useAIChat } from '@/features/ai/hooks/useAIChat';
 
 function localDateIso(date = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(date);
@@ -78,6 +80,17 @@ export default function StaffDashboardPage() {
   const todayIso = localDateIso();
   const greeting = getTimeGreeting();
   const formattedTodayDate = formatFullDate(todayIso);
+
+  // AI Chat integration for Staff
+  const { sendMessage, isLoading, error: chatError, sessionId } = useAIChat({
+    variant: 'member',
+    onMessageReceived: (response) => {
+      console.log('Staff AI Response:', response);
+    },
+    onError: (err) => {
+      console.error('Staff AI Chat Error:', err);
+    },
+  });
 
   async function loadData() {
     setLoading(true);
@@ -954,6 +967,19 @@ export default function StaffDashboardPage() {
           </div>
         )}
       </section>
+    {/* ── Floating Staff AI Assistant ── */}
+    <FloatingAIChat
+      variant="member"
+      title="Ask AI"
+      subtitle="Your front desk studio assistant"
+      welcomeMessage="Hi! 👋 I'm your front desk studio assistant. I can help with class schedules, member check-ins, bookings, and studio operations."
+      studioName={currentStaffStudio.name}
+      onSendMessage={sendMessage}
+      onMessageReceived={(response) => {
+        console.log('Staff AI Response:', response);
+      }}
+      isBackendConnected={!!sessionId}
+    />
     </div>
   );
 }

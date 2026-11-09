@@ -9,6 +9,7 @@ describe('WaitlistService - Contract Tests', () => {
 
   const mockContext: ToolContext = {
     tenantId: '11111111-1111-1111-1111-111111111111',
+    tenantCode: 'TEST',
     userId: 'admin-1',
     role: 'admin',
     correlationId: 'corr-1',

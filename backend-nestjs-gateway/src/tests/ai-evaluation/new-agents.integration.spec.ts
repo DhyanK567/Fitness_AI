@@ -16,6 +16,7 @@ describe('Agent Integration Tests (E2E)', () => {
 
   const adminContext = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'admin-1',
     role: 'admin' as const,
     correlationId: 'corr-1',
@@ -76,7 +77,7 @@ describe('Agent Integration Tests (E2E)', () => {
 
   describe('Cross-Tenant Isolation', () => {
     it('should isolate data between tenants', async () => {
-      const tenant2Context = { tenantId: 'tenant-2', userId: 'admin-2', role: 'admin' as const, correlationId: 'corr-2' };
+      const tenant2Context = { tenantId: 'tenant-2', tenantCode: 'TEST', userId: 'admin-2', role: 'admin' as const, correlationId: 'corr-2' };
 
       // Each processMessage call makes 2 LLM calls (initial + follow-up), so we need 4 responses
       mockLlmGateway.chat
@@ -89,8 +90,8 @@ describe('Agent Integration Tests (E2E)', () => {
         .mockResolvedValueOnce({ success: true, data: { count: 100 } })
         .mockResolvedValueOnce({ success: true, data: { count: 200 } });
 
-      await orchestrator.processMessage({ tenantId: 'tenant-1', userId: 'admin-1', role: 'admin', correlationId: 'corr-1' }, 'Count members', []);
-      await orchestrator.processMessage({ tenantId: 'tenant-2', userId: 'admin-2', role: 'admin', correlationId: 'corr-2' }, 'Count members', []);
+      await orchestrator.processMessage({ tenantId: 'tenant-1', tenantCode: 'TEST', userId: 'admin-1', role: 'admin', correlationId: 'corr-1' }, 'Count members', []);
+      await orchestrator.processMessage({ tenantId: 'tenant-2', tenantCode: 'TEST', userId: 'admin-2', role: 'admin', correlationId: 'corr-2' }, 'Count members', []);
 
       expect(mockErpService.call).toHaveBeenCalledWith(expect.objectContaining({ tenantId: 'tenant-1' }));
       expect(mockErpService.call).toHaveBeenCalledWith(expect.objectContaining({ tenantId: 'tenant-2' }));
@@ -100,7 +101,7 @@ describe('Agent Integration Tests (E2E)', () => {
   describe('Scope Enforcement', () => {
     it('should refuse unauthorized tool access', async () => {
       // Member role trying to use admin-only tool
-      const memberContext = { tenantId: 'tenant-1', userId: 'member-1', role: 'member' as const, correlationId: 'corr-3' };
+      const memberContext = { tenantId: 'tenant-1', tenantCode: 'TEST', userId: 'member-1', role: 'member' as const, correlationId: 'corr-3' };
 
       // The LLM should not propose admin tools for member role
       mockLlmGateway.chat.mockResolvedValue({
@@ -110,7 +111,7 @@ describe('Agent Integration Tests (E2E)', () => {
       });
 
       const response = await orchestrator.processMessage(
-        { tenantId: 'tenant-1', userId: 'member-1', role: 'member', correlationId: 'corr-3' },
+        { tenantId: 'tenant-1', tenantCode: 'TEST', userId: 'member-1', role: 'member', correlationId: 'corr-3' },
         'Show all members',
         []
       );

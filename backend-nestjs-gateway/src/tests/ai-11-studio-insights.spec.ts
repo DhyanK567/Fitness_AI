@@ -272,14 +272,48 @@ describe('AI-11: Studio Insights & Revenue Intelligence Agent Specification Suit
             findMany: jest.fn(async ({ where }: any) => {
               return Array.from(inMemoryMembers.values()).filter((m) => {
                 if (m.tenantId !== tenantId) return false;
-                if (where?.status && m.status !== where.status) return false;
+                // Handle Prisma where clause format: { status: { equals: 'Active', mode: 'insensitive' } }
+                if (where?.status) {
+                  const statusFilter = where.status;
+                  const targetStatus = typeof statusFilter === 'string' 
+                    ? statusFilter 
+                    : statusFilter.equals;
+                  const mode = typeof statusFilter === 'object' 
+                    ? statusFilter.mode 
+                    : undefined;
+                  
+                  if (targetStatus && m.status !== targetStatus) {
+                    if (mode === 'insensitive') {
+                      if (m.status.toLowerCase() !== targetStatus.toLowerCase()) return false;
+                    } else {
+                      if (m.status !== targetStatus) return false;
+                    }
+                  }
+                }
                 return true;
               });
             }),
             count: jest.fn(async ({ where }: any) => {
               return Array.from(inMemoryMembers.values()).filter((m) => {
                 if (m.tenantId !== tenantId) return false;
-                if (where?.status && m.status !== where.status) return false;
+                // Handle Prisma where clause format: { status: { equals: 'Active', mode: 'insensitive' } }
+                if (where?.status) {
+                  const statusFilter = where.status;
+                  const targetStatus = typeof statusFilter === 'string' 
+                    ? statusFilter 
+                    : statusFilter.equals;
+                  const mode = typeof statusFilter === 'object' 
+                    ? statusFilter.mode 
+                    : undefined;
+                  
+                  if (targetStatus && m.status !== targetStatus) {
+                    if (mode === 'insensitive') {
+                      if (m.status.toLowerCase() !== targetStatus.toLowerCase()) return false;
+                    } else {
+                      if (m.status !== targetStatus) return false;
+                    }
+                  }
+                }
                 return true;
               }).length;
             }),

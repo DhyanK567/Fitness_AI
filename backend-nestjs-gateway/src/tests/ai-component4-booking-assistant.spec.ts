@@ -220,6 +220,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -237,6 +238,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const resultMissingSchedule = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -250,6 +252,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const resultInvalidDate = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -270,6 +273,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -300,6 +304,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: 'unlinked-member-uuid',
           role: 'member',
           correlationId: randomUUID(),
@@ -326,6 +331,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           memberRef: 'WS-MEM-TRUSTED',
@@ -354,6 +360,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: CROSS_TENANT_ID,
+          tenantCode: 'CROSS',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -379,6 +386,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: ADMIN_ID,
           role: 'admin',
           correlationId: randomUUID(),
@@ -410,6 +418,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -431,6 +440,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await createBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -453,6 +463,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await cancelBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -470,6 +481,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await cancelBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -491,6 +503,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await cancelBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -519,6 +532,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await cancelBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: 'unlinked-member-uuid',
           role: 'member',
           correlationId: randomUUID(),
@@ -539,6 +553,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await cancelBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -561,6 +576,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       const result = await cancelBookingTool.execute(
         {
           tenantId: TENANT_ID,
+          tenantCode: 'TEST',
           userId: MEMBER_ID,
           role: 'member',
           correlationId: randomUUID(),
@@ -598,6 +614,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const result = await agentRegistryService.executeAgentAction(
         TENANT_ID,
+        'TEST',
         'booking-assistant',
         'check-availability',
         { sessionIds: ['sch-101'] },
@@ -617,6 +634,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const result = await agentRegistryService.executeAgentAction(
         TENANT_ID,
+        'TEST',
         'booking-assistant',
         'eligible-schedule',
         { date: '2026-10-25' },
@@ -634,6 +652,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const result = await agentRegistryService.executeAgentAction(
         TENANT_ID,
+        'TEST',
         'booking-assistant',
         'plan-entitlement',
         {},
@@ -648,6 +667,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_ID,
+          'TEST',
           'booking-assistant',
           'arbitrary-dangerous-action',
           {},
@@ -660,6 +680,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
       await expect(
         agentRegistryService.executeAgentAction(
           TENANT_ID,
+          'TEST',
           'nonexistent_agent',
           'check-availability',
           {},
@@ -818,6 +839,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,
@@ -845,6 +867,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,
@@ -875,6 +898,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,
@@ -917,6 +941,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,
@@ -955,6 +980,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,
@@ -999,6 +1025,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,
@@ -1026,6 +1053,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,
@@ -1055,6 +1083,7 @@ describe('AI Component 4 — Member Booking Assistant & Natural-Language Booking
 
       const context: ToolContext = {
         tenantId: TENANT_ID,
+        tenantCode: 'TEST',
         userId: MEMBER_ID,
         role: 'member',
         memberRef: MEMBER_REF,

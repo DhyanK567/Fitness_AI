@@ -65,6 +65,7 @@ describe('AI Evaluation - Admin Queries (Target: 85% accuracy)', () => {
 
   const adminContext = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'admin-1',
     role: 'admin' as const,
     correlationId: 'corr-1',
@@ -72,6 +73,7 @@ describe('AI Evaluation - Admin Queries (Target: 85% accuracy)', () => {
 
   const frontDeskContext = {
     tenantId: 'tenant-1',
+    tenantCode: 'TEST',
     userId: 'fd-1',
     role: 'front_desk' as const,
     correlationId: 'corr-2',
@@ -318,6 +320,7 @@ describe('AI Evaluation - Admin Queries (Target: 85% accuracy)', () => {
     it('should deny member access to admin reports', async () => {
       const memberContext = {
         tenantId: 'tenant-1',
+        tenantCode: 'TEST',
         userId: 'member-1',
         role: 'member' as const,
         correlationId: 'corr-3',
@@ -337,6 +340,7 @@ describe('AI Evaluation - Admin Queries (Target: 85% accuracy)', () => {
     it('should deny visitor access to member data', async () => {
       const visitorContext = {
         tenantId: 'tenant-1',
+        tenantCode: 'TEST',
         userId: 'visitor-1',
         role: 'visitor' as const,
         correlationId: 'corr-4',
@@ -484,6 +488,7 @@ describe('AI Evaluation - Admin Queries (Target: 85% accuracy)', () => {
     it('should handle permission denied', async () => {
       const memberContext = {
         tenantId: 'tenant-1',
+        tenantCode: 'TEST',
         userId: 'member-1',
         role: 'member' as const,
         correlationId: 'corr-5',

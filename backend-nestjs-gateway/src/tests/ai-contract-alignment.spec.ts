@@ -162,7 +162,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       const response = await controller.createAssistantSession(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         { locale: 'en-IN' },
       );
 
@@ -182,7 +182,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       expect(response.disclaimer).toMatch(/verification|advisory/i);
     });
 
-    it('filters available tools according to the caller role (front_desk gets read tools, no admin-only tools)', async () => {
+    it('filters available tools according to the caller role (front_desk gets staff tools, no admin-only tools)', async () => {
       mockConversationService.create.mockResolvedValue({
         id: 'session-fd-001',
         tenantId: TENANT_A,
@@ -190,12 +190,13 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       const fdResponse = await controller.createAssistantSession(
-        { id: USER_A, tenantId: TENANT_A, role: 'front_desk' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
         {},
       );
 
-      expect(fdResponse.tools).toContain('getExpiringMemberships');
-      expect(fdResponse.tools).toContain('getPublicClassSchedule');
+      expect(fdResponse.tools).toContain('getPublicClassScheduleStaff');
+      expect(fdResponse.tools).toContain('manageWaitlist');
+      expect(fdResponse.tools).not.toContain('getExpiringMemberships');
     });
   });
 
@@ -218,7 +219,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       const response = await controller.sendAssistantMessage(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         sessionId,
         { message: 'Which memberships are expiring this week?', client_msg_id: 'client-msg-1' },
       );
@@ -274,7 +275,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       const response = await controller.sendAssistantMessage(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         sessionId,
         { message: 'Add Rahul Menon, Premium plan starting Monday' },
       );
@@ -293,7 +294,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.sendAssistantMessage(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'non-existent-or-cross-tenant-session',
           { message: 'Hello' },
         ),
@@ -310,7 +311,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.sendAssistantMessage(
-          { id: USER_A, tenantId: TENANT_A, role: 'trainer' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'trainer' },
           'session-other-user',
           { message: 'Hello' },
         ),
@@ -346,7 +347,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       mockOrchestrator.callErpTool.mockResolvedValue({ record_id: 'MEM-00043' });
 
       const response = await controller.confirmAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirm_token: storedAction.confirmToken },
       );
@@ -392,7 +393,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_B, tenantId: TENANT_B, role: 'admin' },
+          { id: USER_B, tenantId: TENANT_B, tenantCode: 'TEST', role: 'admin' },
           'pa-tenant-a-101',
           {},
         ),
@@ -414,7 +415,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       try {
         await controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-expired-1',
           {},
         );
@@ -449,7 +450,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-already-executed',
           {},
         ),
@@ -474,7 +475,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-race-condition',
           { confirm_token: 'tok-race-409' },
         ),
@@ -498,7 +499,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Empty object
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-missing-token',
           {} as any,
         ),
@@ -507,7 +508,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Undefined fields
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-missing-token',
           { confirm_token: undefined } as any,
         ),
@@ -534,7 +535,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Empty string in confirm_token
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-empty-token',
           { confirm_token: '' },
         ),
@@ -543,7 +544,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Whitespace string in confirm_token
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-empty-token',
           { confirm_token: '   ' },
         ),
@@ -552,7 +553,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Empty string in camelCase confirmToken
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-empty-token',
           { confirmToken: '' },
         ),
@@ -561,7 +562,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Whitespace string in camelCase confirmToken
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-empty-token',
           { confirmToken: '   ' },
         ),
@@ -588,7 +589,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Different length token
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-with-token',
           { confirm_token: 'tampered-wrong-token' },
         ),
@@ -597,7 +598,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Same length token, mismatched characters
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-with-token',
           { confirm_token: 'correct-token-xyz' },
         ),
@@ -623,7 +624,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-missing-stored-token',
           { confirm_token: 'some-client-token' },
         ),
@@ -637,7 +638,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
           'pa-missing-stored-token',
           { confirm_token: 'some-client-token' },
         ),
@@ -670,7 +671,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       mockOrchestrator.callErpTool.mockResolvedValue({ record_id: 'MEM-CAMEL-01' });
 
       const response = await controller.confirmAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirmToken: 'camel-case-secret-tok' },
       );
@@ -698,7 +699,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
 
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_B, tenantId: TENANT_A, role: 'front_desk' },
+          { id: USER_B, tenantId: TENANT_A, tenantCode: 'TEST', role: 'front_desk' },
           'pa-unauthorized-user',
           { confirm_token: 'secret-tok-123' },
         ),
@@ -725,7 +726,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       // Caller is the action owner, but role 'member' lacks 'members:create' permission
       await expect(
         controller.confirmAssistantAction(
-          { id: USER_A, tenantId: TENANT_A, role: 'member' },
+          { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'member' },
           'pa-lacks-tool-perm',
           { confirm_token: 'secret-tok-123' },
         ),
@@ -757,7 +758,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       );
 
       const response = await controller.confirmAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { confirm_token: 'tok-dup-409' },
       );
@@ -793,7 +794,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       const response = await controller.rejectAssistantAction(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         pendingId,
         { reason: 'Customer changed mind' },
       );
@@ -823,7 +824,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       const response = await controller.getAssistantSession(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         sessionId,
       );
 
@@ -841,7 +842,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       await controller.deleteAssistantSession(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         sessionId,
       );
 
@@ -870,7 +871,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       ]);
 
       const response = await controller.getAiAudit(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         undefined,
         USER_A,
         'createMember',
@@ -905,7 +906,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       mockTx.auditLog.findMany.mockResolvedValue([]);
 
       await controller.getAiAudit(
-        { id: USER_B, tenantId: TENANT_B, role: 'admin' },
+        { id: USER_B, tenantId: TENANT_B, tenantCode: 'TEST', role: 'admin' },
       );
 
       expect(mockTx.auditLog.findMany).toHaveBeenCalledWith(
@@ -932,7 +933,7 @@ describe('AI-01: API Contract Alignment & Verification', () => {
       });
 
       const response = await controller.chat(
-        { id: USER_A, tenantId: TENANT_A, role: 'admin' },
+        { id: USER_A, tenantId: TENANT_A, tenantCode: 'TEST', role: 'admin' },
         { message: 'Legacy message' },
       );
 

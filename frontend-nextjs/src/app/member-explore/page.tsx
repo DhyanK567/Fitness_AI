@@ -9,9 +9,21 @@ import { MemberExploreEvents } from '@/components/member-explore/MemberExploreEv
 import { MemberExplorePillars } from '@/components/member-explore/MemberExplorePillars';
 import { MemberExploreFooter } from '@/components/member-explore/MemberExploreFooter';
 import { FloatingAIChat } from '@/components/chat/FloatingAIChat';
+import { useAIChat } from '@/features/ai/hooks/useAIChat';
 
 function MemberExploreContent() {
   const branding = useTenantBranding();
+
+  // AI Chat integration for public enquiry
+  const { sendMessage, isLoading, error, sessionId } = useAIChat({
+    variant: 'enquiry',
+    onMessageReceived: (response) => {
+      console.log('Public AI Response:', response);
+    },
+    onError: (err) => {
+      console.error('Public AI Chat Error:', err);
+    },
+  });
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAF8F5] font-sans text-slate-800 antialiased selection:bg-rose-800 selection:text-white">
@@ -48,6 +60,11 @@ function MemberExploreContent() {
         subtitle="Your studio assistant"
         welcomeMessage="Hi there! 👋 Welcome to our studio. How can we help you today?"
         studioName={branding.studioName || 'Fitness Studio'}
+        onSendMessage={sendMessage}
+        onMessageReceived={(response) => {
+          console.log('Public AI Response:', response);
+        }}
+        isBackendConnected={!!sessionId}
       />
     </div>
   );

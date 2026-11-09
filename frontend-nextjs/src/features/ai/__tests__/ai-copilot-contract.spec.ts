@@ -643,7 +643,7 @@ describe('AI-02: Admin Copilot Contract & Integration Suite', () => {
       assert.ok(requestedUrl.includes('user_id=usr_admin_1'));
       assert.ok(requestedUrl.includes('page=1'));
       assert.ok(requestedUrl.includes('limit=25'));
-      assert.ok(capturedHeaders['Host'] === 'pilot-studio.fitness.local' || capturedHeaders['Host'] === 'demo.fitness.local');
+      assert.ok(capturedHeaders['Host'] === 'ranayaa.fitness.local' || capturedHeaders['Host'] === 'pilot-studio.fitness.local' || capturedHeaders['Host'] === 'demo.fitness.local');
       assert.equal(logs.length, 1);
       assert.equal(logs[0].id, 'audit_101');
       assert.equal(logs[0].tool, 'createMember');

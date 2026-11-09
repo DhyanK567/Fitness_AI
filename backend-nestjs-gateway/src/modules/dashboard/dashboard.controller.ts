@@ -22,6 +22,7 @@ export class DashboardController {
   ) {
     const context = {
       tenantId: req.user.tenantId,
+      tenantCode: req.user.tenantCode || req.tenantCode,
       userId: req.user.id,
       role: req.user.role,
       correlationId: `dashboard_${Date.now()}`,

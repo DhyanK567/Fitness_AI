@@ -11,6 +11,7 @@ import { PortalPass } from '@/components/portal/PortalPass';
 import { PortalProfile } from '@/components/portal/PortalProfile';
 import { PortalSettings } from '@/components/portal/PortalSettings';
 import { FloatingAIChat } from '@/components/chat/FloatingAIChat';
+import { useAIChat } from '@/features/ai/hooks/useAIChat';
 import { XIcon, QrCodeIcon, MenuIcon, SunIcon, MoonIcon, CalendarIcon } from '@/components/ui/icons';
 
 const VALID_TABS: PortalTab[] = ['home', 'schedule', 'payments', 'profile', 'settings'];
@@ -23,6 +24,17 @@ function PortalContent() {
   const [passModalOpen, setPassModalOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  // AI Chat integration
+  const { sendMessage, isLoading, error, sessionId } = useAIChat({
+    variant: 'member',
+    onMessageReceived: (response) => {
+      console.log('AI Response:', response);
+    },
+    onError: (err) => {
+      console.error('AI Chat Error:', err);
+    },
+  });
 
   const remainingDays = React.useMemo(() => {
     if (!activeMembership?.expiryDate) return null;
@@ -306,9 +318,14 @@ function PortalContent() {
         variant="member"
         title="Ask AI"
         subtitle="Your personal studio assistant"
-        welcomeMessage="Hi! 👋 I'm your studio assistant. Soon, I'll be able to help with your classes, membership, and studio services."
+        welcomeMessage="Hi! 👋 I'm your studio assistant. I can help with your classes, membership, and studio services."
         studioName={user?.studioName || 'Fitness Studio'}
         theme={theme}
+        onSendMessage={sendMessage}
+        onMessageReceived={(response) => {
+          console.log('AI Response:', response);
+        }}
+        isBackendConnected={!!sessionId}
       />
     </div>
   );
