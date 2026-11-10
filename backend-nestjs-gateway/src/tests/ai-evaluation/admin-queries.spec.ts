@@ -49,6 +49,7 @@ describe('AI Evaluation - Admin Queries (Target: 85% accuracy)', () => {
       undefined, // pendingActionService
       undefined, // stateMachineInstance
       undefined, // toolRegistry
+      undefined, // conversationService
       {
         tokenBudget: {
           maxInputTokens: 20000,

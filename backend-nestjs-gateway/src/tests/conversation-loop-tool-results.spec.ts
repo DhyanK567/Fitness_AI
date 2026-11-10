@@ -55,6 +55,7 @@ describe('ConversationOrchestrator - Tool Results in Follow-Up', () => {
       undefined, // pendingActionService
       undefined, // stateMachineInstance
       undefined, // toolRegistry
+      undefined, // conversationService
       {
         tokenBudget: {
           maxInputTokens: 20000,
