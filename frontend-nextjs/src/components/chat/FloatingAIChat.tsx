@@ -7,6 +7,8 @@ import {
   Send,
   Minimize2,
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export interface ChatMessage {
   id: string;
@@ -66,6 +68,42 @@ export function ChatMessageList({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const renderContent = (content: string, sender: 'assistant' | 'user' | 'system') => {
+    // For user and system messages, display as plain text
+    if (sender !== 'assistant') {
+      return <p className="whitespace-pre-wrap">{content}</p>;
+    }
+    
+    // For assistant messages, render Markdown
+    return (
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+          em: ({ children }) => <em className="italic">{children}</em>,
+          ul: ({ children }) => <ul className="list-disc list-inside space-y-1 mb-2">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 mb-2">{children}</ol>,
+          li: ({ children }) => <li className="ml-2">{children}</li>,
+          code: ({ children }) => <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-sm font-mono">{children}</code>,
+          blockquote: ({ children }) => <blockquote className="border-l-2 border-rose-500 pl-3 italic text-slate-600 dark:text-slate-300 my-2">{children}</blockquote>,
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-rose-600 dark:text-rose-400 underline hover:text-rose-700 dark:hover:text-rose-300"
+            >
+              {children}
+            </a>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
+  };
+
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs sm:text-sm [scrollbar-width:thin]">
       {/* Informational Status Strip */}
@@ -101,7 +139,6 @@ export function ChatMessageList({
                 <MessageSquare className="w-3.5 h-3.5 text-white" />
               </div>
             )}
-
             <div
               className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 leading-relaxed shadow-xs ${
                 isUser
@@ -109,7 +146,7 @@ export function ChatMessageList({
                   : 'bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 rounded-bl-xs'
               }`}
             >
-              <p className="whitespace-pre-wrap">{msg.content}</p>
+              {renderContent(msg.content, msg.sender)}
               <div
                 className={`text-[9px] mt-1 text-right ${
                   isUser ? 'text-white/80' : 'text-slate-400 dark:text-slate-500'
@@ -121,7 +158,6 @@ export function ChatMessageList({
           </div>
         );
       })}
-
       <div ref={messagesEndRef} />
     </div>
   );
@@ -169,7 +205,6 @@ export function ChatInputArea({
           }
           className="flex-1 min-w-0 px-3.5 py-2 text-xs sm:text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#E11D48]/30 focus:border-[#E11D48] transition"
         />
-
         <button
           type="submit"
           disabled={!text.trim()}

@@ -122,7 +122,10 @@ export const TOOLS = [
 
   def({ id: 'T-09', name: 'getActivePlansPublic', purpose: 'List active public membership plans with price and validity.',
     assistant: 'enquiry', risk: 'read', requiresConfirmation: false, principals: ['visitor', 'member'],
-    requiredPermission: null, featureFlag: 'ai.enquiry', owningService: 'MembershipsService (public scope)', phase: 'P1', args: none }),
+    requiredPermission: null, featureFlag: 'ai.enquiry', owningService: 'MembershipsService (public scope)', phase: 'P1',
+    args: z.object({
+      includeDetails: z.boolean().default(false),
+    }).strict() }),
 
   def({ id: 'T-10', name: 'captureLead', purpose: 'Create a lead (source AI_ENQUIRY) after consent, via the same createLead as the manual form.',
     assistant: 'enquiry', risk: 'write', requiresConfirmation: false, principals: ['visitor'],
