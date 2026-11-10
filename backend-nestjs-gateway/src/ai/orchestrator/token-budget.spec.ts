@@ -206,9 +206,9 @@ describe('Token Budget Management', () => {
     it('returns correct limits for Groq', () => {
       const limits = getProviderLimits('groq');
       expect(limits.tpmLimit).toBe(8000);
-      expect(limits.maxInputTokens).toBe(6000);
+      expect(limits.maxInputTokens).toBe(4000);
       expect(limits.contextWindow).toBe(8192);
-      expect(limits.charsPerToken).toBe(3.5);
+      expect(limits.charsPerToken).toBe(3.0);
     });
 
     it('returns correct limits for Gemini', () => {
@@ -221,7 +221,7 @@ describe('Token Budget Management', () => {
     it('falls back to default for unknown provider', () => {
       const limits = getProviderLimits('unknown');
       expect(limits.tpmLimit).toBe(8000);
-      expect(limits.maxInputTokens).toBe(6000);
+      expect(limits.maxInputTokens).toBe(4000);
     });
   });
 

@@ -41,11 +41,11 @@ export const PROVIDER_LIMITS: Record<string, ProviderLimits> = {
     // Model: openai/gpt-oss-120b (8192 context window on Groq)
     tpmLimit: 8000,           // Tokens per minute (on-demand tier throughput)
     rpmLimit: 30,             // Requests per minute
-    maxInputTokens: 6000,     // Max input tokens per request (conservative < context window)
+    maxInputTokens: 4000,     // Reduced to account for tokenizer differences (was 6000)
     maxOutputTokens: 2000,    // Reserved for output
     contextWindow: 8192,      // Model context window (openai/gpt-oss-120b on Groq)
-    charsPerToken: 3.5,       // Conservative for code/JSON heavy prompts
-    messageOverhead: 10,      // Role tag, formatting overhead per message
+    charsPerToken: 3.0,       // More conservative for Groq's tokenizer (was 3.5)
+    messageOverhead: 15,      // Higher overhead for function calling format
   },
   gemini: {
     // Gemini 1.5 Flash limits (free tier)
@@ -60,11 +60,11 @@ export const PROVIDER_LIMITS: Record<string, ProviderLimits> = {
   default: {
     tpmLimit: 8000,
     rpmLimit: 30,
-    maxInputTokens: 6000,
+    maxInputTokens: 4000,     // Reduced to match Groq conservative limit
     maxOutputTokens: 4000,
     contextWindow: 8192,
-    charsPerToken: 4.0,
-    messageOverhead: 10,
+    charsPerToken: 3.5,
+    messageOverhead: 15,
   },
 };
 

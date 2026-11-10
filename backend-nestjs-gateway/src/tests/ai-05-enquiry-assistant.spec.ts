@@ -62,6 +62,9 @@ describe('AI-05: Public Enquiry Assistant Backend Foundation & Contract Suite', 
         create: jest.fn<any>(),
         update: jest.fn<any>(),
       },
+      studio: {
+        findFirst: jest.fn<any>().mockResolvedValue({ name: 'Wellness Studio' }),
+      },
       studioEvent: {
         findMany: jest.fn<any>(),
       },

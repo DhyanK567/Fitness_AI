@@ -250,7 +250,24 @@ export class PublicEnquiryAiController {
       'Session creation limit exceeded (maximum 5 sessions per hour per IP)',
     );
 
-    // 3. Create session record
+    // 3. Fetch studio name for personalized greeting
+    let studioName = 'our fitness studio';
+    try {
+      const studio = await this.prisma.withTenant(tenantId, async (tx) => {
+        return tx.studio.findFirst({
+          where: { tenantId, status: 'active' },
+          select: { name: true },
+          orderBy: { createdAt: 'asc' },
+        });
+      });
+      if (studio?.name) {
+        studioName = studio.name;
+      }
+    } catch (e) {
+      this.logger.warn(`Could not fetch studio name for tenant ${tenantId}: ${(e as Error).message}`);
+    }
+
+    // 4. Create session record
     const sessionId = randomUUID();
     const visitorUserId = randomUUID();
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour TTL
@@ -269,6 +286,7 @@ export class PublicEnquiryAiController {
             pageContext: dto.page_context || null,
             expiresAt: expiresAt.toISOString(),
             ip,
+            studioName, // Store studio name in session metadata for later use
           },
         },
       });
@@ -279,7 +297,7 @@ export class PublicEnquiryAiController {
     return {
       session_id: sessionId,
       greeting:
-        'Hello! Welcome to Wellness Studio. How can I assist you with our classes, schedules, memberships, or upcoming events today?',
+        `Hello! Welcome to ${studioName}. How can I assist you with our classes, schedules, memberships, or upcoming events today?`,
       expires_at: expiresAt.toISOString(),
     };
   }

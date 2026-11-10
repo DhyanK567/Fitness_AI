@@ -152,12 +152,25 @@ export class LlmGatewayService implements OnModuleInit, OnModuleDestroy {
     };
 
     const primaryProvider = (process.env.LLM_PROVIDER ?? 'gemini').toLowerCase();
+    const fallbackProvider = (process.env.FALLBACK_LLM_PROVIDER ?? 'gemini').toLowerCase();
+    
+    // Use a compatible Gemini model for v1beta API
+    // gemini-1.5-flash-latest or gemini-1.5-flash-001 are more likely to work on v1beta
+    const fallbackModel = process.env.FALLBACK_LLM_MODEL || 'gemini-1.5-flash-latest';
     
     if (primaryProvider === 'groq') {
       this.groqGateway = initPrimaryGateway('Primary');
+      // Override fallback model if using Gemini as fallback
+      if (fallbackProvider === 'gemini') {
+        process.env.FALLBACK_LLM_MODEL = fallbackModel;
+      }
       this.geminiGateway = initFallbackGateway('Fallback');
     } else {
       this.geminiGateway = initPrimaryGateway('Primary');
+      // Override fallback model if using Groq as fallback
+      if (fallbackProvider === 'groq') {
+        // Groq fallback model can be configured via FALLBACK_LLM_MODEL
+      }
       this.groqGateway = initFallbackGateway('Fallback');
     }
 
@@ -595,13 +608,22 @@ export class LlmGatewayService implements OnModuleInit, OnModuleDestroy {
     budget.requestsUsed += 1;
     await this.persistBudget(tenantId, budget);
 
+    // Determine the actual model name from the provider gateway
+    let modelName = 'unknown';
+    if (provider === 'groq' && this.groqGateway) {
+      // Access the provider's model through reflection or store it
+      modelName = (this.groqGateway as any).provider?.model ?? 'openai/gpt-oss-120b';
+    } else if (provider === 'gemini' && this.geminiGateway) {
+      modelName = (this.geminiGateway as any).provider?.model ?? 'gemini-1.5-flash-latest';
+    }
+
     // Record observability metrics
     await this.observability.recordLlmCall({
       correlationId: options.context!.correlationId,
       tenantId,
       userId: options.context!.userId,
       provider,
-      model: provider === 'gemini' ? 'gemini-1.5-flash' : 'llama3',
+      model: modelName,
       latencyMs,
       inputTokens: Math.ceil(estimatedTokens * 0.7),
       outputTokens: Math.ceil(estimatedTokens * 0.3),

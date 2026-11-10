@@ -13,6 +13,7 @@ import { LlmObservabilityService } from '../observability/llm-observability.serv
 import { PendingActionService } from '../pending-action.service';
 import { ToolRegistry } from '../tools/tool-registry';
 import { ExtractCreateMemberFieldsTool } from '../tools/extract-create-member-fields.tool';
+import { ConversationService } from '../conversation.service';
 import { 
   buildTokenAwareMessages, 
   TokenBudgetConfig, 
@@ -115,6 +116,7 @@ export class ConversationOrchestrator {
     @Optional() private readonly pendingActionService?: PendingActionService,
     @Optional() private readonly stateMachineInstance?: ConfirmationStateMachine,
     @Optional() private readonly toolRegistry?: ToolRegistry,
+    @Optional() private readonly conversationService?: ConversationService,
     @Optional() config?: Partial<OrchestratorConfig>,
   ) {
     this.stateMachine = stateMachineInstance || createConfirmationStateMachine();
@@ -235,6 +237,73 @@ export class ConversationOrchestrator {
             for (const c of classes.slice(0, 10)) {
               parts.push(`  - ${c.className} on ${c.date} at ${c.startTime}: ${c.utilizationPercent}% occupancy`);
             }
+          }
+          break;
+        }
+        // Public Enquiry Tools
+        case 'getPublicClassSchedule': {
+          const count = data.count ?? 0;
+          const schedules = data.schedules || [];
+          if (count === 0) {
+            parts.push(`No public class sessions available in the next ${data.days ?? 7} days.`);
+          } else {
+            parts.push(`**${count} class session(s) available:**`);
+            for (const s of schedules.slice(0, 10)) {
+              const spots = s.availableSpots ?? 0;
+              parts.push(`  - **${s.className}** (${s.classType}): ${s.startTime} on ${s.sessionDate || s.date}, ${spots}/${s.capacity} spots${s.trainer ? `, Trainer: ${s.trainer}` : ''}${s.location ? `, ${s.location}` : ''}`);
+            }
+            if (schedules.length > 10) {
+              parts.push(`  ... and ${schedules.length - 10} more`);
+            }
+          }
+          break;
+        }
+        case 'getActivePlansPublic': {
+          const count = data.count ?? 0;
+          const plans = data.plans || [];
+          if (count === 0) {
+            parts.push('No active membership plans available at this time.');
+          } else {
+            // Show only top 3-5 plans initially for readability
+            const displayPlans = plans.slice(0, 5);
+            parts.push(`**${count} membership plan(s) available:**`);
+            for (const p of displayPlans) {
+              const billingCycle = p.billingCycle || 'Monthly';
+              parts.push(`  - **${p.planName}** (${p.planType}): ₹${p.price}/${billingCycle} — ${p.features}`);
+            }
+            if (plans.length > 5) {
+              parts.push(`  ... and ${plans.length - 5} more plans available. Ask me for details or help choosing!`);
+            }
+          }
+          break;
+        }
+        case 'getPublicEventList': {
+          const count = data.count ?? 0;
+          const events = data.events || [];
+          if (count === 0) {
+            parts.push('No upcoming public events at this time.');
+          } else {
+            parts.push(`**${count} upcoming event(s):**`);
+            for (const e of events.slice(0, 8)) {
+              const timeStr = e.startTime ? ` at ${e.startTime}` : '';
+              const priceStr = e.isPaid && e.price > 0 ? ` (₹${e.price})` : ' (Free)';
+              parts.push(`  - **${e.title}**${priceStr}: ${e.eventDate}${timeStr}${e.location ? `, ${e.location}` : ''}${e.description ? ` — ${e.description}` : ''}`);
+            }
+            if (events.length > 8) {
+              parts.push(`  ... and ${events.length - 8} more events`);
+            }
+          }
+          break;
+        }
+        case 'captureLead': {
+          const leadId = data.lead_id ?? data.leadId;
+          const duplicate = data.duplicate_flag ?? data.duplicate;
+          if (duplicate) {
+            parts.push('You\'re already in our system! Our team will reach out to you soon.');
+          } else if (leadId) {
+            parts.push(`Thanks for your interest! Your enquiry has been recorded (Ref: ${leadId}). Our team will contact you within 24 hours.`);
+          } else {
+            parts.push('Your interest has been noted. Our team will get in touch with you soon.');
           }
           break;
         }
@@ -373,7 +442,7 @@ export class ConversationOrchestrator {
       }
 
       // 4. Build system prompt with guardrails
-      const systemPrompt = this.buildSystemPrompt(context, availableTools);
+      const systemPrompt = await this.buildSystemPrompt(context, availableTools);
 
       // 5. Prepare conversation history with token budget awareness
       const { messages: trimmedMessages, selectedTools } = this.prepareMessages(
@@ -1215,8 +1284,25 @@ export class ConversationOrchestrator {
   /**
    * Build system prompt with guardrails
    */
-  private buildSystemPrompt(context: ConversationContext, availableTools: ToolDefinition[]): string {
-    return buildSystemPrompt(context.role, availableTools);
+  private async buildSystemPrompt(context: ConversationContext, availableTools: ToolDefinition[]): Promise<string> {
+    let studioName: string | undefined;
+    
+    // For visitor role, fetch studio name from session metadata
+    if (context.role === 'visitor' && context.sessionId && this.conversationService) {
+      try {
+        const session = await this.conversationService.findById(context.tenantId, context.sessionId);
+        if (session?.metadata && typeof session.metadata === 'object') {
+          const metadata = session.metadata as Record<string, unknown>;
+          if (typeof metadata.studioName === 'string') {
+            studioName = metadata.studioName;
+          }
+        }
+      } catch (e) {
+        this.logger.warn(`Could not fetch studio name for session ${context.sessionId}: ${(e as Error).message}`);
+      }
+    }
+    
+    return buildSystemPrompt(context.role, availableTools, studioName);
   }
 
   /**

@@ -8,7 +8,7 @@ interface PlanResponse {
   planName: string;
   planType: string;
   price: number;
-  durationDays: number;
+  billingCycle: string;
   features: string;
 }
 
@@ -37,14 +37,20 @@ export class GetActivePlansPublicTool extends BaseTool {
           orderBy: { priceINR: 'asc' },
         });
 
-        const formatted = plans.map((p) => ({
-          id: p.id,
-          planName: p.name,
-          planType: p.planType,
-          price: p.priceINR,
-          durationDays: p.sessionLimit * 30, // Approximate: sessions * 30 days per month
-          features: `Up to ${p.sessionLimit} sessions per month`,
-        }));
+        const formatted = plans.map((p) => {
+          // Determine billing cycle from planType or default to monthly
+          const billingCycle = this.inferBillingCycle(p.planType);
+          const features = `Up to ${p.sessionLimit} sessions per month`;
+          
+          return {
+            id: p.id,
+            planName: p.name,
+            planType: p.planType,
+            price: p.priceINR,
+            billingCycle,
+            features,
+          };
+        });
 
         return this.success({
           count: formatted.length,
@@ -59,5 +65,16 @@ export class GetActivePlansPublicTool extends BaseTool {
       console.error(`[GetActivePlansPublicTool] PostgreSQL query failed: ${errorMessage}`);
       return this.error(errorMessage, 'POSTGRES_QUERY_FAILED');
     }
+  }
+
+  private inferBillingCycle(planType: string): string {
+    const type = planType.toLowerCase();
+    if (type.includes('year') || type.includes('annual')) return 'Yearly';
+    if (type.includes('quarter')) return 'Quarterly';
+    if (type.includes('month')) return 'Monthly';
+    if (type.includes('week')) return 'Weekly';
+    if (type.includes('day')) return 'Daily';
+    // Default assumption: most fitness memberships are monthly
+    return 'Monthly';
   }
 }
