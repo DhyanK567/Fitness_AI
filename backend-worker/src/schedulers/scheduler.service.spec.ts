@@ -43,14 +43,26 @@ describe('Scheduler logic', () => {
   class FakeRedis {
     private store = new Map<string, string | null>();
     private locks = new Map<string, boolean>();
+    private timers = new Map<string, NodeJS.Timeout>();
 
     async set(key: string, value: string, mode?: string, ttlMs?: number): Promise<'OK' | null> {
       if (mode && ttlMs) {
         if (this.locks.has(key)) return null; // already held
         this.locks.set(key, true);
         this.store.set(key, value);
+        const existingTimer = this.timers.get(key);
+        if (existingTimer) {
+          clearTimeout(existingTimer);
+        }
         const self = this;
-        setTimeout(() => self.locks.delete(key), ttlMs);
+        const timer = setTimeout(() => {
+          self.locks.delete(key);
+          self.timers.delete(key);
+        }, ttlMs);
+        if (typeof timer.unref === 'function') {
+          timer.unref();
+        }
+        this.timers.set(key, timer);
         return 'OK';
       }
       this.store.set(key, value);
@@ -62,13 +74,37 @@ describe('Scheduler logic', () => {
     }
 
     async del(key: string): Promise<number> {
+      const timer = this.timers.get(key);
+      if (timer) {
+        clearTimeout(timer);
+        this.timers.delete(key);
+      }
       this.locks.delete(key);
       this.store.delete(key);
       return 1;
     }
+
+    clearTimers(): void {
+      for (const timer of this.timers.values()) {
+        clearTimeout(timer);
+      }
+      this.timers.clear();
+    }
   }
 
-  const makeFakeRedis = (): FakeRedis => new FakeRedis();
+  const instances: FakeRedis[] = [];
+  const makeFakeRedis = (): FakeRedis => {
+    const instance = new FakeRedis();
+    instances.push(instance);
+    return instance;
+  };
+
+  afterEach(() => {
+    for (const instance of instances) {
+      instance.clearTimers();
+    }
+    instances.length = 0;
+  });
 
   it('Redis lock: acquire with NX/PX and release', async () => {
     const redis = makeFakeRedis();

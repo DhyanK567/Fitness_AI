@@ -77,6 +77,10 @@ export class RedisClient {
   async eval(script: string, numKeys: number, ...keys: string[]): Promise<unknown> {
     return this.client.eval(script, numKeys, ...keys);
   }
+
+  async publish(channel: string, message: string): Promise<number> {
+    return this.client.publish(channel, message);
+  }
 }
 
 @Global()

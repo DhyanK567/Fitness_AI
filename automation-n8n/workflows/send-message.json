@@ -110,10 +110,14 @@
             {
               "value2": "enquiry-escalated",
               "output": 4
+            },
+            {
+              "value2": "floor-capacity-alert",
+              "output": 5
             }
           ]
         },
-        "fallbackOutput": 5
+        "fallbackOutput": 6
       },
       "id": "e0000001-0001-4000-8000-000000000005",
       "name": "Template Router Switch",
@@ -393,6 +397,52 @@
         2240,
         740
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\nconst uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\nconst validAlertTypes = new Set(['SURGE_90', 'FULL_100', 'LOW_ATTENDANCE_4H']);\nconst validSeverities = new Set(['info', 'warning', 'critical']);\n\nfor (const item of items) {\n  const d = item.json;\n  const payload = d.rawPayload || d;\n  const data = d.data || payload.data || {};\n  const errors = [];\n\n  const topTenantId = String(d.tenantId || payload.tenantId || '').trim();\n  const bodyTenantId = String(data.tenantId || '').trim();\n  if (bodyTenantId && topTenantId && topTenantId !== 'default-tenant' && bodyTenantId !== topTenantId) {\n    errors.push(`Tenant ID mismatch between envelope (${topTenantId}) and data (${bodyTenantId})`);\n  }\n\n  const tenantId = bodyTenantId || (topTenantId !== 'default-tenant' ? topTenantId : '');\n  if (!tenantId || !uuidRegex.test(tenantId)) {\n    errors.push('Missing or invalid tenantId (canonical UUID required)');\n  }\n\n  const alertType = String(data.alertType || payload.alertType || '').trim();\n  if (!validAlertTypes.has(alertType)) {\n    errors.push(`Invalid alertType '${alertType}'. Expected SURGE_90, FULL_100, or LOW_ATTENDANCE_4H`);\n  }\n\n  const classId = String(data.classId || payload.classId || '').trim();\n  if (!classId || !uuidRegex.test(classId)) {\n    errors.push('Missing or invalid classId (canonical UUID required)');\n  }\n\n  const className = String(data.className || payload.className || '').trim();\n  if (!className) {\n    errors.push('Missing required className');\n  }\n\n  const startTimeIso = String(data.startTimeIso || payload.startTimeIso || '').trim();\n  if (!startTimeIso || Number.isNaN(new Date(startTimeIso).getTime())) {\n    errors.push('Missing or invalid startTimeIso date timestamp');\n  }\n\n  const rawBooked = data.booked !== undefined ? data.booked : payload.booked;\n  const rawCapacity = data.capacity !== undefined ? data.capacity : payload.capacity;\n  const booked = rawBooked === '' || rawBooked === null || rawBooked === undefined ? NaN : Number(rawBooked);\n  const capacity = rawCapacity === '' || rawCapacity === null || rawCapacity === undefined ? NaN : Number(rawCapacity);\n  if (!Number.isFinite(booked) || booked < 0) {\n    errors.push('Missing or invalid booked count (non-negative number required)');\n  }\n  if (!Number.isFinite(capacity) || capacity <= 0) {\n    errors.push('Missing or invalid capacity (positive number required)');\n  }\n\n  const message = String(data.message || payload.message || '').trim();\n  if (!message) {\n    errors.push('Missing required message');\n  }\n\n  const recipientPhone = String(d.to || payload.to || data.to || data.phone || '').trim();\n  if (!recipientPhone) {\n    errors.push('Missing recipient phone number (to)');\n  }\n\n  if (errors.length > 0) {\n    results.push({\n      json: {\n        ...d,\n        isValidAlert: false,\n        errorCode: 'INVALID_FLOOR_CAPACITY_ALERT',\n        errorMessage: `Validation failed: ${errors.join('; ')}`,\n        errors,\n        tenantId: tenantId || topTenantId,\n        to: recipientPhone\n      }\n    });\n    continue;\n  }\n\n  const rawSeverity = String(data.severity || payload.severity || '').toLowerCase();\n  const severity = validSeverities.has(rawSeverity)\n    ? rawSeverity\n    : (alertType === 'FULL_100' ? 'critical' : 'warning');\n\n  const rawWaitlisted = data.waitlisted !== undefined ? data.waitlisted : payload.waitlisted;\n  const waitlisted = rawWaitlisted !== undefined && Number.isFinite(Number(rawWaitlisted)) && Number(rawWaitlisted) >= 0\n    ? Number(rawWaitlisted)\n    : 0;\n\n  const rawOccupancy = data.occupancyPct !== undefined ? data.occupancyPct : payload.occupancyPct;\n  const occupancyPct = rawOccupancy !== undefined && Number.isFinite(Number(rawOccupancy))\n    ? Number(rawOccupancy)\n    : Number(((booked / capacity) * 100).toFixed(1));\n\n  const dedupKey = String(data.dedupKey || payload.dedupKey || `floor-alert:${tenantId}:${classId}:${alertType}`).trim();\n  const operationalAlertId = data.operationalAlertId || payload.operationalAlertId || null;\n\n  const alertHeadline = alertType === 'FULL_100'\n    ? 'CLASS FULL (100%)'\n    : alertType === 'SURGE_90'\n      ? 'HIGH DEMAND (90%+)'\n      : 'LOW ATTENDANCE (<4H)';\n\n  const templateVars = {\n    tenant_id: tenantId,\n    alert_type: alertType,\n    alert_headline: alertHeadline,\n    severity: severity,\n    class_id: classId,\n    class_name: className,\n    start_time: startTimeIso,\n    booked: String(booked),\n    capacity: String(capacity),\n    waitlisted: String(waitlisted),\n    occupancy_pct: `${occupancyPct}%`,\n    occupancy_ratio: `${booked}/${capacity}`,\n    message: message,\n    dedup_key: dedupKey,\n    ...(operationalAlertId ? { operational_alert_id: operationalAlertId } : {})\n  };\n\n  results.push({\n    json: {\n      ...d,\n      isValidAlert: true,\n      tenantId,\n      to: recipientPhone,\n      data: templateVars,\n      floorCapacityDetails: {\n        tenantId,\n        classId,\n        className,\n        alertType,\n        alertHeadline,\n        severity,\n        startTimeIso,\n        booked,\n        capacity,\n        waitlisted,\n        occupancyPct,\n        message,\n        dedupKey,\n        operationalAlertId\n      }\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000001-0001-4000-8000-000000000023",
+      "name": "Validate Floor Capacity Alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Boolean($json.isValidAlert) }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e0000001-0001-4000-8000-000000000024",
+      "name": "Is Capacity Alert Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const d = item.json;\n  results.push({\n    json: {\n      success: false,\n      status: 'error',\n      errorCode: d.errorCode || 'INVALID_FLOOR_CAPACITY_ALERT',\n      error: d.errorMessage || 'Floor capacity alert validation failed',\n      errors: d.errors || [],\n      template: d.template,\n      eventId: d.eventId,\n      tenantId: d.tenantId,\n      correlationId: d.correlationId,\n      recipient: d.to,\n      timestamp: new Date().toISOString()\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "e0000001-0001-4000-8000-000000000025",
+      "name": "Handle Invalid Capacity Alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        420
+      ]
     }
   ],
   "connections": {
@@ -486,7 +536,59 @@
         ],
         [
           {
+            "node": "Validate Floor Capacity Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "Handle Unknown Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Floor Capacity Alert": {
+      "main": [
+        [
+          {
+            "node": "Is Capacity Alert Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Capacity Alert Valid?": {
+      "main": [
+        [
+          {
+            "node": "Validate Recipient Phone",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Invalid Capacity Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Invalid Capacity Alert": {
+      "main": [
+        [
+          {
+            "node": "Trigger Failure Alert Sub-Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond Webhook Error (400)",
             "type": "main",
             "index": 0
           }

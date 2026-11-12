@@ -75,6 +75,7 @@ export class OutboxDispatcherService implements OnModuleInit, OnModuleDestroy {
     this.registerHandler('attendance.checked_in', this.handleAttendanceCheckedIn.bind(this));
     this.registerHandler('event.registration.confirmed', this.handleEventRegistrationConfirmed.bind(this));
     this.registerHandler('ai.enquiry.escalated', this.handleAiEnquiryEscalated.bind(this));
+    this.registerHandler('floor.capacity.alert', this.handleFloorCapacityAlert.bind(this));
 
     // Start polling
     this.startPolling();
@@ -483,6 +484,304 @@ export class OutboxDispatcherService implements OnModuleInit, OnModuleDestroy {
         contact,
         escalatedAt: new Date().toISOString(),
       },
+    });
+  }
+
+  private async handleFloorCapacityAlert(
+    event: OutboxEvent,
+  ): Promise<DeliveryResult> {
+    const payload = this.parseAndValidateFloorAlertPayload(event);
+    const recipient = await this.resolveFrontDeskRecipient(event.tenantId);
+
+    if (!recipient) {
+      this.logger.warn(
+        `No active Front Desk recipient with phoneE164 found for tenant=${event.tenantId} (event=${event.id}, classId=${payload.classId}, alertType=${payload.alertType})`,
+      );
+      throw new Error(
+        `Missing Front Desk notification recipient for tenant ${event.tenantId} in floor capacity alert event ${event.id}`,
+      );
+    }
+
+    const maskedRecipient = `***${recipient.phoneE164.slice(-4)}`;
+    this.logger.log(
+      `Dispatching floor capacity alert (event=${event.id}, tenant=${event.tenantId}, type=${payload.alertType}, classId=${payload.classId}, to=${maskedRecipient})`,
+    );
+
+    return this.sendNotification(event.tenantId, {
+      template: 'floor-capacity-alert',
+      to: recipient.phoneE164,
+      data: {
+        tenantId: payload.tenantId,
+        alertType: payload.alertType,
+        severity: payload.severity,
+        classId: payload.classId,
+        className: payload.className,
+        startTimeIso: payload.startTimeIso,
+        booked: payload.booked,
+        capacity: payload.capacity,
+        waitlisted: payload.waitlisted,
+        occupancyPct: payload.occupancyPct,
+        message: payload.message,
+        dedupKey: payload.dedupKey,
+        ...(payload.operationalAlertId
+          ? { operationalAlertId: payload.operationalAlertId }
+          : {}),
+      },
+      eventId: event.id,
+      correlationId: event.correlationId,
+    });
+  }
+
+  private parseAndValidateFloorAlertPayload(event: OutboxEvent): {
+    tenantId: string;
+    alertType: 'SURGE_90' | 'FULL_100' | 'LOW_ATTENDANCE_4H';
+    severity: 'info' | 'warning' | 'critical';
+    classId: string;
+    className: string;
+    startTimeIso: string;
+    booked: number;
+    capacity: number;
+    waitlisted: number;
+    occupancyPct: number;
+    message: string;
+    dedupKey: string;
+    operationalAlertId?: string;
+  } {
+    let rawPayload: unknown = event.payload;
+    if (typeof rawPayload === 'string') {
+      try {
+        rawPayload = JSON.parse(rawPayload);
+      } catch {
+        throw new Error(
+          `Malformed JSON payload in floor capacity alert event ${event.id}`,
+        );
+      }
+    }
+
+    if (!rawPayload || typeof rawPayload !== 'object' || Array.isArray(rawPayload)) {
+      throw new Error(
+        `Invalid payload for floor capacity alert event ${event.id}: expected JSON object`,
+      );
+    }
+
+    const record = rawPayload as Record<string, unknown>;
+    const validAlertTypes = new Set([
+      'SURGE_90',
+      'FULL_100',
+      'LOW_ATTENDANCE_4H',
+    ]);
+    const validSeverities = new Set(['info', 'warning', 'critical']);
+
+    const canonicalUuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+    if (
+      typeof event.tenantId !== 'string' ||
+      !canonicalUuidRegex.test(event.tenantId)
+    ) {
+      throw new Error(
+        `Invalid event tenantId in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.tenantId !== 'string' ||
+      !canonicalUuidRegex.test(record.tenantId)
+    ) {
+      throw new Error(
+        `Missing or invalid tenantId in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (record.tenantId !== event.tenantId) {
+      throw new Error(
+        `Tenant mismatch in floor capacity alert event ${event.id}: payload tenant ${record.tenantId} does not match event tenant ${event.tenantId}`,
+      );
+    }
+    if (
+      typeof record.alertType !== 'string' ||
+      !validAlertTypes.has(record.alertType)
+    ) {
+      throw new Error(
+        `Invalid alertType in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.severity !== 'string' ||
+      !validSeverities.has(record.severity)
+    ) {
+      throw new Error(
+        `Invalid severity in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (typeof record.classId !== 'string' || record.classId.trim().length === 0) {
+      throw new Error(
+        `Missing required classId in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.className !== 'string' ||
+      record.className.trim().length === 0
+    ) {
+      throw new Error(
+        `Missing required className in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.startTimeIso !== 'string' ||
+      record.startTimeIso.trim().length === 0 ||
+      Number.isNaN(new Date(record.startTimeIso).getTime())
+    ) {
+      throw new Error(
+        `Invalid startTimeIso in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.booked !== 'number' ||
+      !Number.isFinite(record.booked) ||
+      record.booked < 0
+    ) {
+      throw new Error(
+        `Invalid booked count in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.capacity !== 'number' ||
+      !Number.isFinite(record.capacity) ||
+      record.capacity <= 0
+    ) {
+      throw new Error(
+        `Invalid capacity in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.waitlisted !== 'number' ||
+      !Number.isFinite(record.waitlisted) ||
+      record.waitlisted < 0
+    ) {
+      throw new Error(
+        `Invalid waitlisted count in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      typeof record.occupancyPct !== 'number' ||
+      !Number.isFinite(record.occupancyPct)
+    ) {
+      throw new Error(
+        `Invalid occupancyPct in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (typeof record.message !== 'string' || record.message.trim().length === 0) {
+      throw new Error(
+        `Missing required message in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (typeof record.dedupKey !== 'string' || record.dedupKey.trim().length === 0) {
+      throw new Error(
+        `Missing required dedupKey in floor capacity alert event ${event.id}`,
+      );
+    }
+    if (
+      record.operationalAlertId !== undefined &&
+      (typeof record.operationalAlertId !== 'string' ||
+        record.operationalAlertId.trim().length === 0)
+    ) {
+      throw new Error(
+        `Invalid operationalAlertId in floor capacity alert event ${event.id}`,
+      );
+    }
+
+    return {
+      tenantId: record.tenantId,
+      alertType: record.alertType as 'SURGE_90' | 'FULL_100' | 'LOW_ATTENDANCE_4H',
+      severity: record.severity as 'info' | 'warning' | 'critical',
+      classId: record.classId,
+      className: record.className,
+      startTimeIso: record.startTimeIso,
+      booked: record.booked,
+      capacity: record.capacity,
+      waitlisted: record.waitlisted,
+      occupancyPct: record.occupancyPct,
+      message: record.message,
+      dedupKey: record.dedupKey,
+      operationalAlertId: record.operationalAlertId as string | undefined,
+    };
+  }
+
+  private async resolveFrontDeskRecipient(tenantId: string): Promise<{
+    userId: string;
+    displayName: string;
+    phoneE164: string;
+  } | null> {
+    if (
+      typeof tenantId !== 'string' ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        tenantId,
+      )
+    ) {
+      return null;
+    }
+    return this.prisma.withTenant(tenantId, async (tx) => {
+      const client = tx as unknown as {
+        role?: { findMany?: Function };
+        userRoleAssignment?: { findMany?: Function };
+      };
+      if (
+        typeof client?.role?.findMany !== 'function' ||
+        typeof client?.userRoleAssignment?.findMany !== 'function'
+      ) {
+        return null;
+      }
+
+      const roles = (await client.role.findMany({
+        where: {
+          tenantId,
+          code: 'front_desk',
+        },
+        select: { id: true },
+      })) as Array<{ id: string }>;
+
+      const roleIds = roles.map((role) => role.id);
+      if (roleIds.length === 0) {
+        return null;
+      }
+
+      const assignments = (await client.userRoleAssignment.findMany({
+        where: {
+          tenantId,
+          roleId: { in: roleIds },
+          users: { status: 'active' },
+        },
+        include: {
+          users: {
+            select: {
+              id: true,
+              displayName: true,
+              phoneE164: true,
+            },
+          },
+        },
+        orderBy: { createdAt: 'asc' },
+      })) as Array<{
+        users?: {
+          id?: string;
+          displayName?: string | null;
+          phoneE164?: string | null;
+        } | null;
+      }>;
+
+      for (const assignment of assignments) {
+        const user = assignment.users;
+        const phone =
+          typeof user?.phoneE164 === 'string' ? user.phoneE164.trim() : '';
+        if (user?.id && phone.length > 0) {
+          return {
+            userId: user.id,
+            displayName: user.displayName || 'Front Desk',
+            phoneE164: phone,
+          };
+        }
+      }
+
+      return null;
     });
   }
 

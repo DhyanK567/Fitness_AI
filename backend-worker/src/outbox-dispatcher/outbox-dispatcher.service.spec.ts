@@ -786,4 +786,208 @@ describe('OutboxDispatcherService — AI Enquiry Escalation and Handler Lifecycl
       }),
     );
   });
+
+  describe('floor.capacity.alert handler', () => {
+    const CLASS_UUID = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+    const ALERT_UUID = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+
+    const makeValidFloorAlertPayload = (overrides: Record<string, unknown> = {}) => ({
+      tenantId: TENANT_A,
+      alertType: 'SURGE_90',
+      severity: 'warning',
+      classId: CLASS_UUID,
+      className: 'Evening HIIT',
+      startTimeIso: '2026-11-12T12:30:00.000Z',
+      booked: 18,
+      capacity: 20,
+      waitlisted: 1,
+      occupancyPct: 90,
+      message: 'Capacity Surge: Evening HIIT at 06:00 PM is now 90% full (18/20 spots).',
+      dedupKey: `floor-alert:${TENANT_A}:${CLASS_UUID}:SURGE_90`,
+      operationalAlertId: ALERT_UUID,
+      ...overrides,
+    });
+
+    const mockFrontDeskLookup = (users: Array<{ id: string; displayName: string; phoneE164: string | null }>) => {
+      const roleFindMany = jest.fn().mockResolvedValue(users.length > 0 ? [{ id: 'role-fd-1' }] : []);
+      const assignmentFindMany = jest.fn().mockResolvedValue(
+        users.map((u) => ({ users: u })),
+      );
+
+      mockPrisma.withTenant = jest.fn(async (tenantId: string, fn: any) =>
+        fn({
+          $queryRaw: mockPrisma.$queryRaw,
+          $executeRaw: mockPrisma.$executeRaw,
+          role: { findMany: roleFindMany },
+          userRoleAssignment: { findMany: assignmentFindMany },
+        }),
+      );
+
+      return { roleFindMany, assignmentFindMany };
+    };
+
+    it('registers floor.capacity.alert handler on module initialization', () => {
+      const handlers = (service as any).handlers as Map<string, Function>;
+      expect(handlers.has('floor.capacity.alert')).toBe(true);
+      expect(typeof handlers.get('floor.capacity.alert')).toBe('function');
+    });
+
+    it('dispatches valid floor.capacity.alert payload to Front Desk recipient via sendNotification', async () => {
+      process.env.N8N_WEBHOOK_URL = 'http://localhost:5678';
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: async () => JSON.stringify({ success: true, status: 'dispatched' }),
+      });
+
+      const { roleFindMany, assignmentFindMany } = mockFrontDeskLookup([
+        { id: 'user-fd-1', displayName: 'Front Desk Lead', phoneE164: '+919988776655' },
+      ]);
+
+      const payload = makeValidFloorAlertPayload({ alertType: 'FULL_100', severity: 'critical', booked: 20, occupancyPct: 100 });
+      const event = {
+        id: 'evt-floor-001',
+        tenantId: TENANT_A,
+        eventType: 'floor.capacity.alert',
+        subjectType: 'studio_class',
+        subjectRef: CLASS_UUID,
+        payload,
+        correlationId: 'corr-floor-001',
+        status: 'dispatching',
+        attempts: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const handler = (service as any).handlers.get('floor.capacity.alert');
+      const result = await handler(event);
+
+      expect(result.success).toBe(true);
+      expect(mockPrisma.withTenant).toHaveBeenCalledWith(TENANT_A, expect.any(Function));
+      expect(roleFindMany).toHaveBeenCalledWith({
+        where: { tenantId: TENANT_A, code: 'front_desk' },
+        select: { id: true },
+      });
+      expect(assignmentFindMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            tenantId: TENANT_A,
+            roleId: { in: ['role-fd-1'] },
+            users: { status: 'active' },
+          },
+        }),
+      );
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const [callUrl, callOpts] = fetchMock.mock.calls[0];
+      expect(callUrl).toBe('http://localhost:5678/notify');
+      expect(callOpts.headers['X-Tenant-Id']).toBe(TENANT_A);
+      const body = JSON.parse(callOpts.body);
+      expect(body.tenantId).toBe(TENANT_A);
+      expect(body.template).toBe('floor-capacity-alert');
+      expect(body.to).toBe('+919988776655');
+      expect(body.eventId).toBe('evt-floor-001');
+      expect(body.correlationId).toBe('corr-floor-001');
+      expect(body.data).toEqual(payload);
+    });
+
+    it('rejects invalid or tenant-mismatched floor.capacity.alert payload before recipient lookup or webhook call', async () => {
+      const { roleFindMany } = mockFrontDeskLookup([
+        { id: 'user-fd-1', displayName: 'Front Desk', phoneE164: '+919988776655' },
+      ]);
+      const handler = (service as any).handlers.get('floor.capacity.alert');
+
+      await expect(
+        handler({
+          id: 'evt-floor-bad-json',
+          tenantId: TENANT_A,
+          eventType: 'floor.capacity.alert',
+          payload: '{broken-json',
+          correlationId: 'corr-bad-1',
+        }),
+      ).rejects.toThrow(/Malformed JSON payload/);
+
+      await expect(
+        handler({
+          id: 'evt-floor-bad-cap',
+          tenantId: TENANT_A,
+          eventType: 'floor.capacity.alert',
+          payload: makeValidFloorAlertPayload({ capacity: 0 }),
+          correlationId: 'corr-bad-2',
+        }),
+      ).rejects.toThrow(/Invalid capacity/);
+
+      await expect(
+        handler({
+          id: 'evt-floor-tenant-mismatch',
+          tenantId: TENANT_A,
+          eventType: 'floor.capacity.alert',
+          payload: makeValidFloorAlertPayload({
+            tenantId: '22222222-2222-4222-8222-222222222222',
+          }),
+          correlationId: 'corr-bad-3',
+        }),
+      ).rejects.toThrow(/Tenant mismatch/);
+
+      expect(roleFindMany).not.toHaveBeenCalled();
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('handles missing Front Desk recipient safely without sending notification and triggers retry in processEvent', async () => {
+      process.env.N8N_WEBHOOK_URL = 'http://localhost:5678';
+      mockFrontDeskLookup([
+        { id: 'user-fd-nophone', displayName: 'Front Desk Without Phone', phoneE164: null },
+      ]);
+
+      const markFailedSpy = jest
+        .spyOn(service as any, 'markFailed')
+        .mockResolvedValue(undefined);
+      const markSuccessSpy = jest.spyOn(service as any, 'markSuccess');
+
+      const event = {
+        id: 'evt-floor-no-recipient',
+        tenantId: TENANT_A,
+        eventType: 'floor.capacity.alert',
+        subjectType: 'studio_class',
+        subjectRef: CLASS_UUID,
+        payload: makeValidFloorAlertPayload(),
+        correlationId: 'corr-no-rec-1',
+        status: 'dispatching',
+        attempts: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      await (service as any).processEvent(TENANT_A, event);
+
+      expect(mockPrisma.withTenant).toHaveBeenCalledWith(TENANT_A, expect.any(Function));
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(markSuccessSpy).not.toHaveBeenCalled();
+      expect(markFailedSpy).toHaveBeenCalledWith(
+        TENANT_A,
+        event,
+        expect.stringContaining('Missing Front Desk notification recipient'),
+      );
+    });
+
+    it('rejects invalid non-canonical tenantId in floor.capacity.alert before touching Prisma or webhook', async () => {
+      const { roleFindMany } = mockFrontDeskLookup([
+        { id: 'user-fd-1', displayName: 'Front Desk', phoneE164: '+919988776655' },
+      ]);
+      const handler = (service as any).handlers.get('floor.capacity.alert');
+
+      await expect(
+        handler({
+          id: 'evt-floor-invalid-tenant',
+          tenantId: 'not-a-canonical-uuid',
+          eventType: 'floor.capacity.alert',
+          payload: makeValidFloorAlertPayload({ tenantId: 'not-a-canonical-uuid' }),
+          correlationId: 'corr-bad-tenant-1',
+        }),
+      ).rejects.toThrow(/Invalid event tenantId/);
+
+      expect(roleFindMany).not.toHaveBeenCalled();
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+  });
 });
