@@ -5,6 +5,8 @@ import { PrismaService } from './common/prisma.service';
 import { RedisClient, RedisModule } from './common/redis-client';
 import { OutboxDispatcherService } from './outbox-dispatcher/outbox-dispatcher.service';
 import { SchedulerService } from './schedulers/scheduler.service';
+import { TrainerRosterScheduler } from './schedulers/trainer-roster/trainer-roster.scheduler';
+import { TrainerRosterService } from './trainer-roster/trainer-roster.service';
 
 @Module({
   imports: [
@@ -19,7 +21,9 @@ import { SchedulerService } from './schedulers/scheduler.service';
     PrismaService,
     OutboxDispatcherService,
     SchedulerService,
+    TrainerRosterScheduler,
+    TrainerRosterService,
   ],
-  exports: [RedisClient],
+  exports: [RedisClient, TrainerRosterService, TrainerRosterScheduler],
 })
 export class WorkerModule {}

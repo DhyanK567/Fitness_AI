@@ -1276,6 +1276,10 @@ model StudioMember {
   createdAt                  DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt                  DateTime                  @default(now()) @map("updated_at") @db.Timestamptz(6)
   trainerUserId              String?                   @map("trainer_user_id") @db.Uuid
+  kneeInjury                 Boolean?                  @map("knee_injury")
+  lowerBackPain              Boolean?                  @map("lower_back_pain")
+  postSurgery                Boolean?                  @map("post_surgery")
+  firstTimeMember            Boolean?                  @map("first_time_member")
   membership_freeze_requests MembershipFreezeRequest[]
   tenants                    Tenant                    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users                      User?                     @relation(fields: [trainerUserId], references: [id], onUpdate: NoAction)

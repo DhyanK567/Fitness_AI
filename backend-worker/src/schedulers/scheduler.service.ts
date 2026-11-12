@@ -56,7 +56,7 @@ export class SchedulerService {
         this.logger.log(`Expired ${totalExpired} pending actions across tenants`);
       }
     } finally {
-      await this.releaseLock('scheduler:expire-pending-actions');
+      await this.releaseLock('scheduler:expire-pending-actions', lock);
     }
   }
 
@@ -381,37 +381,6 @@ export class SchedulerService {
     } finally {
       await this.releaseLock('scheduler:recover-stale-actions', token);
     }
-  }
-
-  private async acquireLock(lockName: string, ttlMs: number): Promise<string | null> {
-    const key = `lock:${lockName}`;
-    const token = randomUUID();
-    // Use the underlying client directly for NX/PX options
-    const result = await this.redis.getClient().set(key, token, 'PX', ttlMs, 'NX');
-    return result === 'OK' ? token : null;
-  }
-
-  private async releaseLock(lockName: string, token: string): Promise<void> {
-    const key = `lock:${lockName}`;
-    // Atomic check-and-delete: only release if we own the lock
-    const script = `
-      if redis.call("get", KEYS[1]) == ARGV[1] then
-        return redis.call("del", KEYS[1])
-      else
-        return 0
-      end
-    `;
-    await this.redis.getClient().eval(script, 1, key, token);
-  }
-
-  private getStaleThresholdMs(): number {
-    const raw = this.config.get('STALE_ACTION_THRESHOLD_MS');
-    const parsed = raw ? parseInt(raw, 10) : NaN;
-    if (isNaN(parsed) || parsed < 60000) {
-      this.logger.warn(`Invalid STALE_ACTION_THRESHOLD_MS="${raw}", using default 600000ms (10 min)`);
-      return 600000; // 10 min default
-    }
-    return parsed;
   }
 
   private async getActiveTenants(): Promise<string[]> {
