@@ -52,6 +52,10 @@ export class WebhookIngestDatabaseService implements OnModuleInit, OnModuleDestr
       await this.client.$connect();
       this.logger.log('Webhook ingest database client connected');
     } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        this.logger.warn(`Failed to connect webhook ingest database client in development mode: ${(error as Error).message}`);
+        return;
+      }
       this.logger.error('Failed to connect webhook ingest database client', (error as Error).message);
       throw error;
     }
