@@ -43,14 +43,18 @@ describe('Scheduler logic', () => {
   class FakeRedis {
     private store = new Map<string, string | null>();
     private locks = new Map<string, boolean>();
+    private timers = new Map<string, NodeJS.Timeout>();
 
     async set(key: string, value: string, mode?: string, ttlMs?: number): Promise<'OK' | null> {
       if (mode && ttlMs) {
         if (this.locks.has(key)) return null; // already held
         this.locks.set(key, true);
         this.store.set(key, value);
-        const self = this;
-        setTimeout(() => self.locks.delete(key), ttlMs);
+        const timer = setTimeout(() => this.locks.delete(key), ttlMs);
+        if (typeof timer.unref === 'function') {
+          timer.unref();
+        }
+        this.timers.set(key, timer);
         return 'OK';
       }
       this.store.set(key, value);
@@ -62,6 +66,11 @@ describe('Scheduler logic', () => {
     }
 
     async del(key: string): Promise<number> {
+      const timer = this.timers.get(key);
+      if (timer) {
+        clearTimeout(timer);
+        this.timers.delete(key);
+      }
       this.locks.delete(key);
       this.store.delete(key);
       return 1;
