@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Trainer Briefing Formatter (Task F6) Snapshots matches snapshot for multiple-class day 1`] = `
+"🌅 Good morning Coach Marcus! Here is your schedule for today (Thursday, Nov 12):
+
+🏋️ Session 1: 07:00 AM - Strength & Conditioning (Main Floor)
+👥 Attendance: 12/15 Confirmed
+⚠️ Important Client Notes:
+• Priya Sharma (First-timer, introduce gym layout)
+• Rahul Mehta (Recovering from lumbar strain — avoid heavy deadlifts)
+
+🧘 Session 2: 05:30 PM - Core & Mobility (Studio B)
+👥 Attendance: 18/18 (SOLD OUT)
+
+Have a high-energy day on the floor!"
+`;
+
+exports[`Trainer Briefing Formatter (Task F6) Snapshots matches snapshot for single-class day 1`] = `
+"🌅 Good morning Coach Marcus! Here is your schedule for today (Thursday, Nov 12):
+
+🏋️ Session 1: 07:00 AM - Strength & Conditioning (Main Floor)
+👥 Attendance: 8/15 Confirmed
+
+Have a high-energy day on the floor!"
+`;
+
+exports[`Trainer Briefing Formatter (Task F6) Snapshots matches snapshot for sold-out class day 1`] = `
+"🌅 Good morning Coach Marcus! Here is your schedule for today (Thursday, Nov 12):
+
+🥊 Session 1: 06:00 PM - HIIT Extreme (Main Floor)
+👥 Attendance: 20/20 (SOLD OUT)
+
+Have a high-energy day on the floor!"
+`;
